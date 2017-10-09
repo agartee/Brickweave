@@ -8,8 +8,9 @@
 
   <ItemGroup>
     <PackageReference Include="FluentAssertions" Version="4.19.4" />
+    <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="2.0.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.3.0" />
-    <PackageReference Include="NSubstitute" Version="3.0.1" />
+    <PackageReference Include="Xbehave" Version="2.2.0-beta0003-build685" />
     <PackageReference Include="xunit" Version="2.3.0" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.3.0" />
   </ItemGroup>
@@ -17,6 +18,8 @@
   <ItemGroup>
     <ProjectReference Include="..\Brickweave.Core\Brickweave.Core.csproj" />
     <ProjectReference Include="..\Brickweave.Cqrs\Brickweave.Cqrs.csproj" />
+    <ProjectReference Include="..\Brickweave.Samples.Domain\Brickweave.Samples.Domain.csproj" />
+    <ProjectReference Include="..\Brickweave.Samples.WebApp\Brickweave.Samples.WebApp.csproj" />
   </ItemGroup>
 
 </Project>

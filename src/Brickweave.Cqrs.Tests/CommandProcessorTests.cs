@@ -1,5 +1,5 @@
-﻿using System.Threading.Tasks;
-using Brickweave.Core;
+﻿using System;
+using System.Threading.Tasks;
 using Brickweave.Core.Exceptions;
 using Brickweave.Cqrs.Exceptions;
 using Brickweave.Cqrs.Tests.Fakes;
@@ -16,7 +16,7 @@ namespace Brickweave.Cqrs.Tests
         [Fact]
         public void ProcessAsync_WithNoRegisteredCommandHandler_Throws()
         {
-            var serviceLocator = Substitute.For<IServiceLocator>();
+            var serviceLocator = Substitute.For<IServiceProvider>();
             var commandProcessor = new CommandProcessor(serviceLocator);
 
             var exception = Record.ExceptionAsync(async () => await commandProcessor.ProcessAsync(new TestCommand()));
@@ -28,7 +28,7 @@ namespace Brickweave.Cqrs.Tests
         [Fact]
         public void ProcessAsync_WithNullCommand_Throws()
         {
-            var serviceLocator = Substitute.For<IServiceLocator>();
+            var serviceLocator = Substitute.For<IServiceProvider>();
             var commandProcessor = new CommandProcessor(serviceLocator);
 
             var exception = Record.ExceptionAsync(async () => await commandProcessor.ProcessAsync(null));
@@ -42,8 +42,8 @@ namespace Brickweave.Cqrs.Tests
         {
             var handler = new TestCommandWithResultHandler();
 
-            var serviceLocator = Substitute.For<IServiceLocator>();
-            serviceLocator.GetInstance(typeof(ICommandHandler<TestCommandWithResult, Result>))
+            var serviceLocator = Substitute.For<IServiceProvider>();
+            serviceLocator.GetService(typeof(ICommandHandler<TestCommandWithResult, Result>))
                 .Returns(handler);
 
             var commandProcessor = new CommandProcessor(serviceLocator);
@@ -58,8 +58,8 @@ namespace Brickweave.Cqrs.Tests
             var handlerWasCalled = false;
             var handler = new TestCommandHandler(() => handlerWasCalled = true);
 
-            var serviceLocator = Substitute.For<IServiceLocator>();
-            serviceLocator.GetInstance(typeof(ICommandHandler<TestCommand>))
+            var serviceLocator = Substitute.For<IServiceProvider>();
+            serviceLocator.GetService(typeof(ICommandHandler<TestCommand>))
                 .Returns(handler);
 
             var commandProcessor = new CommandProcessor(serviceLocator);

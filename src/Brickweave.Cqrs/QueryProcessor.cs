@@ -1,5 +1,5 @@
-﻿using System.Threading.Tasks;
-using Brickweave.Core;
+﻿using System;
+using System.Threading.Tasks;
 using Brickweave.Core.Exceptions;
 using Brickweave.Cqrs.Exceptions;
 using Brickweave.Cqrs.Extensions;
@@ -8,11 +8,11 @@ namespace Brickweave.Cqrs
 {
     public class QueryProcessor : IQueryProcessor
     {
-        private readonly IServiceLocator _serviceLocator;
+        private readonly IServiceProvider _serviceProvider;
 
-        public QueryProcessor(IServiceLocator serviceLocator)
+        public QueryProcessor(IServiceProvider serviceProvider)
         {
-            _serviceLocator = serviceLocator;
+            _serviceProvider = serviceProvider;
         }
 
         public async Task<object> ProcessAsync(IQuery query)
@@ -21,7 +21,7 @@ namespace Brickweave.Cqrs
 
             var queryReturnType = query.GetQueryReturnType();
             var handlerType = typeof(IQueryHandler<,>).MakeGenericType(query.GetType(), queryReturnType);
-            dynamic handler = _serviceLocator.GetInstance(handlerType);
+            dynamic handler = _serviceProvider.GetService(handlerType);
 
             if (handler == null)
                 throw new QueryHandlerNotRegisteredException(query);
@@ -34,7 +34,7 @@ namespace Brickweave.Cqrs
             Guard.IsNotNullQuery(query);
 
             var handlerType = typeof(IQueryHandler<,>).MakeGenericType(query.GetType(), typeof(TResult));
-            dynamic handler = _serviceLocator.GetInstance(handlerType);
+            dynamic handler = _serviceProvider.GetService(handlerType);
 
             if (handler == null)
                 throw new QueryHandlerNotRegisteredException(query);

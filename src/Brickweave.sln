@@ -7,7 +7,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Brickweave.Cqrs", "Brickwea
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Brickweave.Cqrs.Tests", "Brickweave.Cqrs.Tests\Brickweave.Cqrs.Tests.csproj", "{160765BC-8B34-4661-88E7-3BBCD5A3F123}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Brickweave.Core", "Brickweave.Core\Brickweave.Core.csproj", "{DC6F5F5A-18D0-4BE2-A168-A4F4C5E161C0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Brickweave.Core", "Brickweave.Core\Brickweave.Core.csproj", "{DC6F5F5A-18D0-4BE2-A168-A4F4C5E161C0}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Brickweave.Samples.WebApp", "Brickweave.Samples.WebApp\Brickweave.Samples.WebApp.csproj", "{5C6A03B9-1295-4BD3-8430-76E340F45410}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Brickweave.Samples.Domain", "Brickweave.Samples.Domain\Brickweave.Samples.Domain.csproj", "{53832B81-4C41-4331-91FD-472E640D59D4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Brickweave.Samples.WebApp.Tests", "Brickweave.Samples.WebApp.Tests\Brickweave.Samples.WebApp.Tests.csproj", "{36E14955-4181-452B-B4C1-024417B6012B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Brickweave.Samples.Persistence.SqlServer", "Brickweave.Samples.Persistence.SqlServer\Brickweave.Samples.Persistence.SqlServer.csproj", "{A2263DAF-F50E-4D2A-819F-68471C1B6334}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +35,22 @@ Global
 		{DC6F5F5A-18D0-4BE2-A168-A4F4C5E161C0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DC6F5F5A-18D0-4BE2-A168-A4F4C5E161C0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DC6F5F5A-18D0-4BE2-A168-A4F4C5E161C0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5C6A03B9-1295-4BD3-8430-76E340F45410}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5C6A03B9-1295-4BD3-8430-76E340F45410}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5C6A03B9-1295-4BD3-8430-76E340F45410}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5C6A03B9-1295-4BD3-8430-76E340F45410}.Release|Any CPU.Build.0 = Release|Any CPU
+		{53832B81-4C41-4331-91FD-472E640D59D4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{53832B81-4C41-4331-91FD-472E640D59D4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{53832B81-4C41-4331-91FD-472E640D59D4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{53832B81-4C41-4331-91FD-472E640D59D4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{36E14955-4181-452B-B4C1-024417B6012B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{36E14955-4181-452B-B4C1-024417B6012B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{36E14955-4181-452B-B4C1-024417B6012B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{36E14955-4181-452B-B4C1-024417B6012B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A2263DAF-F50E-4D2A-819F-68471C1B6334}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A2263DAF-F50E-4D2A-819F-68471C1B6334}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A2263DAF-F50E-4D2A-819F-68471C1B6334}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A2263DAF-F50E-4D2A-819F-68471C1B6334}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

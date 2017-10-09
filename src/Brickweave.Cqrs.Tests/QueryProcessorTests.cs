@@ -1,5 +1,5 @@
-﻿using System.Threading.Tasks;
-using Brickweave.Core;
+﻿using System;
+using System.Threading.Tasks;
 using Brickweave.Core.Exceptions;
 using Brickweave.Cqrs.Exceptions;
 using Brickweave.Cqrs.Tests.Fakes;
@@ -16,7 +16,7 @@ namespace Brickweave.Cqrs.Tests
         [Fact]
         public void ProcessAsync_WithNoRegisteredQueryHandler_Throws()
         {
-            var serviceLocator = Substitute.For<IServiceLocator>();
+            var serviceLocator = Substitute.For<IServiceProvider>();
             var queryProcessor = new QueryProcessor(serviceLocator);
 
             var exception = Record.ExceptionAsync(async () => await queryProcessor.ProcessAsync(new TestQuery("1")));
@@ -28,7 +28,7 @@ namespace Brickweave.Cqrs.Tests
         [Fact]
         public void ProcessAsync_WithNullQuery_Throws()
         {
-            var serviceLocator = Substitute.For<IServiceLocator>();
+            var serviceLocator = Substitute.For<IServiceProvider>();
             var queryProcessor = new QueryProcessor(serviceLocator);
 
             var exception = Record.ExceptionAsync(async () => await queryProcessor.ProcessAsync(null));
@@ -42,8 +42,8 @@ namespace Brickweave.Cqrs.Tests
         {
             var handler = new TestQueryHandler();
 
-            var serviceLocator = Substitute.For<IServiceLocator>();
-            serviceLocator.GetInstance(typeof(IQueryHandler<TestQuery, Result>))
+            var serviceLocator = Substitute.For<IServiceProvider>();
+            serviceLocator.GetService(typeof(IQueryHandler<TestQuery, Result>))
                 .Returns(handler);
 
             var queryProcessor = new QueryProcessor(serviceLocator);

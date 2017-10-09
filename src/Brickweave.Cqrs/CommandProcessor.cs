@@ -1,5 +1,5 @@
-﻿using System.Threading.Tasks;
-using Brickweave.Core;
+﻿using System;
+using System.Threading.Tasks;
 using Brickweave.Core.Exceptions;
 using Brickweave.Cqrs.Exceptions;
 using Brickweave.Cqrs.Extensions;
@@ -8,11 +8,11 @@ namespace Brickweave.Cqrs
 {
     public class CommandProcessor : ICommandProcessor
     {
-        private readonly IServiceLocator _serviceLocator;
+        private readonly IServiceProvider _serviceProvider;
 
-        public CommandProcessor(IServiceLocator serviceLocator)
+        public CommandProcessor(IServiceProvider serviceProvider)
         {
-            _serviceLocator = serviceLocator;
+            _serviceProvider = serviceProvider;
         }
 
         public async Task<object> ProcessAsync(ICommand command)
@@ -25,7 +25,7 @@ namespace Brickweave.Cqrs
                 ? typeof(ICommandHandler<,>).MakeGenericType(command.GetType(), commandReturnType)
                 : typeof(ICommandHandler<>).MakeGenericType(command.GetType());
 
-            dynamic handler = _serviceLocator.GetInstance(handlerType);
+            dynamic handler = _serviceProvider.GetService(handlerType);
 
             if (handler == null)
                 throw new CommandHandlerNotRegisteredException(command);
@@ -42,7 +42,7 @@ namespace Brickweave.Cqrs
             Guard.IsNotNullCommand(command);
 
             var handlerType = typeof(ICommandHandler<,>).MakeGenericType(command.GetType(), typeof(TResult));
-            dynamic handler = _serviceLocator.GetInstance(handlerType);
+            dynamic handler = _serviceProvider.GetService(handlerType);
 
             if (handler == null)
                 throw new CommandHandlerNotRegisteredException(command);

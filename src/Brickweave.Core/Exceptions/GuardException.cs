@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Brickweave.Cqrs.Exceptions
+namespace Brickweave.Core.Exceptions
 {
     public class GuardException : Exception
     {

@@ -3,9 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26730.12
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Brickweave.Cqrs", "Brickweave.Cqrs\Brickweave.Cqrs.csproj", "{1D489B4C-DBEA-46F6-AF8B-76B67E52F45A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Brickweave.Cqrs", "Brickweave.Cqrs\Brickweave.Cqrs.csproj", "{1D489B4C-DBEA-46F6-AF8B-76B67E52F45A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Brickweave.Cqrs.Tests", "Brickweave.Cqrs.Tests\Brickweave.Cqrs.Tests.csproj", "{160765BC-8B34-4661-88E7-3BBCD5A3F123}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Brickweave.Cqrs.Tests", "Brickweave.Cqrs.Tests\Brickweave.Cqrs.Tests.csproj", "{160765BC-8B34-4661-88E7-3BBCD5A3F123}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Brickweave.Core", "Brickweave.Core\Brickweave.Core.csproj", "{DC6F5F5A-18D0-4BE2-A168-A4F4C5E161C0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{160765BC-8B34-4661-88E7-3BBCD5A3F123}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{160765BC-8B34-4661-88E7-3BBCD5A3F123}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{160765BC-8B34-4661-88E7-3BBCD5A3F123}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DC6F5F5A-18D0-4BE2-A168-A4F4C5E161C0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DC6F5F5A-18D0-4BE2-A168-A4F4C5E161C0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DC6F5F5A-18D0-4BE2-A168-A4F4C5E161C0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DC6F5F5A-18D0-4BE2-A168-A4F4C5E161C0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,7 +1,9 @@
 ﻿using System.Threading.Tasks;
-using FluentAssertions;
+using Brickweave.Core;
+using Brickweave.Core.Exceptions;
 using Brickweave.Cqrs.Exceptions;
 using Brickweave.Cqrs.Tests.Fakes;
+using FluentAssertions;
 using NSubstitute;
 using Xunit;
 

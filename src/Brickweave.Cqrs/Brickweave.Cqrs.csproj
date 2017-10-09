@@ -9,10 +9,15 @@
     <AssemblyVersion>0.1.0.0</AssemblyVersion>
     <FileVersion>0.1.0.0</FileVersion>
     <PackageProjectUrl>http://www.brickweave.io</PackageProjectUrl>
+    <PackageLicenseUrl>https://github.com/agartee/Brickweave/blob/master/LICENSE</PackageLicenseUrl>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.CSharp" Version="4.4.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Brickweave.Core\Brickweave.Core.csproj" />
   </ItemGroup>
 
 </Project>

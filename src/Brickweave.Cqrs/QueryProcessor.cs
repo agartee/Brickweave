@@ -1,4 +1,6 @@
 ﻿using System.Threading.Tasks;
+using Brickweave.Core;
+using Brickweave.Core.Exceptions;
 using Brickweave.Cqrs.Exceptions;
 using Brickweave.Cqrs.Extensions;
 

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Brickweave.Cqrs
+namespace Brickweave.Core
 {
     public interface IServiceLocator
     {

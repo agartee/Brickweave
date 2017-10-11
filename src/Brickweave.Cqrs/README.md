@@ -10,7 +10,7 @@ The following examples are also located in the `Brickweave.Samples` projects in 
 
 ## Step 1: Wire-Up
 
-To have your application start recognizing newly defined commands and queries, use the `IServiceCollection` extension methods to wire-ip the Brickweave services. Since these services rely on dependency injection via .NET Core's `IServiceCollection`, you will want to wire-up your own domain services as well. Not that assemblies containing your command and queries can be passed to these extension methods and an assembly scan for `IQueryHandler` and `ICommandHandler` services will be executed.
+To have your application start recognizing newly defined commands and queries, use the `IServiceCollection` extension methods to wire-up the Brickweave services. Since these services rely on dependency injection via .NET Core's `IServiceCollection`, you will want to wire-up your own domain services as well. Not that assemblies containing your command and queries can be passed to these extension methods and an assembly scan for `IQueryHandler` and `ICommandHandler` services will be executed.
 
 This example is for ASP.NET Core, but for console or other applications a new `ServiceCollection` instance can be created and utilized as well.
 
@@ -84,7 +84,7 @@ public class GetPerson : IQuery<PersonInfo>
 
 ## Step 3: Define Command and Query Handlers
 
-Now that we have a command and a query, we can define services that will handle them. These services will be located via the `CommandProcessor` and `QueryProcessor` services, which will be references later by your ASP.NET Core controller class.
+Now that we have a command and a query, we can define services that will handle them. These services will be located via the `CommandProcessor` and `QueryProcessor` services, which will be referenced later by your ASP.NET Core controller class.
 
 ### Example Command Handler:
 

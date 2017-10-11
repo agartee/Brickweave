@@ -1,95 +1,172 @@
 # Brickweave.Cqrs
 
-Lightweight package to support the CQRS pattern stand-alone or with other Brickweave products.
+Brickweave CQRS is a lightweight framework library to support the CQRS pattern within a single application. Consuming applications would define commands, queries and their handlers to wrap business logic into a nice little unit of work. This not only helps teams distribute work more easily, but also helps them predict where business logic should be placed without a lot of debate.
 
-## Command Usage
+*Warning*: This library is still under active development. The IServiceCollection integrations may change in the future.
 
-Define a command object with with parameters.
+# Getting Started
 
-### Example: 
+The following examples are also located in the `Brickweave.Samples` projects in this repository. These examples are simple, but often application commands and queries will require manipulation of multiple domain models, publish domain messages, or perform some aggregation of data to produce results. That being said, these samples should be sufficient to get started.
+
+## Step 1: Wire-Up
+
+To have your application start recognizing newly defined commands and queries, use the `IServiceCollection` extension methods to wire-ip the Brickweave services. Since these services rely on dependency injection via .NET Core's `IServiceCollection`, you will want to wire-up your own domain services as well. Not that assemblies containing your command and queries can be passed to these extension methods and an assembly scan for `IQueryHandler` and `ICommandHandler` services will be executed.
+
+This example is for ASP.NET Core, but for console or other applications a new `ServiceCollection` instance can be created and utilized as well.
+
+### Example Wire-Up (ASP.NET Core):
 
 ``` csharp
-public class SampleCommand : ICommand
+public void ConfigureServices(IServiceCollection services)
 {
-    public SampleCommand(string someValue)
+    services.AddMvc();
+
+    // find libraries that will contain my command and query handlers
+    var domainAssemblies = AppDomain.CurrentDomain.GetAssemblies()
+        .Where(a => a.FullName.StartsWith("MyApplication")) // your namespace prefix
+        .Where(a => a.FullName.Contains("Domain")) // any additional criteria to isolate your domain libraries
+        .ToArray();
+
+    services
+        .AddCommandProcessor()
+        .AddQueryProcessor()
+        .AddCommandHandlers(domainAssemblies)
+        .AddQueryHandlers(domainAssemblies);
+
+        ...
+}
+
+```
+
+## Step 2: Define Command and Query
+
+Now that your application is setup, you can add commands and queries to your domain libraries and their handlers will be automatically picked up without any additional DI container registrations (except for your additional domain services).
+
+Lets start by defining a command and a query.
+
+### Example Command:
+
+``` csharp
+public class CreatePerson : ICommand
+{
+    public CreatePerson(Guid personId, string firstName, string lastName)
     {
-        SomeValue = someValue;
+        PersonId = personId;
+        FirstName = firstName;
+        LastName = lastName;
     }
 
-    public string SomeValue { get; }
+    public Guid PersonId { get; }
+    public string FirstName { get; }
+    public string LastName { get; }
 }
 ```
 
-Define a command handler that takes the command as a generic type arg and add your application logic.
-
-### Example: 
+### Example Query:
 
 ``` csharp
-public class SampleCommandHandler: ICommandHandler<SampleCommand>
+public class GetPerson : IQuery<PersonInfo>
 {
-    public async Task HandleAsync(SampleCommand command)
+    public CreatePerson(Guid personId, string firstName, string lastName)
     {
-        // your code here
+        PersonId = personId;
+        FirstName = firstName;
+        LastName = lastName;
     }
-}
 
+    public Guid PersonId { get; }
+    public string FirstName { get; }
+    public string LastName { get; }
+}
 ```
 
-Sometimes it is useful to return a result object when a command is successfully processed (e.g. returning a read-only model of the aggregate that was created/modified, etc.).
+***Note: Commands can be configured to return a result just like Queries***
 
-### Example: 
+## Step 3: Define Command and Query Handlers
+
+Now that we have a command and a query, we can define services that will handle them. These services will be located via the `CommandProcessor` and `QueryProcessor` services, which will be references later by your ASP.NET Core controller class.
+
+### Example Command Handler:
 
 ``` csharp
-public class CreatePersonHandler: ICommandHandler<CreatePerson, PersonInfo>
+public class CreatePersonHandler : ICommandHandler<CreatePerson>
 {
-    public async Task HandleAsync(CreatePerson command)
+    private readonly IPersonRepository _personRepository;
+
+    public CreatePersonHandler(IPersonRepository personRepository)
+    {
+        _personRepository = personRepository;
+    }
+
+    public async Task<PersonInfo> HandleAsync(CreatePerson command)
     {
         var person = new Person
         {
-            Id = Guid.NewGuid(),
-            FirstName = "John",
-            LastName = "Doe"
-        }
+            Id = command.PersonId,
+            FirstName = command.FirstName,
+            LastName = command.LastName
+        };
 
-        // todo: save person to the data store
-
-        return new PersonInfo(person.Id, person.FirstName, person.LastName);
+        await _personRepository.SaveAsync(person);
     }
 }
-
 ```
 
-## Query Usage
-
-Define a query object with with parameters.
-
-### Example: 
+### Example Query Handler:
 
 ``` csharp
-public class SampleQuery : IQuery<SampleResult>
+public class GetPersonHandler : IQueryHandler<GetPerson, PersonInfo>
 {
-    public SampleQuery(string someValue)
+    private readonly IPersonRepository _personRepository;
+
+    public GetPersonHandler(IPersonRepository personRepository)
     {
-        SomeValue = someValue;
+        _personRepository = personRepository;
     }
 
-    public string SomeValue { get; }
+    public async Task<PersonInfo> HandleAsync(GetPerson query)
+    {
+        var person = await _personRepository.GetPersonAsync(query.Id);
+        return person.ToInfo();
+    }
 }
 ```
 
-Similarly to the command handler, define a query handler that takes the query as a generic type arg and add your application logic. Unlike commands and command handlers, queries require a definied result type.
+## Step 4: Controller Wire-up
 
-### Example: 
+The last step of this example is to expose API endpoints for the newly defined command and query. The only services an application should need to reference are the `ICommandProcessor` and `IQueryProcessor`. From there, data from the HTTP request should be mapped into a new command/query model, and the command/query is submitted to the processor. That's it!
 
 ``` csharp
-public class SampleQueryHandler: IQueryHandler<SampleQuery, SampleResult>
+public class PersonController : Controller
 {
-    public async Task HandleAsync(SampleQuery query)
-    {
-        // fetch from the data store
+    private readonly ICommandProcessor _commandProcessor;
+    private readonly IQueryProcessor _queryProcessor;
 
-        return new SampleResult(data.foo, data.bar);
+    public PersonController(ICommandProcessor commandProcessor, IQueryProcessor queryProcessor)
+    {
+        _commandProcessor = commandProcessor;
+        _queryProcessor = queryProcessor;
+    }
+
+    [HttpGet, Route("/person/{id}")]
+    public async Task<IActionResult> Get(Guid id)
+    {
+        var result = await _queryProcessor.ProcessAsync(new GetPerson(id));
+
+        return Ok(result);
+    }
+
+    [HttpPost, Route("/person/new")]
+    public async Task<IActionResult> Create([FromBody] CreatePersonRequest request)
+    {
+        await _commandProcessor.ProcessAsync(new CreatePerson(
+            Guid.NewGuid(), request.FirstName, request.LastName));
+
+        return Created();
     }
 }
-
 ```
+
+# Final Thoughts
+
+That's it! Clean and simple. Stay tuned to updates in the Wiki to see more advanced usages of this library, including security integration (coming soon).

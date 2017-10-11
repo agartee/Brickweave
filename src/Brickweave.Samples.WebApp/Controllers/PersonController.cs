@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Brickweave.Samples.WebApp.Controllers
 {
-    [Route("api/[controller]")]
     public class PersonController : Controller
     {
         private readonly ICommandProcessor _commandProcessor;

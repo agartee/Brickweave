@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Brickweave.Core.Exceptions;
 using Brickweave.Cqrs.Exceptions;
 using Brickweave.Cqrs.Extensions;
 
@@ -47,7 +46,7 @@ namespace Brickweave.Cqrs
             public static void IsNotNullQuery(IQuery query)
             {
                 if (query == null)
-                    throw new GuardException("Unable to process null query.");
+                    throw new ArgumentNullException($"{typeof(QueryProcessor)} cannot process a null query.");
             }
         }
     }

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Brickweave.Core.Exceptions;
 using Brickweave.Cqrs.Exceptions;
 using Brickweave.Cqrs.Extensions;
 
@@ -55,7 +54,7 @@ namespace Brickweave.Cqrs
             public static void IsNotNullCommand(ICommand command)
             {
                 if (command == null)
-                    throw new GuardException("Unable to process null command.");
+                    throw new ArgumentNullException($"{typeof(CommandProcessor)} cannot process a null command.");
             }
         }
     }

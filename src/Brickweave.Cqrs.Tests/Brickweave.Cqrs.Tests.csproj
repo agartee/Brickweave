@@ -15,7 +15,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Brickweave.Core\Brickweave.Core.csproj" />
     <ProjectReference Include="..\Brickweave.Cqrs\Brickweave.Cqrs.csproj" />
   </ItemGroup>
 

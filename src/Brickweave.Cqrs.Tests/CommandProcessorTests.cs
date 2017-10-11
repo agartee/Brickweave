@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Brickweave.Core.Exceptions;
 using Brickweave.Cqrs.Exceptions;
 using Brickweave.Cqrs.Tests.Fakes;
 using FluentAssertions;
@@ -33,8 +32,7 @@ namespace Brickweave.Cqrs.Tests
 
             var exception = Record.ExceptionAsync(async () => await commandProcessor.ProcessAsync(null));
 
-            exception.Result.Should().BeOfType<GuardException>();
-            exception.Result.Message.Should().Be("Unable to process null command.");
+            exception.Result.Should().BeOfType<ArgumentNullException>();
         }
 
         [Fact]

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Brickweave.Cqrs.Exceptions;
-using Brickweave.Cqrs.Tests.Fakes;
+using Brickweave.Cqrs.Tests.Models;
 using FluentAssertions;
 using NSubstitute;
 using Xunit;
@@ -13,7 +13,7 @@ namespace Brickweave.Cqrs.Tests
     public class CommandProcessorTests
     {
         [Fact]
-        public void ProcessAsync_WithNoRegisteredCommandHandler_Throws()
+        public void ProcessAsync_WhenCommandHandlerIsNotRegistered_Throws()
         {
             var serviceLocator = Substitute.For<IServiceProvider>();
             var commandProcessor = new CommandProcessor(serviceLocator);
@@ -25,7 +25,7 @@ namespace Brickweave.Cqrs.Tests
         }
 
         [Fact]
-        public void ProcessAsync_WithNullCommand_Throws()
+        public void ProcessAsync_WhenCommandIsNull_Throws()
         {
             var serviceLocator = Substitute.For<IServiceProvider>();
             var commandProcessor = new CommandProcessor(serviceLocator);
@@ -36,7 +36,7 @@ namespace Brickweave.Cqrs.Tests
         }
 
         [Fact]
-        public async Task ProcessAsync_WithRegisteredHandler_ExecutesHandler()
+        public async Task ProcessAsync_WhenHandlerIsRegistered_ExecutesHandler()
         {
             var handler = new TestCommandWithResultHandler();
 
@@ -51,7 +51,7 @@ namespace Brickweave.Cqrs.Tests
         }
 
         [Fact]
-        public async Task ProcessAsync_WithRegisteredHandlerAndNoResultReturned_ExecutesHandler()
+        public async Task ProcessAsync_WhenHandlerIsRegisteredAndReturnsNoResult_ExecutesHandler()
         {
             var handlerWasCalled = false;
             var handler = new TestCommandHandler(() => handlerWasCalled = true);

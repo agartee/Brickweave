@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Brickweave.Cqrs.Exceptions;
-using Brickweave.Cqrs.Tests.Fakes;
+using Brickweave.Cqrs.Tests.Models;
 using FluentAssertions;
 using NSubstitute;
 using Xunit;
@@ -13,7 +13,7 @@ namespace Brickweave.Cqrs.Tests
     public class QueryProcessorTests
     {
         [Fact]
-        public void ProcessAsync_WithNoRegisteredQueryHandler_Throws()
+        public void ProcessAsync_WhenQueryHandlerIsNotRegistered_Throws()
         {
             var serviceLocator = Substitute.For<IServiceProvider>();
             var queryProcessor = new QueryProcessor(serviceLocator);
@@ -25,7 +25,7 @@ namespace Brickweave.Cqrs.Tests
         }
 
         [Fact]
-        public void ProcessAsync_WithNullQuery_Throws()
+        public void ProcessAsync_WhenQueryIsNull_Throws()
         {
             var serviceLocator = Substitute.For<IServiceProvider>();
             var queryProcessor = new QueryProcessor(serviceLocator);
@@ -36,7 +36,7 @@ namespace Brickweave.Cqrs.Tests
         }
 
         [Fact]
-        public async Task ProcessAsync_WithRegisteredHandler_ExecutesHandler()
+        public async Task ProcessAsync_WhenHandlerIsRegistered_ExecutesHandler()
         {
             var handler = new TestQueryHandler();
 

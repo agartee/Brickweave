@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace Brickweave.Cqrs.Tests.Fakes
+namespace Brickweave.Cqrs.Tests.Models
 {
     public class TestCommandWithResultHandler : ICommandHandler<TestCommandWithResult, Result>
     {

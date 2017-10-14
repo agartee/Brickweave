@@ -67,16 +67,12 @@ public class CreatePerson : ICommand
 ``` csharp
 public class GetPerson : IQuery<PersonInfo>
 {
-    public CreatePerson(Guid personId, string firstName, string lastName)
+    public GetPerson(Guid personId)
     {
         PersonId = personId;
-        FirstName = firstName;
-        LastName = lastName;
     }
 
     public Guid PersonId { get; }
-    public string FirstName { get; }
-    public string LastName { get; }
 }
 ```
 

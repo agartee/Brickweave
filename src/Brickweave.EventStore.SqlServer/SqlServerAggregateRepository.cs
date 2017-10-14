@@ -63,6 +63,20 @@ namespace Brickweave.EventStore.SqlServer
             return events.Any() ? _aggregateFactory.Create<TAggregate>(events) : null;
         }
 
+        protected async Task DeleteAsync(Id<Guid> aggregateId)
+        {
+            if (aggregateId == null)
+                return;
+
+            var eventData = await _dbContext.Events
+                .Where(e => e.StreamId.Equals(aggregateId.Value))
+                .ToListAsync();
+
+            _dbContext.Events.RemoveRange(eventData);
+
+            await _dbContext.SaveChangesAsync();
+        }
+
         private EventData CreateEventData(Id<Guid> id, IAggregateEvent @event, DateTime created, int commitSequence)
         {
             return new EventData

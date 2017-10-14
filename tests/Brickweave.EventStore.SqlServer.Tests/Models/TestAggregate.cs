@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using Brickweave.Domain;
 
-namespace Brickweave.EventStore.Tests.Models
+namespace Brickweave.EventStore.SqlServer.Tests.Models
 {
     public class TestAggregate : EventSourcedAggregateRoot<TestId>
     {
@@ -11,7 +9,7 @@ namespace Brickweave.EventStore.Tests.Models
         {
             Register<TestAggregateCreated>(Apply);
         }
-        
+
         public TestAggregate(IEnumerable<IAggregateEvent> events) : this()
         {
             events.ToList().ForEach(ApplyEvent);
@@ -23,11 +21,6 @@ namespace Brickweave.EventStore.Tests.Models
         }
 
         public TestId TestId { get; private set; }
-
-        public void RaiseUnregisteredEvent()
-        {
-            RaiseEvent(new UnregisteredEvent());
-        }
 
         private void Apply(TestAggregateCreated @event)
         {

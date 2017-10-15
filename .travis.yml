@@ -1,9 +1,0 @@
-language: csharp
-dist: trusty
-sudo: required
-mono: none
-dotnet: 2.0.0
-solution: Brickweave.sln
-script:
-  - dotnet build ./Brickweave.sln
-  - dotnet test ./tests/Brickweave.Cqrs.Tests/Brickweave.Cqrs.Tests.csproj

@@ -5,16 +5,16 @@ using Brickweave.Cqrs.Extensions;
 
 namespace Brickweave.Cqrs
 {
-    public class CommandProcessor : ICommandProcessor
+    public class CommandExecutor : ICommandExecutor
     {
         private readonly IServiceProvider _serviceProvider;
 
-        public CommandProcessor(IServiceProvider serviceProvider)
+        public CommandExecutor(IServiceProvider serviceProvider)
         {
             _serviceProvider = serviceProvider;
         }
 
-        public async Task<object> ProcessAsync(ICommand command)
+        public async Task<object> ExecuteAsync(ICommand command)
         {
             Guard.IsNotNullCommand(command);
 
@@ -36,7 +36,7 @@ namespace Brickweave.Cqrs
             return null;
         }
 
-        public async Task<TResult> ProcessAsync<TResult>(ICommand<TResult> command)
+        public async Task<TResult> ExecuteAsync<TResult>(ICommand<TResult> command)
         {
             Guard.IsNotNullCommand(command);
 
@@ -54,7 +54,7 @@ namespace Brickweave.Cqrs
             public static void IsNotNullCommand(ICommand command)
             {
                 if (command == null)
-                    throw new ArgumentNullException($"{typeof(CommandProcessor)} cannot process a null command.");
+                    throw new ArgumentNullException($"{typeof(CommandExecutor)} cannot process a null command.");
             }
         }
     }

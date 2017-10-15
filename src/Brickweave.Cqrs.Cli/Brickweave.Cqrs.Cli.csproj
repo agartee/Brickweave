@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <Version>0.1.0</Version>
+    <AssemblyVersion>0.1.0.0</AssemblyVersion>
+    <FileVersion>0.1.0.0</FileVersion>
+    <Authors>Adam Gartee</Authors>
+    <Company>Adam Gartee</Company>
+    <Description>Lightweight package adding command language interpreter (CLI) functionality to support the Brickweave.Cqrs library</Description>
+    <PackageLicenseUrl>https://github.com/agartee/Brickweave/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/agartee/Brickweave</PackageProjectUrl>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="LiteGuard" Version="2.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Brickweave.Cqrs\Brickweave.Cqrs.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -40,8 +40,8 @@ namespace Brickweave.Samples.WebApp
                 .ToArray();
 
             var domainServices = new ServiceCollection()
-                .AddCommandProcessor()
-                .AddQueryProcessor()
+                .AddCommandExecutor()
+                .AddQueryExecutor()
                 .AddCommandHandlers(domainAssemblies)
                 .AddQueryHandlers(domainAssemblies)
                 .AddScoped<IPersonRepository, SqlServerPersonRepository>()
@@ -53,8 +53,8 @@ namespace Brickweave.Samples.WebApp
 
             //// alternative (single service provider):
             //services
-            //    .AddCommandProcessor()
-            //    .AddQueryProcessor()
+            //    .AddCommandExecutor()
+            //    .AddQueryExecutor()
             //    .AddCommandHandlers(domainAssemblies)
             //    .AddQueryHandlers(domainAssemblies)
             //    .AddScoped<IPersonRepository, SqlServerPersonRepository>()

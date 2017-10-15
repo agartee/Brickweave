@@ -35,25 +35,25 @@ namespace Brickweave.Cqrs.DependencyInjection
             return services;
         }
 
-        public static IServiceCollection AddCommandProcessor(
+        public static IServiceCollection AddCommandExecutor(
             this IServiceCollection services)
         {
-            services.AddScoped<ICommandProcessor, CommandProcessor>();
+            services.AddScoped<ICommandExecutor, CommandExecutor>();
             return services;
         }
 
-        public static IServiceCollection AddQueryProcessor(
+        public static IServiceCollection AddQueryExecutor(
             this IServiceCollection services)
         {
-            services.AddScoped<IQueryProcessor, QueryProcessor>();
+            services.AddScoped<IQueryExecutor, QueryExecutor>();
             return services;
         }
         
         public static IServiceCollection IsolateDomainServices(
             this IServiceCollection services, IServiceProvider domainServiceProvider)
         {
-            services.AddScoped(provider => domainServiceProvider.GetService<ICommandProcessor>());
-            services.AddScoped(provider => domainServiceProvider.GetService<IQueryProcessor>());
+            services.AddScoped(provider => domainServiceProvider.GetService<ICommandExecutor>());
+            services.AddScoped(provider => domainServiceProvider.GetService<IQueryExecutor>());
 
             return services;
         }

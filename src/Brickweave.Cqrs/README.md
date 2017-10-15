@@ -28,8 +28,8 @@ public void ConfigureServices(IServiceCollection services)
         .ToArray();
 
     services
-        .AddCommandProcessor()
-        .AddQueryProcessor()
+        .AddCommandExecutor()
+        .AddQueryExecutor()
         .AddCommandHandlers(domainAssemblies)
         .AddQueryHandlers(domainAssemblies);
 
@@ -80,7 +80,7 @@ public class GetPerson : IQuery<PersonInfo>
 
 ## Step 3: Define Command and Query Handlers
 
-Now that we have a command and a query, we can define services that will handle them. These services will be located via the `CommandProcessor` and `QueryProcessor` services, which will be referenced later by your ASP.NET Core controller class.
+Now that we have a command and a query, we can define services that will handle them. These services will be located via the `CommandExecutor` and `QueryExecutor` services, which will be referenced later by your ASP.NET Core controller class.
 
 ### Example Command Handler:
 
@@ -130,24 +130,24 @@ public class GetPersonHandler : IQueryHandler<GetPerson, PersonInfo>
 
 ## Step 4: Controller Wire-up
 
-The last step of this example is to expose API endpoints for the newly defined command and query. The only services an application should need to reference are the `ICommandProcessor` and `IQueryProcessor`. From there, data from the HTTP request should be mapped into a new command/query model, and the command/query is submitted to the processor. That's it!
+The last step of this example is to expose API endpoints for the newly defined command and query. The only services an application should need to reference are the `ICommandExecutor` and `IQueryExecutor`. From there, data from the HTTP request should be mapped into a new command/query model, and the command/query is submitted to the Executor. That's it!
 
 ``` csharp
 public class PersonController : Controller
 {
-    private readonly ICommandProcessor _commandProcessor;
-    private readonly IQueryProcessor _queryProcessor;
+    private readonly ICommandExecutor _commandExecutor;
+    private readonly IQueryExecutor _queryExecutor;
 
-    public PersonController(ICommandProcessor commandProcessor, IQueryProcessor queryProcessor)
+    public PersonController(ICommandExecutor commandExecutor, IQueryExecutor queryExecutor)
     {
-        _commandProcessor = commandProcessor;
-        _queryProcessor = queryProcessor;
+        _commandExecutor = commandExecutor;
+        _queryExecutor = queryExecutor;
     }
 
     [HttpGet, Route("/person/{id}")]
     public async Task<IActionResult> Get(Guid id)
     {
-        var result = await _queryProcessor.ProcessAsync(new GetPerson(id));
+        var result = await _queryExecutor.ExecuteAsync(new GetPerson(id));
 
         return Ok(result);
     }
@@ -155,7 +155,7 @@ public class PersonController : Controller
     [HttpPost, Route("/person/new")]
     public async Task<IActionResult> Create([FromBody] CreatePersonRequest request)
     {
-        await _commandProcessor.ProcessAsync(new CreatePerson(
+        await _commandExecutor.ExecuteAsync(new CreatePerson(
             Guid.NewGuid(), request.FirstName, request.LastName));
 
         return Created();

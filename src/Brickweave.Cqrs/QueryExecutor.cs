@@ -5,16 +5,16 @@ using Brickweave.Cqrs.Extensions;
 
 namespace Brickweave.Cqrs
 {
-    public class QueryProcessor : IQueryProcessor
+    public class QueryExecutor : IQueryExecutor
     {
         private readonly IServiceProvider _serviceProvider;
 
-        public QueryProcessor(IServiceProvider serviceProvider)
+        public QueryExecutor(IServiceProvider serviceProvider)
         {
             _serviceProvider = serviceProvider;
         }
 
-        public async Task<object> ProcessAsync(IQuery query)
+        public async Task<object> ExecuteAsync(IQuery query)
         {
             Guard.IsNotNullQuery(query);
 
@@ -28,7 +28,7 @@ namespace Brickweave.Cqrs
             return await handler.HandleAsync((dynamic)query);
         }
 
-        public async Task<TResult> ProcessAsync<TResult>(IQuery<TResult> query)
+        public async Task<TResult> ExecuteAsync<TResult>(IQuery<TResult> query)
         {
             Guard.IsNotNullQuery(query);
 
@@ -46,7 +46,7 @@ namespace Brickweave.Cqrs
             public static void IsNotNullQuery(IQuery query)
             {
                 if (query == null)
-                    throw new ArgumentNullException($"{typeof(QueryProcessor)} cannot process a null query.");
+                    throw new ArgumentNullException($"{typeof(QueryExecutor)} cannot process a null query.");
             }
         }
     }

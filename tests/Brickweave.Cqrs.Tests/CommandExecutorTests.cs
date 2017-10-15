@@ -10,33 +10,33 @@ using Xunit;
 
 namespace Brickweave.Cqrs.Tests
 {
-    public class CommandProcessorTests
+    public class CommandExecutorTests
     {
         [Fact]
-        public void ProcessAsync_WhenCommandHandlerIsNotRegistered_Throws()
+        public void ExecuteAsync_WhenCommandHandlerIsNotRegistered_Throws()
         {
             var serviceLocator = Substitute.For<IServiceProvider>();
-            var commandProcessor = new CommandProcessor(serviceLocator);
+            var commandProcessor = new CommandExecutor(serviceLocator);
 
-            var exception = Record.ExceptionAsync(async () => await commandProcessor.ProcessAsync(new TestCommand()));
+            var exception = Record.ExceptionAsync(async () => await commandProcessor.ExecuteAsync(new TestCommand()));
 
             exception.Result.Should().BeOfType<CommandHandlerNotRegisteredException>();
             exception.Result.Message.Should().Be($"Handler not registered for command, {typeof(TestCommand)}");
         }
 
         [Fact]
-        public void ProcessAsync_WhenCommandIsNull_Throws()
+        public void ExecuteAsync_WhenCommandIsNull_Throws()
         {
             var serviceLocator = Substitute.For<IServiceProvider>();
-            var commandProcessor = new CommandProcessor(serviceLocator);
+            var commandProcessor = new CommandExecutor(serviceLocator);
 
-            var exception = Record.ExceptionAsync(async () => await commandProcessor.ProcessAsync(null));
+            var exception = Record.ExceptionAsync(async () => await commandProcessor.ExecuteAsync(null));
 
             exception.Result.Should().BeOfType<ArgumentNullException>();
         }
 
         [Fact]
-        public async Task ProcessAsync_WhenHandlerIsRegistered_ExecutesHandler()
+        public async Task ExecuteAsync_WhenHandlerIsRegistered_ExecutesHandler()
         {
             var handler = new TestCommandWithResultHandler();
 
@@ -44,14 +44,14 @@ namespace Brickweave.Cqrs.Tests
             serviceLocator.GetService(typeof(ICommandHandler<TestCommandWithResult, Result>))
                 .Returns(handler);
 
-            var commandProcessor = new CommandProcessor(serviceLocator);
-            var result = await commandProcessor.ProcessAsync(new TestCommandWithResult("1"));
+            var commandProcessor = new CommandExecutor(serviceLocator);
+            var result = await commandProcessor.ExecuteAsync(new TestCommandWithResult("1"));
 
             result.Should().Be(new Result("1"));
         }
 
         [Fact]
-        public async Task ProcessAsync_WhenHandlerIsRegisteredAndReturnsNoResult_ExecutesHandler()
+        public async Task ExecuteAsync_WhenHandlerIsRegisteredAndReturnsNoResult_ExecutesHandler()
         {
             var handlerWasCalled = false;
             var handler = new TestCommandHandler(() => handlerWasCalled = true);
@@ -60,8 +60,8 @@ namespace Brickweave.Cqrs.Tests
             serviceLocator.GetService(typeof(ICommandHandler<TestCommand>))
                 .Returns(handler);
 
-            var commandProcessor = new CommandProcessor(serviceLocator);
-            await commandProcessor.ProcessAsync(new TestCommand());
+            var commandProcessor = new CommandExecutor(serviceLocator);
+            await commandProcessor.ExecuteAsync(new TestCommand());
 
             handlerWasCalled.Should().BeTrue();
         }

@@ -1,7 +1,8 @@
 version: 1.0.{build}
 environment:
-  connectionstrings:eventstore: Server=(local)\SQL2008R2SP2;Database=master;UID=sa;PWD=Password12!
+  connectionstrings:eventstore: Server=(local)\SQL2016;Database=eventstore;User ID=sa;Password=Password12!
+services: mssql2016
 build_script:
 - ps: dotnet build .\Brickweave.sln
 test_script:
-- ps: dotnet test .\tests\Brickweave.Cqrs.Tests\Brickweave.Cqrs.Tests.csproj
+- ps: scripts\test.ps1

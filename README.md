@@ -1,1 +1,2 @@
+[![NuGet version](https://img.shields.io/nuget/v/LiteGuard.svg?style=flat)](https://www.nuget.org/packages?q=Brickweave)
 [![Build status](https://ci.appveyor.com/api/projects/status/gk6r7gupecbc23rn?svg=true)](https://ci.appveyor.com/project/agartee/brickweave)

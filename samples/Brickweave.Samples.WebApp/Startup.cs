@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Linq;
+using Brickweave.Cqrs.Cli.DependencyInjection;
 using Brickweave.Cqrs.DependencyInjection;
 using Brickweave.Samples.Domain.Persons.Services;
 using Brickweave.Samples.Persistence.SqlServer;
 using Brickweave.Samples.Persistence.SqlServer.Repositories;
+using Brickweave.Samples.WebApp.Formatters;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -28,7 +30,10 @@ namespace Brickweave.Samples.WebApp
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc();
+            services.AddMvc(options => 
+            {
+                options.InputFormatters.Add(new PlainTextInputFormatter());
+            });
             
             var dbConfig = new SampleDbConfiguration { ConnectionString = "server=localhost\\sqlexpress;database=samples;integrated security=true;" };
             var dbContext = new SampleDbContext(dbConfig);
@@ -49,7 +54,9 @@ namespace Brickweave.Samples.WebApp
                 .AddScoped(provider => dbConfig)
                 .BuildServiceProvider();
 
-            services.IsolateDomainServices(domainServices);
+            services
+                .AddCli(domainAssemblies)
+                .IsolateDomainServices(domainServices);
 
             //// alternative (single service provider):
             //services
@@ -59,7 +66,8 @@ namespace Brickweave.Samples.WebApp
             //    .AddQueryHandlers(domainAssemblies)
             //    .AddScoped<IPersonRepository, SqlServerPersonRepository>()
             //    .AddScoped<SampleDbContext>()
-            //    .AddScoped(provider => dbConfig);
+            //    .AddScoped(provider => dbConfig)
+            //    .AddCli(domainAssemblies);
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, 

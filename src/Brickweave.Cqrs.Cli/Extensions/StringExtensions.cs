@@ -1,4 +1,4 @@
-﻿namespace Brickweave.Cqrs.Cli.Parsers
+﻿namespace Brickweave.Cqrs.Cli.Extensions
 {
     public static class StringExtensions
     {

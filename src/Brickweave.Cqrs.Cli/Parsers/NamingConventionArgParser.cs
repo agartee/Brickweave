@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Brickweave.Cqrs.Cli.Extensions;
 using Brickweave.Cqrs.Cli.Models;
 
 namespace Brickweave.Cqrs.Cli.Parsers

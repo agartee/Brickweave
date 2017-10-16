@@ -4,27 +4,24 @@ using System.Linq;
 using System.Reflection;
 using Brickweave.Cqrs.Cli.Exceptions;
 using Brickweave.Cqrs.Cli.Models;
-using Brickweave.Cqrs;
 
 namespace Brickweave.Cqrs.Cli.Factories
 {
     public class ExecutableFactory : IExecutableFactory
     {
         private readonly IEnumerable<IParameterValueFactory> _parameterFactories;
-        private readonly IEnumerable<Assembly> _assemblies;
-
+        private readonly IEnumerable<Type> _executables;
+        
         public ExecutableFactory(IEnumerable<IParameterValueFactory> parameterFactories, 
-            IEnumerable<Assembly> assemblies)
+            IEnumerable<Type> executables)
         {
-            _assemblies = assemblies;
             _parameterFactories = parameterFactories;
+            _executables = executables;
         }
 
         public IExecutable Create(ExecutableInfo executableInfo)
         {
-            var executableType = _assemblies
-                .SelectMany(a => a.ExportedTypes)
-                .Where(t => typeof(IExecutable).IsAssignableFrom(t.GetTypeInfo()))
+            var executableType = _executables
                 .SingleOrDefault(t => t.Name == executableInfo.Name);
 
             if (executableType == null)

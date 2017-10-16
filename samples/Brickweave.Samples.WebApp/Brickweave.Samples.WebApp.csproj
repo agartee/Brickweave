@@ -20,6 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\src\Brickweave.Cqrs.Cli\Brickweave.Cqrs.Cli.csproj" />
     <ProjectReference Include="..\Brickweave.Samples.Persistence.SqlServer\Brickweave.Samples.Persistence.SqlServer.csproj" />
   </ItemGroup>
 

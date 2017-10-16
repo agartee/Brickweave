@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Reflection;
 using Brickweave.Cqrs.Cli.Exceptions;
 using Brickweave.Cqrs.Cli.Factories;
 using Brickweave.Cqrs.Cli.Models;
@@ -18,21 +17,21 @@ namespace Brickweave.Cqrs.Cli.Tests.Factories
         {
             var factory = new ExecutableFactory(
                 new [] { new BasicParameterValueFactory() },
-                new [] { Assembly.GetExecutingAssembly() });
+                new [] { typeof(CreateFoo) });
 
             var created = new DateTime(2017, 1, 1, 14, 0, 0);
             var result = factory.Create(typeof(CreateFoo), new Dictionary<string, string>
             {
                 ["bar"] = "something",
                 ["id"] = "12345",
-                ["created"] = created.ToString(CultureInfo.InvariantCulture)
+                ["datecreated"] = created.ToString(CultureInfo.InvariantCulture)
             });
 
             result.Should().NotBeNull();
             result.Should().BeOfType<CreateFoo>();
             result.As<CreateFoo>().Id.Should().Be(12345);
             result.As<CreateFoo>().Bar.Should().Be("something");
-            result.As<CreateFoo>().Created.Should().Be(created);
+            result.As<CreateFoo>().DateCreated.Should().Be(created);
         }
 
         [Fact]
@@ -40,7 +39,7 @@ namespace Brickweave.Cqrs.Cli.Tests.Factories
         {
             var factory = new ExecutableFactory(
                 new[] { new BasicParameterValueFactory() },
-                new[] { Assembly.GetExecutingAssembly() });
+                new[] { typeof(CreateFoo) });
 
             var result = factory.Create(typeof(CreateFoo), new Dictionary<string, string>());
 
@@ -54,7 +53,7 @@ namespace Brickweave.Cqrs.Cli.Tests.Factories
         {
             var factory = new ExecutableFactory(
                 new[] { new BasicParameterValueFactory() },
-                new[] { Assembly.GetExecutingAssembly() });
+                new[] { typeof(CreateFoo) });
 
             var exception = Assert.Throws<TypeNotFoundException>(() => factory.Create(new ExecutableInfo(
                 "CreateFooBar", new Dictionary<string, string>())));

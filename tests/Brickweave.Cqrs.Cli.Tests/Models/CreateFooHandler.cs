@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Brickweave.Cqrs;
 
 namespace Brickweave.Cqrs.Cli.Tests.Models
 {

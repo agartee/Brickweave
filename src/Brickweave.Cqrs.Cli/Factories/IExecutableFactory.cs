@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using Brickweave.Cqrs.Cli.Models;
-using Brickweave.Cqrs;
 
 namespace Brickweave.Cqrs.Cli.Factories
 {

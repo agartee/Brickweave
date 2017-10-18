@@ -45,29 +45,15 @@ namespace Brickweave.Samples.WebApp
                 .ToArray();
 
             var domainServices = new ServiceCollection()
-                .AddCommandExecutor()
-                .AddQueryExecutor()
-                .AddCommandHandlers(domainAssemblies)
-                .AddQueryHandlers(domainAssemblies)
+                .AddCqrs(domainAssemblies)
                 .AddScoped<IPersonRepository, SqlServerPersonRepository>()
                 .AddScoped<SampleDbContext>()
                 .AddScoped(provider => dbConfig)
                 .BuildServiceProvider();
 
             services
-                .AddCli(domainAssemblies)
-                .IsolateDomainServices(domainServices);
-
-            //// alternative (single service provider):
-            //services
-            //    .AddCommandExecutor()
-            //    .AddQueryExecutor()
-            //    .AddCommandHandlers(domainAssemblies)
-            //    .AddQueryHandlers(domainAssemblies)
-            //    .AddScoped<IPersonRepository, SqlServerPersonRepository>()
-            //    .AddScoped<SampleDbContext>()
-            //    .AddScoped(provider => dbConfig)
-            //    .AddCli(domainAssemblies);
+                .AddCqrsExecutors(domainServices)
+                .AddCli(domainAssemblies);
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, 

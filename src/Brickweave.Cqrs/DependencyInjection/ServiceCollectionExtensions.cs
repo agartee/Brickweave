@@ -7,13 +7,45 @@ namespace Brickweave.Cqrs.DependencyInjection
 {
     public static class ServiceCollectionExtensions
     {
-        public static IServiceCollection AddCommandHandlers(
+        public static IServiceCollection AddCqrs(this IServiceCollection services, params Assembly[] assemblies)
+        {
+            return services
+                .AddCommandExecutor()
+                .AddCommandHandlers(assemblies)
+                .AddQueryExecutor()
+                .AddQueryHandlers(assemblies);
+        }
+
+        public static IServiceCollection AddCqrsExecutors(
+            this IServiceCollection services, IServiceProvider domainServiceProvider)
+        {
+            services.AddScoped(provider => domainServiceProvider.GetService<ICommandExecutor>());
+            services.AddScoped(provider => domainServiceProvider.GetService<IQueryExecutor>());
+
+            return services;
+        }
+
+        private static IServiceCollection AddCommandExecutor(
+            this IServiceCollection services)
+        {
+            services.AddScoped<ICommandExecutor, CommandExecutor>();
+            return services;
+        }
+
+        private static IServiceCollection AddQueryExecutor(
+            this IServiceCollection services)
+        {
+            services.AddScoped<IQueryExecutor, QueryExecutor>();
+            return services;
+        }
+
+        private static IServiceCollection AddCommandHandlers(
             this IServiceCollection services, params Assembly[] assemblies)
         {
             return services.AddHandlers(typeof(ICommandHandler<,>), assemblies);
         }
 
-        public static IServiceCollection AddQueryHandlers(
+        private static IServiceCollection AddQueryHandlers(
             this IServiceCollection services, params Assembly[] assemblies)
         {
             return services.AddHandlers(typeof(IQueryHandler<,>), assemblies);
@@ -31,29 +63,6 @@ namespace Brickweave.Cqrs.DependencyInjection
                 services.AddScoped(
                     handler.GetHandlerInterfaceType(handlerType), handler);
             }
-
-            return services;
-        }
-
-        public static IServiceCollection AddCommandExecutor(
-            this IServiceCollection services)
-        {
-            services.AddScoped<ICommandExecutor, CommandExecutor>();
-            return services;
-        }
-
-        public static IServiceCollection AddQueryExecutor(
-            this IServiceCollection services)
-        {
-            services.AddScoped<IQueryExecutor, QueryExecutor>();
-            return services;
-        }
-        
-        public static IServiceCollection IsolateDomainServices(
-            this IServiceCollection services, IServiceProvider domainServiceProvider)
-        {
-            services.AddScoped(provider => domainServiceProvider.GetService<ICommandExecutor>());
-            services.AddScoped(provider => domainServiceProvider.GetService<IQueryExecutor>());
 
             return services;
         }

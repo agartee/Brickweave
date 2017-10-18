@@ -11,6 +11,7 @@ namespace Brickweave.Cqrs.Cli.DependencyInjection
         public static IServiceCollection AddCli(
             this IServiceCollection services, params Assembly[] assemblies)
         {
+            services.AddScoped<IRunner, Runner>();
             services.AddScoped<IArgParser, NamingConventionArgParser>();
 
             var executables = assemblies.SelectMany(a => a.ExportedTypes)

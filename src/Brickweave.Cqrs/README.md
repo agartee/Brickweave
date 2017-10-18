@@ -27,11 +27,7 @@ public void ConfigureServices(IServiceCollection services)
         .Where(a => a.FullName.Contains("Domain")) // any additional criteria to isolate your domain libraries
         .ToArray();
 
-    services
-        .AddCommandExecutor()
-        .AddQueryExecutor()
-        .AddCommandHandlers(domainAssemblies)
-        .AddQueryHandlers(domainAssemblies);
+    services.AddCqrs(domainAssemblies);
 
         ...
 }

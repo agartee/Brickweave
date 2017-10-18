@@ -6,65 +6,95 @@ using FluentAssertions;
 using NSubstitute;
 using Xunit;
 
-// ReSharper disable PossibleNullReferenceException
-
 namespace Brickweave.Cqrs.Tests
 {
     public class CommandExecutorTests
     {
         [Fact]
-        public void ExecuteAsync_WhenCommandHandlerIsNotRegistered_Throws()
+        public async Task ExecuteAsync_WhenCommandHandlerIsNotRegistered_Throws()
         {
-            var serviceLocator = Substitute.For<IServiceProvider>();
-            var commandProcessor = new CommandExecutor(serviceLocator);
+            var serviceProvider = Substitute.For<IServiceProvider>();
+            var commandExecutor = new CommandExecutor(serviceProvider);
+            
+            var exception = await Assert.ThrowsAsync<CommandHandlerNotRegisteredException>(
+                () => commandExecutor.ExecuteAsync(new TestCommand()));
 
-            var exception = Record.ExceptionAsync(async () => await commandProcessor.ExecuteAsync(new TestCommand()));
-
-            exception.Result.Should().BeOfType<CommandHandlerNotRegisteredException>();
-            exception.Result.Message.Should().Be($"Handler not registered for command, {typeof(TestCommand)}");
+            exception.Should().NotBeNull();
+            exception.Command.Should().BeOfType<TestCommand>();
         }
 
         [Fact]
-        public void ExecuteAsync_WhenCommandIsNull_Throws()
+        public async Task ExecuteAsync_WhenCommandIsNull_Throws()
         {
-            var serviceLocator = Substitute.For<IServiceProvider>();
-            var commandProcessor = new CommandExecutor(serviceLocator);
+            var serviceProvider = Substitute.For<IServiceProvider>();
+            var commandExecutor = new CommandExecutor(serviceProvider);
 
-            var exception = Record.ExceptionAsync(async () => await commandProcessor.ExecuteAsync(null));
-
-            exception.Result.Should().BeOfType<ArgumentNullException>();
+            var exception = await Assert.ThrowsAsync<ArgumentNullException>(
+                () => commandExecutor.ExecuteAsync(null));
+            
+            exception.Should().BeOfType<ArgumentNullException>();
         }
 
         [Fact]
         public async Task ExecuteAsync_WhenHandlerIsRegistered_ExecutesHandler()
         {
-            var handler = new TestCommandWithResultHandler();
+            var handlerWasCalled = false;
+            var handler = new TestCommandHandler(() => handlerWasCalled = true);
 
-            var serviceLocator = Substitute.For<IServiceProvider>();
-            serviceLocator.GetService(typeof(ICommandHandler<TestCommandWithResult, Result>))
+            var serviceProvider = Substitute.For<IServiceProvider>();
+            serviceProvider.GetService(typeof(ICommandHandler<TestCommand>))
                 .Returns(handler);
 
-            var commandProcessor = new CommandExecutor(serviceLocator);
-            var result = await commandProcessor.ExecuteAsync(new TestCommandWithResult("1"));
+            var commandExecutor = new CommandExecutor(serviceProvider);
+            await commandExecutor.ExecuteAsync(new TestCommand());
+
+            handlerWasCalled.Should().BeTrue();
+        }
+
+        [Fact]
+        public async Task ExecuteAsync_WhenSecuredHandlerIsRegistered_ExecutesHandler()
+        {
+            var handlerWasCalled = false;
+            var handler = new TestSecuredCommandHandler(() => handlerWasCalled = true);
+
+            var serviceProvider = Substitute.For<IServiceProvider>();
+            serviceProvider.GetService(typeof(ISecuredCommandHandler<TestCommand>))
+                .Returns(handler);
+
+            var commandExecutor = new CommandExecutor(serviceProvider);
+            await commandExecutor.ExecuteAsync(new TestCommand());
+
+            handlerWasCalled.Should().BeTrue();
+        }
+
+        [Fact]
+        public async Task ExecuteAsync_WhenCommandHandlerIsRegistered_ReturnsResult()
+        {
+            var handler = new TestCommandWithResultHandler();
+
+            var serviceProvider = Substitute.For<IServiceProvider>();
+            serviceProvider.GetService(typeof(ICommandHandler<TestCommandWithResult, Result>))
+                .Returns(handler);
+
+            var commandExecutor = new CommandExecutor(serviceProvider);
+            var result = await commandExecutor.ExecuteAsync(new TestCommandWithResult("1"));
 
             result.Should().Be(new Result("1"));
         }
 
         [Fact]
-        public async Task ExecuteAsync_WhenHandlerIsRegisteredAndReturnsNoResult_ExecutesHandler()
+        public async Task ExecuteAsync_WhenSecuredCommandHandlerIsRegistered_ReturnsResult()
         {
-            var handlerWasCalled = false;
-            var handler = new TestCommandHandler(() => handlerWasCalled = true);
+            var handler = new TestSecuredCommandWithResultHandler();
 
-            var serviceLocator = Substitute.For<IServiceProvider>();
-            serviceLocator.GetService(typeof(ICommandHandler<TestCommand>))
+            var serviceProvider = Substitute.For<IServiceProvider>();
+            serviceProvider.GetService(typeof(ISecuredCommandHandler<TestCommandWithResult, Result>))
                 .Returns(handler);
 
-            var commandProcessor = new CommandExecutor(serviceLocator);
-            await commandProcessor.ExecuteAsync(new TestCommand());
+            var commandExecutor = new CommandExecutor(serviceProvider);
+            var result = await commandExecutor.ExecuteAsync(new TestCommandWithResult("1"));
 
-            handlerWasCalled.Should().BeTrue();
+            result.Should().Be(new Result("1"));
         }
-
     }
 }

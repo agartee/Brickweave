@@ -1,7 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Security.Claims;
 using System.Threading.Tasks;
+using Brickweave.Cqrs.DependencyInjection;
 using Brickweave.Cqrs.Exceptions;
 using Brickweave.Cqrs.Extensions;
+using LiteGuard;
 
 namespace Brickweave.Cqrs
 {
@@ -14,47 +18,64 @@ namespace Brickweave.Cqrs
             _serviceProvider = serviceProvider;
         }
 
-        public async Task<object> ExecuteAsync(ICommand command)
+        public async Task<object> ExecuteAsync(ICommand command, ClaimsPrincipal user = null)
         {
-            Guard.IsNotNullCommand(command);
+            Guard.AgainstNullArgument(nameof(command), command);
 
-            var commandReturnType = command.GetCommandReturnType();
+            dynamic handler = GetCommandHandler(command, command.GetCommandReturnType());
+            
+            if (command.GetCommandReturnType() != null)
+            {
+                if(handler is ISecured)
+                    return await handler.HandleAsync((dynamic)command, user);
 
-            var handlerType = commandReturnType != null
-                ? typeof(ICommandHandler<,>).MakeGenericType(command.GetType(), commandReturnType)
-                : typeof(ICommandHandler<>).MakeGenericType(command.GetType());
-
-            dynamic handler = _serviceProvider.GetService(handlerType);
-
-            if (handler == null)
-                throw new CommandHandlerNotRegisteredException(command);
-
-            if (commandReturnType != null)
                 return await handler.HandleAsync((dynamic)command);
+            }
 
-            await handler.HandleAsync((dynamic)command);
+            if (handler is ISecured)
+                await handler.HandleAsync((dynamic)command, user);
+            else
+                await handler.HandleAsync((dynamic)command);
+
             return null;
         }
 
-        public async Task<TResult> ExecuteAsync<TResult>(ICommand<TResult> command)
+        public async Task<TResult> ExecuteAsync<TResult>(ICommand<TResult> command, ClaimsPrincipal user = null)
         {
-            Guard.IsNotNullCommand(command);
+            Guard.AgainstNullArgument(nameof(command), command);
 
-            var handlerType = typeof(ICommandHandler<,>).MakeGenericType(command.GetType(), typeof(TResult));
-            dynamic handler = _serviceProvider.GetService(handlerType);
+            dynamic handler = GetCommandHandler(command, typeof(TResult));
 
-            if (handler == null)
-                throw new CommandHandlerNotRegisteredException(command);
+            if (handler is ISecured)
+                return await handler.HandleAsync((dynamic)command, user);
 
             return await handler.HandleAsync((dynamic)command);
         }
 
-        private static class Guard
+        private object GetCommandHandler(ICommand command, Type commandReturnType)
         {
-            public static void IsNotNullCommand(ICommand command)
+            foreach (var handlerType in GetPossibleHandlerTypes())
             {
-                if (command == null)
-                    throw new ArgumentNullException($"{typeof(CommandExecutor)} cannot process a null command.");
+                var result = _serviceProvider.GetService(handlerType);
+                if (result != null)
+                    return result;
+            }
+
+            throw new CommandHandlerNotRegisteredException(command);
+
+            IEnumerable<Type> GetPossibleHandlerTypes()
+            {
+                return commandReturnType != null
+                    ? new[]
+                    {
+                        typeof(ICommandHandler<,>).MakeGenericType(command.GetType(), commandReturnType),
+                        typeof(ISecuredCommandHandler<,>).MakeGenericType(command.GetType(), commandReturnType)
+                    }
+                    : new[]
+                    {
+                        typeof(ICommandHandler<>).MakeGenericType(command.GetType()),
+                        typeof(ISecuredCommandHandler<>).MakeGenericType(command.GetType())
+                    };
             }
         }
     }

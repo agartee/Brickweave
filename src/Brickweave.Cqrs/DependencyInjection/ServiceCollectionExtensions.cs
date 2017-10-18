@@ -7,13 +7,17 @@ namespace Brickweave.Cqrs.DependencyInjection
 {
     public static class ServiceCollectionExtensions
     {
-        public static IServiceCollection AddCqrs(this IServiceCollection services, params Assembly[] assemblies)
+        public static IServiceCollection AddCqrs(this IServiceCollection services, params Assembly[] domainAssemblies)
         {
             return services
-                .AddCommandExecutor()
-                .AddCommandHandlers(assemblies)
-                .AddQueryExecutor()
-                .AddQueryHandlers(assemblies);
+                .AddScoped<ICommandExecutor, CommandExecutor>()
+                .AddScoped<IQueryExecutor, QueryExecutor>()
+                .AddHandlers(typeof(ICommandHandler<>), domainAssemblies)
+                .AddHandlers(typeof(ICommandHandler<,>), domainAssemblies)
+                .AddHandlers(typeof(ISecuredCommandHandler<>), domainAssemblies)
+                .AddHandlers(typeof(ISecuredCommandHandler<,>), domainAssemblies)
+                .AddHandlers(typeof(IQueryHandler<,>), domainAssemblies)
+                .AddHandlers(typeof(ISecuredQueryHandler<,>), domainAssemblies);
         }
 
         public static IServiceCollection AddCqrsExecutors(
@@ -23,32 +27,6 @@ namespace Brickweave.Cqrs.DependencyInjection
             services.AddScoped(provider => domainServiceProvider.GetService<IQueryExecutor>());
 
             return services;
-        }
-
-        private static IServiceCollection AddCommandExecutor(
-            this IServiceCollection services)
-        {
-            services.AddScoped<ICommandExecutor, CommandExecutor>();
-            return services;
-        }
-
-        private static IServiceCollection AddQueryExecutor(
-            this IServiceCollection services)
-        {
-            services.AddScoped<IQueryExecutor, QueryExecutor>();
-            return services;
-        }
-
-        private static IServiceCollection AddCommandHandlers(
-            this IServiceCollection services, params Assembly[] assemblies)
-        {
-            return services.AddHandlers(typeof(ICommandHandler<,>), assemblies);
-        }
-
-        private static IServiceCollection AddQueryHandlers(
-            this IServiceCollection services, params Assembly[] assemblies)
-        {
-            return services.AddHandlers(typeof(IQueryHandler<,>), assemblies);
         }
 
         private static IServiceCollection AddHandlers(

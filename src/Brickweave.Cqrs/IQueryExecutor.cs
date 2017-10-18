@@ -1,10 +1,11 @@
-﻿using System.Threading.Tasks;
+﻿using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace Brickweave.Cqrs
 {
     public interface IQueryExecutor
     {
-        Task<object> ExecuteAsync(IQuery query);
-        Task<TResult> ExecuteAsync<TResult>(IQuery<TResult> query);
+        Task<object> ExecuteAsync(IQuery query, ClaimsPrincipal user = null);
+        Task<TResult> ExecuteAsync<TResult>(IQuery<TResult> query, ClaimsPrincipal user = null);
     }
 }

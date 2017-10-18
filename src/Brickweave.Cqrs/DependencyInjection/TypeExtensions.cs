@@ -22,7 +22,7 @@ namespace Brickweave.Cqrs.DependencyInjection
             throw new InvalidOperationException(
                 $"Type {implementationType} does not implement {serviceType}");
         }
-
+        
         internal static bool IsAssignableToGenericType(this Type type, Type assignableType)
         {
             if (type.GetTypeInfo().ImplementedInterfaces

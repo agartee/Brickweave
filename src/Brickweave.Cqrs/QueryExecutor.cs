@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Brickweave.Cqrs.Exceptions;
 using Brickweave.Cqrs.Extensions;
+using LiteGuard;
 
 namespace Brickweave.Cqrs
 {
@@ -14,39 +17,48 @@ namespace Brickweave.Cqrs
             _serviceProvider = serviceProvider;
         }
 
-        public async Task<object> ExecuteAsync(IQuery query)
+        public async Task<object> ExecuteAsync(IQuery query, ClaimsPrincipal user = null)
         {
-            Guard.IsNotNullQuery(query);
+            Guard.AgainstNullArgument(nameof(query), query);
 
-            var queryReturnType = query.GetQueryReturnType();
-            var handlerType = typeof(IQueryHandler<,>).MakeGenericType(query.GetType(), queryReturnType);
-            dynamic handler = _serviceProvider.GetService(handlerType);
+            dynamic handler = GetQueryHandler(query, query.GetQueryReturnType());
 
-            if (handler == null)
-                throw new QueryHandlerNotRegisteredException(query);
+            if (handler is ISecured)
+                return await handler.HandleAsync((dynamic)query, user);
 
             return await handler.HandleAsync((dynamic)query);
         }
 
-        public async Task<TResult> ExecuteAsync<TResult>(IQuery<TResult> query)
+        public async Task<TResult> ExecuteAsync<TResult>(IQuery<TResult> query, ClaimsPrincipal user = null)
         {
-            Guard.IsNotNullQuery(query);
+            Guard.AgainstNullArgument(nameof(query), query);
 
-            var handlerType = typeof(IQueryHandler<,>).MakeGenericType(query.GetType(), typeof(TResult));
-            dynamic handler = _serviceProvider.GetService(handlerType);
+            dynamic handler = GetQueryHandler(query, typeof(TResult));
 
-            if (handler == null)
-                throw new QueryHandlerNotRegisteredException(query);
+            if (handler is ISecured)
+                return await handler.HandleAsync((dynamic)query, user);
 
             return await handler.HandleAsync((dynamic)query);
         }
 
-        private static class Guard
+        private object GetQueryHandler(IQuery query, Type queryReturnType)
         {
-            public static void IsNotNullQuery(IQuery query)
+            foreach (var handlerType in GetPossibleHandlerTypes())
             {
-                if (query == null)
-                    throw new ArgumentNullException($"{typeof(QueryExecutor)} cannot process a null query.");
+                var result = _serviceProvider.GetService(handlerType);
+                if (result != null)
+                    return result;
+            }
+
+            throw new QueryHandlerNotRegisteredException(query);
+
+            IEnumerable<Type> GetPossibleHandlerTypes()
+            {
+                return new[]
+                {
+                    typeof(IQueryHandler<,>).MakeGenericType(query.GetType(), queryReturnType),
+                    typeof(ISecuredQueryHandler<,>).MakeGenericType(query.GetType(), queryReturnType)
+                };
             }
         }
     }

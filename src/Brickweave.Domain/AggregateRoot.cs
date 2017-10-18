@@ -1,6 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using LiteGuard;
 
 namespace Brickweave.Domain
 {
@@ -10,7 +10,7 @@ namespace Brickweave.Domain
 
         protected void EnqueueDomainEvent(IDomainEvent @event)
         {
-            Guard.IsNotNullDomainEvent(@event);
+            Guard.AgainstNullArgument(nameof(@event), @event);
 
             _enqueuedDomainEvents.Add(@event);
         }
@@ -23,15 +23,6 @@ namespace Brickweave.Domain
         public IEnumerable<IDomainEvent> GetEnqueuedDomainEvents()
         {
             return new ReadOnlyCollection<IDomainEvent>(_enqueuedDomainEvents);
-        }
-
-        private static class Guard
-        {
-            public static void IsNotNullDomainEvent(IDomainEvent @event)
-            {
-                if (@event == null)
-                    throw new ArgumentNullException("Cannot enqueue a null domain event.");
-            }
         }
     }
 }

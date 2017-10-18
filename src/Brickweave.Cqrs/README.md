@@ -2,8 +2,6 @@
 
 Brickweave CQRS is a lightweight framework library to support the CQRS pattern within a single application. Consuming applications would define commands, queries and their handlers to wrap business logic into a nice little unit of work. This not only helps teams distribute work more easily, but also helps them predict where business logic should be placed without a lot of debate.
 
-*Warning*: This library is still under active development. The IServiceCollection integrations may change in the future.
-
 # Getting Started
 
 The following examples are also located in the `Brickweave.Samples` projects in this repository. These examples are simple, but often application commands and queries will require manipulation of multiple domain models, publish domain messages, or perform some aggregation of data to produce results. That being said, these samples should be sufficient to get started.

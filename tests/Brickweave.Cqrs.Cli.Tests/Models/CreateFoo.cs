@@ -2,7 +2,7 @@
 
 namespace Brickweave.Cqrs.Cli.Tests.Models
 {
-    public class CreateFoo : ICommand
+    public class CreateFoo : ICommand<string>
     {
         public CreateFoo(int id, DateTime dateCreated, string bar = "bar")
         {

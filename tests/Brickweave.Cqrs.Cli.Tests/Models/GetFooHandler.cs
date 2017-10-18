@@ -2,9 +2,9 @@
 
 namespace Brickweave.Cqrs.Cli.Tests.Models
 {
-    public class CreateFooHandler : ICommandHandler<CreateFoo, string>
+    public class GetFooHandler : IQueryHandler<GetFoo, string>
     {
-        public Task<string> HandleAsync(CreateFoo command)
+        public Task<string> HandleAsync(GetFoo query)
         {
             return Task.FromResult("success!");
         }

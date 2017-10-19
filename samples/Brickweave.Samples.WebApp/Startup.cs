@@ -23,6 +23,10 @@ namespace Brickweave.Samples.WebApp
                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
                 .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
                 .AddEnvironmentVariables();
+
+            if (env.IsDevelopment())
+                builder.AddUserSecrets<Startup>();
+
             Configuration = builder.Build();
         }
 
@@ -35,7 +39,7 @@ namespace Brickweave.Samples.WebApp
                 options.InputFormatters.Add(new PlainTextInputFormatter());
             });
             
-            var dbConfig = new SampleDbConfiguration { ConnectionString = "server=localhost\\sqlexpress;database=samples;integrated security=true;" };
+            var dbConfig = new SampleDbConfiguration { ConnectionString = Configuration.GetConnectionString("samples") };
             var dbContext = new SampleDbContext(dbConfig);
             dbContext.Database.EnsureCreated();
 

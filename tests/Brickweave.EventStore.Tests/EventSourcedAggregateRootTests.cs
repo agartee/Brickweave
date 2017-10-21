@@ -71,18 +71,5 @@ namespace Brickweave.EventStore.Tests
 
             aggregate.GetUncommittedEvents().Should().BeEmpty();
         }
-
-        [Fact]
-        public void RaiseEvent_WhenEventIsAlsoDomainEvent_EnqueuesDomainEvent()
-        {
-            var id = TestId.NewId();
-            var aggregate = new TestAggregate(id);
-
-            var enqueuedDomainEvents = aggregate.GetEnqueuedDomainEvents().ToArray();
-
-            enqueuedDomainEvents.Should().HaveCount(1);
-            enqueuedDomainEvents.First().Should().BeOfType<TestAggregateCreated>();
-            enqueuedDomainEvents.Cast<TestAggregateCreated>().First().TestId.Should().Be(id.Value);
-        }
     }
 }

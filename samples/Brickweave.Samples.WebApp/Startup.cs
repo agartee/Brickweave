@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Brickweave.Cqrs.Cli.DependencyInjection;
 using Brickweave.Cqrs.DependencyInjection;
+using Brickweave.Messaging.ServiceBus.DependencyInjection;
+using Brickweave.Samples.Domain.Persons.Events;
 using Brickweave.Samples.Domain.Persons.Services;
 using Brickweave.Samples.Persistence.SqlServer;
 using Brickweave.Samples.Persistence.SqlServer.Repositories;
@@ -50,6 +53,11 @@ namespace Brickweave.Samples.WebApp
 
             var domainServices = new ServiceCollection()
                 .AddCqrs(domainAssemblies)
+                .AddMessageBus(Configuration.GetConnectionString("serviceBus"), Configuration["serviceBusTopic"])
+                    .WithGlobalUserPropertyStrategy("CustomerId") // not actually in current event models...
+                    .WithUserPropertyStrategy<PersonCreated>(@event => new Dictionary<string, object> { ["LastName"] = @event.LastName })
+                    .WithUtf8Encoding()
+                    .Services()
                 .AddScoped<IPersonRepository, SqlServerPersonRepository>()
                 .AddScoped<SampleDbContext>()
                 .AddScoped(provider => dbConfig)

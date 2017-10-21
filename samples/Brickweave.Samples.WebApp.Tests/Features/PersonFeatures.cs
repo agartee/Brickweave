@@ -11,7 +11,7 @@ using Xunit;
 
 namespace Brickweave.Samples.WebApp.Tests.Features
 {
-    [Trait("Category", "Acceptance")]
+    [Trait("Category", "Integration")]
     public class PersonFeatures
     {
         [Scenario]

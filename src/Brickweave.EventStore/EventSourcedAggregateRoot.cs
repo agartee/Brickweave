@@ -2,11 +2,10 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using Brickweave.Domain;
 
 namespace Brickweave.EventStore
 {
-    public abstract class EventSourcedAggregateRoot<TIdentity> : AggregateRoot
+    public abstract class EventSourcedAggregateRoot<TIdentity>
     {
         private readonly IEventRouter _router = new RegistrationEventRouter();
         private readonly LinkedList<IAggregateEvent> _uncommittedEvents = new LinkedList<IAggregateEvent>();
@@ -35,10 +34,6 @@ namespace Brickweave.EventStore
         {
             ApplyEvent(aggregateEvent);
             _uncommittedEvents.AddLast(aggregateEvent);
-
-            var @event = aggregateEvent as IDomainEvent;
-            if (@event != null)
-                EnqueueDomainEvent(@event);
         }
     }
 }

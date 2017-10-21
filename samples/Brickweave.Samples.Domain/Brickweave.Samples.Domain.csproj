@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Brickweave.Cqrs\Brickweave.Cqrs.csproj" />
+    <ProjectReference Include="..\..\src\Brickweave.Messaging\Brickweave.Messaging.csproj" />
   </ItemGroup>
 
 </Project>

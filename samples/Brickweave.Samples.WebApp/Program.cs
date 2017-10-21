@@ -15,7 +15,7 @@ namespace Brickweave.Samples.WebApp
                 .UseStartup<Startup>()
                 .UseApplicationInsights()
                 .Build();
-
+            
             host.Run();
         }
     }

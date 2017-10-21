@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace Brickweave.Samples.Persistence.SqlServer
 {
@@ -10,6 +11,7 @@ namespace Brickweave.Samples.Persistence.SqlServer
         {
             return new DbContextOptionsBuilder<SampleDbContext>()
                 .UseSqlServer(ConnectionString)
+                .ConfigureWarnings(x => x.Ignore(RelationalEventId.AmbientTransactionWarning))
                 .Options;
         }
     }

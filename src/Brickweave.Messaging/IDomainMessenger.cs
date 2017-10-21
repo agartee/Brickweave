@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Brickweave.Domain
+namespace Brickweave.Messaging
 {
     public interface IDomainMessenger
     {

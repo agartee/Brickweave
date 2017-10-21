@@ -8,7 +8,7 @@ namespace Brickweave.EventStore.Factories
 {
     public class ReflectionConventionAggregateFactory : IAggregateFactory
     {
-        public T Create<T>(IEnumerable<IAggregateEvent> events) where T : AggregateRoot
+        public T Create<T>(IEnumerable<IAggregateEvent> events) where T : class
         {
             var type = typeof(T);
             var ctor = type.GetTypeInfo().GetConstructor(new[] { typeof(IEnumerable<IAggregateEvent>) });
@@ -19,7 +19,7 @@ namespace Brickweave.EventStore.Factories
             return (T)ctor.Invoke(new object[] { events });
         }
 
-        public AggregateRoot Create(string aggregateType, IEnumerable<IAggregateEvent> events)
+        public object Create(string aggregateType, IEnumerable<IAggregateEvent> events)
         {
             var type = Type.GetType(aggregateType);
 
@@ -30,7 +30,7 @@ namespace Brickweave.EventStore.Factories
             if (ctor == null)
                 throw new ConstructorNotFoundException(type, new[] { typeof(IEnumerable<IAggregateEvent>) });
 
-            return (AggregateRoot)ctor.Invoke(new object[] { events });
+            return ctor.Invoke(new object[] { events });
         }
     }
 }

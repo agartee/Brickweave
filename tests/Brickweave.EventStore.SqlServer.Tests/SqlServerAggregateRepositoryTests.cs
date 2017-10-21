@@ -11,6 +11,7 @@ using Xunit;
 
 namespace Brickweave.EventStore.SqlServer.Tests
 {
+    [Trait("Category", "Integration")]
     public class SqlServerAggregateRepositoryTests : IClassFixture<SqlServerFixture>
     {
         private readonly SqlServerFixture _fixture;

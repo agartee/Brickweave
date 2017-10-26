@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Brickweave.EventStore.Exceptions;
 using Brickweave.EventStore.Tests.Models;
 using FluentAssertions;
@@ -19,7 +20,7 @@ namespace Brickweave.EventStore.Tests
         [Fact]
         public void ApplyEvent_WhenEventIsRegisteredWithAggregate_UpdatesAggregateState()
         {
-            var id = TestId.NewId();
+            var id = Guid.NewGuid();
             var aggregate = new TestAggregate(id);
 
             aggregate.TestId.Should().Be(id);
@@ -29,7 +30,7 @@ namespace Brickweave.EventStore.Tests
         public void ApplyEvent_WhenAggregateHasNoEventRegistrations_Throws()
         {
             var exception = Assert.Throws<EventHandlersNoFoundException>(
-                () => new TestAggregateWithoutEventRegistrations(TestId.NewId()));
+                () => new TestAggregateWithoutEventRegistrations(Guid.NewGuid()));
 
             exception.AggregateType.Should().Be(typeof(TestAggregateWithoutEventRegistrations));
 
@@ -39,7 +40,7 @@ namespace Brickweave.EventStore.Tests
         [Fact]
         public void ApplyEvent_WhenEventIsNotRegisteredWithAggregate_Throws()
         {
-            var aggregate = new TestAggregate(TestId.NewId());
+            var aggregate = new TestAggregate(Guid.NewGuid());
 
             var exception = Assert.Throws<EventHandlerNotFoundException>(
                 () => aggregate.RaiseUnregisteredEvent());
@@ -52,20 +53,20 @@ namespace Brickweave.EventStore.Tests
         [Fact]
         public void GetUncommittedEvents_ReturnsCopyOfAggregateUncommittedEvents()
         {
-            var id = TestId.NewId();
+            var id = Guid.NewGuid();
             var aggregate = new TestAggregate(id);
 
             var uncommittedEvents = aggregate.GetUncommittedEvents().ToArray();
 
             uncommittedEvents.Should().HaveCount(1);
             uncommittedEvents.First().Should().BeOfType<TestAggregateCreated>();
-            uncommittedEvents.Cast<TestAggregateCreated>().First().TestId.Should().Be(id.Value);
+            uncommittedEvents.Cast<TestAggregateCreated>().First().TestId.Should().Be(id);
         }
 
         [Fact]
         public void ClearUncommittedEvents_RemovesAllUncommitedEvents()
         {
-            var aggregate = new TestAggregate(TestId.NewId());
+            var aggregate = new TestAggregate(Guid.NewGuid());
 
             aggregate.ClearUncommittedEvents();
 

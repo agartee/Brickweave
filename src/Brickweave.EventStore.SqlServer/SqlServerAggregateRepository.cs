@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Brickweave.Domain;
 using Brickweave.EventStore.Factories;
 using Brickweave.EventStore.Serialization;
 using Brickweave.EventStore.SqlServer.Entities;
@@ -9,8 +8,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Brickweave.EventStore.SqlServer
 {
-    public abstract class SqlServerAggregateRepository<TAggregate, TIdentity>
-        where TAggregate : EventSourcedAggregateRoot<TIdentity>
+    public abstract class SqlServerAggregateRepository<TAggregate>
+        where TAggregate : EventSourcedAggregateRoot
     {
         private readonly EventStoreContext _dbContext;
         private readonly IDocumentSerializer _serializer;
@@ -24,34 +23,32 @@ namespace Brickweave.EventStore.SqlServer
             _serializer = serializer;
         }
 
-        protected async Task SaveUncommittedEventsAsync(EventSourcedAggregateRoot<TIdentity> aggregate, Id<Guid> id)
+        protected async Task SaveUncommittedEventsAsync(EventSourcedAggregateRoot aggregate, Guid streamId)
         {
             var created = DateTime.UtcNow;
             
             var uncommittedEvents = aggregate.GetUncommittedEvents()
-                .Select((e, i) => CreateEventData(id, e, created, i))
+                .Select((e, i) => CreateEventData(streamId, e, created, i))
                 .ToList();
 
             uncommittedEvents.ForEach(e => _dbContext.Events.Add(e));
             await _dbContext.SaveChangesAsync();
+
             aggregate.ClearUncommittedEvents();
         }
 
-        protected async Task<bool> ExistsAsync(Id<Guid> aggregateId)
+        protected async Task<bool> ExistsAsync(Guid streamId)
         {
             var aggregate = await _dbContext.Events
-                .FirstOrDefaultAsync(i => i.StreamId.Equals(aggregateId.Value));
+                .FirstOrDefaultAsync(i => i.StreamId.Equals(streamId));
 
             return aggregate != null;
         }
 
-        protected async Task<TAggregate> TryFindAsync(Id<Guid> aggregateId)
+        protected async Task<TAggregate> TryFindAsync(Guid streamId)
         {
-            if (aggregateId == null)
-                return null;
-
             var eventData = await _dbContext.Events
-                .Where(e => e.StreamId.Equals(aggregateId.Value))
+                .Where(e => e.StreamId.Equals(streamId))
                 .OrderBy(e => e.Created)
                 .ThenBy(e => e.CommitSequence)
                 .ToListAsync();
@@ -63,13 +60,10 @@ namespace Brickweave.EventStore.SqlServer
             return events.Any() ? _aggregateFactory.Create<TAggregate>(events) : null;
         }
 
-        protected async Task DeleteAsync(Id<Guid> aggregateId)
+        protected async Task DeleteAsync(Guid streamId)
         {
-            if (aggregateId == null)
-                return;
-
             var eventData = await _dbContext.Events
-                .Where(e => e.StreamId.Equals(aggregateId.Value))
+                .Where(e => e.StreamId.Equals(streamId))
                 .ToListAsync();
 
             _dbContext.Events.RemoveRange(eventData);
@@ -77,12 +71,12 @@ namespace Brickweave.EventStore.SqlServer
             await _dbContext.SaveChangesAsync();
         }
 
-        private EventData CreateEventData(Id<Guid> id, IAggregateEvent @event, DateTime created, int commitSequence)
+        private EventData CreateEventData(Guid streamId, IAggregateEvent @event, DateTime created, int commitSequence)
         {
             return new EventData
             {
                 EventId = Guid.NewGuid(),
-                StreamId = id.Value,
+                StreamId = streamId,
                 Json = _serializer.SerializeObject(@event),
                 Created = created,
                 CommitSequence = commitSequence

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using Brickweave.Cqrs.DependencyInjection;
 using Brickweave.Cqrs.Exceptions;
 using Brickweave.Cqrs.Extensions;
 using LiteGuard;

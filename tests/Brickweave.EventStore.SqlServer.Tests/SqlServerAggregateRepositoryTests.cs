@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Brickweave.EventStore.Factories;
 using Brickweave.EventStore.Serialization;
@@ -31,26 +32,26 @@ namespace Brickweave.EventStore.SqlServer.Tests
         [Fact]
         public async Task SaveTestAggregate_SavesRows()
         {
-            var testId = TestId.NewId();
+            var testId = Guid.NewGuid();
             var aggregate = new TestAggregate(testId);
 
             await _repository.SaveTestAggregate(aggregate);
 
             var rows = (await _fixture.DbContext.Events
-                .Where(e => e.StreamId == testId.Value)
+                .Where(e => e.StreamId == testId)
                 .ToListAsync()).ToArray();
 
             rows.Should().HaveCount(1);
 
             var row = rows.First();
-            row.StreamId.Should().Be(testId.Value);
+            row.StreamId.Should().Be(testId);
             row.CommitSequence.Should().Be(0);
         }
 
         [Fact]
         public async Task GetTestAggregate_ReturnsRow()
         {
-            var testId = TestId.NewId();
+            var testId = Guid.NewGuid();
             var savedTestAggregate = new TestAggregate(testId);
             await _repository.SaveTestAggregate(savedTestAggregate);
 
@@ -62,14 +63,14 @@ namespace Brickweave.EventStore.SqlServer.Tests
         [Fact]
         public async Task DeleteTestAggregate_DeletesRow()
         {
-            var testId = TestId.NewId();
+            var testId = Guid.NewGuid();
             var savedTestAggregate = new TestAggregate(testId);
             await _repository.SaveTestAggregate(savedTestAggregate);
 
             await _repository.DeleteTestAggregate(testId);
 
             var rows = await _fixture.DbContext.Events
-                .Where(e => e.StreamId == testId.Value)
+                .Where(e => e.StreamId == testId)
                 .ToListAsync();
 
             rows.Should().HaveCount(0);

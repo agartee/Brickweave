@@ -1,22 +1,24 @@
-﻿namespace Brickweave.EventStore.Tests.Models
+﻿using System;
+
+namespace Brickweave.EventStore.Tests.Models
 {
-    public class TestAggregateWithoutEventsConstructor : EventSourcedAggregateRoot<TestId>
+    public class TestAggregateWithoutEventsConstructor : EventSourcedAggregateRoot
     {
         TestAggregateWithoutEventsConstructor()
         {
             Register<TestAggregateCreated>(Apply);
         }
         
-        public TestAggregateWithoutEventsConstructor(TestId testId) : this()
+        public TestAggregateWithoutEventsConstructor(Guid testId) : this()
         {
-            RaiseEvent(new TestAggregateCreated(testId.Value));
+            RaiseEvent(new TestAggregateCreated(testId));
         }
 
-        public TestId TestId { get; private set; }
+        public Guid TestId { get; private set; }
 
         private void Apply(TestAggregateCreated @event)
         {
-            TestId = new TestId(@event.TestId);
+            TestId = @event.TestId;
         }
     }
 }

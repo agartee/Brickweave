@@ -17,8 +17,4 @@
     <PackageReference Include="NodaTime.Serialization.JsonNet" Version="2.0.0" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Brickweave.Domain\Brickweave.Domain.csproj" />
-  </ItemGroup>
-
 </Project>

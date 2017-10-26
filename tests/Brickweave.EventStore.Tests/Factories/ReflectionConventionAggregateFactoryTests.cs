@@ -26,7 +26,7 @@ namespace Brickweave.EventStore.Tests.Factories
 
             var aggregate = factory.Create<TestAggregate>(events);
 
-            aggregate.TestId.Should().Be(new TestId(idValue));
+            aggregate.TestId.Should().Be(idValue);
         }
 
         [Fact]

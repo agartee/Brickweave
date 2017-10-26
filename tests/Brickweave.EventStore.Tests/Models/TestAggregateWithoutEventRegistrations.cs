@@ -1,10 +1,12 @@
-﻿namespace Brickweave.EventStore.Tests.Models
+﻿using System;
+
+namespace Brickweave.EventStore.Tests.Models
 {
-    public class TestAggregateWithoutEventRegistrations : EventSourcedAggregateRoot<TestId>
+    public class TestAggregateWithoutEventRegistrations : EventSourcedAggregateRoot
     {
-        public TestAggregateWithoutEventRegistrations(TestId testId)
+        public TestAggregateWithoutEventRegistrations(Guid testId)
         {
-            RaiseEvent(new TestAggregateCreated(testId.Value));
+            RaiseEvent(new TestAggregateCreated(testId));
         }
     }
 }

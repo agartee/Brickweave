@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace Brickweave.EventStore
 {
-    public abstract class EventSourcedAggregateRoot<TIdentity>
+    public abstract class EventSourcedAggregateRoot
     {
         private readonly IEventRouter _router = new RegistrationEventRouter();
         private readonly LinkedList<IAggregateEvent> _uncommittedEvents = new LinkedList<IAggregateEvent>();

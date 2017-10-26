@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
-using Brickweave.Domain;
 using Brickweave.EventStore.Exceptions;
 
 namespace Brickweave.EventStore.Factories

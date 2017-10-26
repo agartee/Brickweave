@@ -2,8 +2,6 @@
 using Microsoft.Azure.ServiceBus;
 using Microsoft.Azure.ServiceBus.Core;
 using Microsoft.Extensions.Configuration;
-using ISubscriptionClient = Microsoft.Azure.ServiceBus.ISubscriptionClient;
-using SubscriptionClient = Microsoft.Azure.ServiceBus.SubscriptionClient;
 
 namespace Brickweave.Messaging.ServiceBus.Tests.Fixtures
 {

@@ -1,11 +1,12 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Brickweave.EventStore.Factories;
 using Brickweave.EventStore.Serialization;
 using Brickweave.EventStore.SqlServer.Tests.Models;
 
 namespace Brickweave.EventStore.SqlServer.Tests.Repositories
 {
-    public class TestSqlServerAggregateRepository : SqlServerAggregateRepository<TestAggregate, TestId>
+    public class TestSqlServerAggregateRepository : SqlServerAggregateRepository<TestAggregate>
     {
         public TestSqlServerAggregateRepository(EventStoreContext dbContext, IDocumentSerializer serializer, 
             IAggregateFactory aggregateFactory) : base(dbContext, serializer, aggregateFactory)
@@ -18,12 +19,12 @@ namespace Brickweave.EventStore.SqlServer.Tests.Repositories
             await SaveUncommittedEventsAsync(testAggregate, testAggregate.TestId);
         }
 
-        public async Task<TestAggregate> GetTestAggregate(TestId testId)
+        public async Task<TestAggregate> GetTestAggregate(Guid testId)
         {
             return await TryFindAsync(testId);
         }
 
-        public async Task DeleteTestAggregate(TestId testId)
+        public async Task DeleteTestAggregate(Guid testId)
         {
             await DeleteAsync(testId);
         }

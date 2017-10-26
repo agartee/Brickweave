@@ -5,7 +5,7 @@
     <Version>0.1.0</Version>
     <Authors>Adam Gartee</Authors>
     <Company>Adam Gartee</Company>
-    <Description>Lightweight package to support common Domain Messaging patterns</Description>
+    <Description>Lightweight package to support common Domain Messaging patterns using Azure Service Bus</Description>
     <AssemblyVersion>0.1.0.0</AssemblyVersion>
     <FileVersion>0.1.0.0</FileVersion>
     <PackageLicenseUrl>https://github.com/agartee/Brickweave/blob/master/LICENSE</PackageLicenseUrl>

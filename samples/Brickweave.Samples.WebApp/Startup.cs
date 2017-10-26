@@ -3,17 +3,21 @@ using System.Collections.Generic;
 using System.Linq;
 using Brickweave.Cqrs.Cli.DependencyInjection;
 using Brickweave.Cqrs.DependencyInjection;
+using Brickweave.Domain.Serialization;
+using Brickweave.EventStore.SqlServer;
+using Brickweave.EventStore.SqlServer.DependencyInjection;
 using Brickweave.Messaging.ServiceBus.DependencyInjection;
 using Brickweave.Samples.Domain.Persons.Events;
 using Brickweave.Samples.Domain.Persons.Services;
-using Brickweave.Samples.Persistence.SqlServer;
 using Brickweave.Samples.Persistence.SqlServer.Repositories;
 using Brickweave.Samples.WebApp.Formatters;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 
 namespace Brickweave.Samples.WebApp
 {
@@ -37,14 +41,11 @@ namespace Brickweave.Samples.WebApp
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc(options => 
-            {
-                options.InputFormatters.Add(new PlainTextInputFormatter());
-            });
-            
-            var dbConfig = new SampleDbConfiguration { ConnectionString = Configuration.GetConnectionString("samples") };
-            var dbContext = new SampleDbContext(dbConfig);
-            dbContext.Database.EnsureCreated();
+            services.AddMvc(options => { options.InputFormatters.Add(new PlainTextInputFormatter()); })
+                .AddJsonOptions(options =>
+                    options.SerializerSettings.Converters.Add(new IdConverter()))
+                .AddJsonOptions(options =>
+                    options.SerializerSettings.Formatting = Formatting.Indented);
 
             var domainAssemblies = AppDomain.CurrentDomain.GetAssemblies()
                 .Where(a => a.FullName.StartsWith("Brickweave"))
@@ -53,14 +54,13 @@ namespace Brickweave.Samples.WebApp
 
             var domainServices = new ServiceCollection()
                 .AddCqrs(domainAssemblies)
+                .AddEventStore(Configuration.GetConnectionString("eventStore"), domainAssemblies)
                 .AddMessageBus(Configuration.GetConnectionString("serviceBus"), Configuration["serviceBusTopic"])
                     .WithGlobalUserPropertyStrategy("CustomerId") // not actually in current event models...
                     .WithUserPropertyStrategy<PersonCreated>(@event => new Dictionary<string, object> { ["LastName"] = @event.LastName })
                     .WithUtf8Encoding()
                     .Services()
                 .AddScoped<IPersonRepository, SqlServerPersonRepository>()
-                .AddScoped<SampleDbContext>()
-                .AddScoped(provider => dbConfig)
                 .BuildServiceProvider();
 
             services
@@ -73,8 +73,16 @@ namespace Brickweave.Samples.WebApp
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
-
+            
             app.UseMvc();
+
+            CreateDatabase();
+        }
+
+        private void CreateDatabase()
+        {
+            var eventStoreContext = new EventStoreContext(new DbContextOptionsBuilder().UseSqlServer(Configuration.GetConnectionString("eventStore")).Options);
+            eventStoreContext.Database.EnsureCreated();
         }
     }
 }

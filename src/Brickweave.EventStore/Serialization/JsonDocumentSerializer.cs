@@ -20,7 +20,7 @@ namespace Brickweave.EventStore.Serialization
             new JsonSerializerSettings
             {
                 SerializationBinder = new ShortNameBinder(_shorthandTypes),
-                Formatting = Formatting.Indented,
+                Formatting = Formatting.None,
                 TypeNameHandling = TypeNameHandling.Objects,
                 NullValueHandling = NullValueHandling.Ignore,
                 ContractResolver = new CamelCasePropertyNamesContractResolver()

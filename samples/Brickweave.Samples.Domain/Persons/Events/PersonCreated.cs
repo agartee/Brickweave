@@ -1,9 +1,10 @@
 ﻿using System;
+using Brickweave.EventStore;
 using Brickweave.Messaging;
 
 namespace Brickweave.Samples.Domain.Persons.Events
 {
-    public class PersonCreated : IDomainEvent
+    public class PersonCreated : IAggregateEvent, IDomainEvent
     {
         public PersonCreated(Guid id, string firstName, string lastName)
         {

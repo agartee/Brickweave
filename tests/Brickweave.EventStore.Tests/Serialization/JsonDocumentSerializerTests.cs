@@ -25,7 +25,7 @@ namespace Brickweave.EventStore.Tests.Serialization
 
             var json = serializer.SerializeObject(obj);
 
-            json.Should().Contain("\"$type\": \"TestAggregateCreated\"");
+            json.Should().Contain("\"$type\":\"TestAggregateCreated\"");
 
             _output.WriteLine(json);
         }
@@ -39,7 +39,7 @@ namespace Brickweave.EventStore.Tests.Serialization
 
             var json = serializer.SerializeObject(obj);
 
-            json.Should().Contain("\"$type\": \"Brickweave.EventStore.Tests.Models.TestAggregateCreated, Brickweave.EventStore.Tests\"");
+            json.Should().Contain("\"$type\":\"Brickweave.EventStore.Tests.Models.TestAggregateCreated, Brickweave.EventStore.Tests\"");
 
             _output.WriteLine(json);
         }

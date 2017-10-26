@@ -1,18 +1,14 @@
-﻿using System;
-
-namespace Brickweave.Samples.Domain.Persons.Models
+﻿namespace Brickweave.Samples.Domain.Persons.Models
 {
     public class PersonInfo
     {
-        public PersonInfo(Guid id, string firstName, string lastName)
+        public PersonInfo(PersonId id, Name name)
         {
             Id = id;
-            FirstName = firstName;
-            LastName = lastName;
+            Name = name;
         }
 
-        public Guid Id { get; }
-        public string FirstName { get; }
-        public string LastName { get; }
+        public PersonId Id { get; }
+        public Name Name { get; }
     }
 }

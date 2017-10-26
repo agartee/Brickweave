@@ -1,32 +1,28 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using Brickweave.EventStore.Factories;
+using Brickweave.EventStore.Serialization;
+using Brickweave.EventStore.SqlServer;
 using Brickweave.Samples.Domain.Persons.Models;
 using Brickweave.Samples.Domain.Persons.Services;
-using Microsoft.EntityFrameworkCore;
 
 namespace Brickweave.Samples.Persistence.SqlServer.Repositories
 {
-    public class SqlServerPersonRepository : IPersonRepository
+    public class SqlServerPersonRepository : SqlServerAggregateRepository<Person>, IPersonRepository
     {
-        private readonly SampleDbContext _dbContext;
-
-        public SqlServerPersonRepository(SampleDbContext dbContext)
+        public SqlServerPersonRepository(EventStoreContext dbContext, IDocumentSerializer serializer, 
+            IAggregateFactory aggregateFactory) : base(dbContext, serializer, aggregateFactory)
         {
-            _dbContext = dbContext;
         }
 
-        public async Task SaveAsync(Person person)
+
+        public async Task SavePersonAsync(Person person)
         {
-            _dbContext.Persons.Add(person);
-            await _dbContext.SaveChangesAsync();
+            await SaveUncommittedEventsAsync(person, person.Id.Value);
         }
 
-        public async Task<Person> GetPersonAsync(Guid id)
+        public async Task<Person> GetPersonAsync(PersonId id)
         {
-            return await _dbContext.Persons
-                .Where(p => p.Id == id)
-                .SingleOrDefaultAsync();
+            return await TryFindAsync(id.Value);
         }
     }
 }

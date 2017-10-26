@@ -20,17 +20,12 @@ namespace Brickweave.Samples.Domain.Persons.Commands
 
         public async Task<PersonInfo> HandleAsync(CreatePerson command)
         {
-            var person = new Person
-            {
-                Id = command.PersonId,
-                FirstName = command.FirstName,
-                LastName = command.LastName
-            };
+            var person = new Person(command.PersonId, command.Name);
 
-            await _personRepository.SaveAsync(person);
-            await _messenger.SendAsync(new PersonCreated(person.Id, person.FirstName, person.LastName));
+            await _personRepository.SavePersonAsync(person);
+            await _messenger.SendAsync(new PersonCreated(person.Id.Value, person.Name.FirstName, person.Name.LastName));
 
-            return new PersonInfo(person.Id, person.FirstName, person.LastName);
+            return person.ToInfo();
         }
     }
 }

@@ -49,8 +49,8 @@ namespace Brickweave.Samples.WebApp.Tests.Features
                     var result = json.ToJObject();
 
                     result.SelectToken("id").Value<string>().Should().NotBeNullOrEmpty();
-                    result.SelectToken("firstName").Value<string>().Should().Be(firstName);
-                    result.SelectToken("lastName").Value<string>().Should().Be(lastName);
+                    result.SelectToken("name.firstName").Value<string>().Should().Be(firstName);
+                    result.SelectToken("name.lastName").Value<string>().Should().Be(lastName);
                 });
         }
 
@@ -97,8 +97,8 @@ namespace Brickweave.Samples.WebApp.Tests.Features
                     var result = json.ToJObject();
 
                     result.SelectToken("id").Value<string>().Should().Be(id.ToString());
-                    result.SelectToken("firstName").Value<string>().Should().Be(firstName);
-                    result.SelectToken("lastName").Value<string>().Should().Be(lastName);
+                    result.SelectToken("name.firstName").Value<string>().Should().Be(firstName);
+                    result.SelectToken("name.lastName").Value<string>().Should().Be(lastName);
                 });
         }
     }

@@ -37,11 +37,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Brickweave.Cqrs.Cli", "src\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Brickweave.Cqrs.Cli.Tests", "tests\Brickweave.Cqrs.Cli.Tests\Brickweave.Cqrs.Cli.Tests.csproj", "{C70CB2D9-AA78-4A66-8AB1-2FB327023BFA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Brickweave.Messaging", "src\Brickweave.Messaging\Brickweave.Messaging.csproj", "{E8C5D75B-30E9-4067-9AA9-E046BE589AEF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Brickweave.Messaging", "src\Brickweave.Messaging\Brickweave.Messaging.csproj", "{E8C5D75B-30E9-4067-9AA9-E046BE589AEF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Brickweave.Messaging.ServiceBus", "src\Brickweave.Messaging.ServiceBus\Brickweave.Messaging.ServiceBus.csproj", "{6D1950A8-EFED-4EE2-848D-3EF24BED2240}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Brickweave.Messaging.ServiceBus", "src\Brickweave.Messaging.ServiceBus\Brickweave.Messaging.ServiceBus.csproj", "{6D1950A8-EFED-4EE2-848D-3EF24BED2240}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Brickweave.Messaging.ServiceBus.Tests", "tests\Brickweave.Messaging.ServiceBus.Tests\Brickweave.Messaging.ServiceBus.Tests.csproj", "{A09ABF03-1602-481C-BA9E-2C22BB813C23}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Brickweave.Messaging.ServiceBus.Tests", "tests\Brickweave.Messaging.ServiceBus.Tests\Brickweave.Messaging.ServiceBus.Tests.csproj", "{A09ABF03-1602-481C-BA9E-2C22BB813C23}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Brickweave.Messaging.Tests", "tests\Brickweave.Messaging.Tests\Brickweave.Messaging.Tests.csproj", "{2B0A39A0-B576-4DE2-9022-2488DC23EB68}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -117,6 +119,10 @@ Global
 		{A09ABF03-1602-481C-BA9E-2C22BB813C23}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A09ABF03-1602-481C-BA9E-2C22BB813C23}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A09ABF03-1602-481C-BA9E-2C22BB813C23}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2B0A39A0-B576-4DE2-9022-2488DC23EB68}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2B0A39A0-B576-4DE2-9022-2488DC23EB68}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2B0A39A0-B576-4DE2-9022-2488DC23EB68}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2B0A39A0-B576-4DE2-9022-2488DC23EB68}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -139,6 +145,7 @@ Global
 		{E8C5D75B-30E9-4067-9AA9-E046BE589AEF} = {685B773C-8922-47C0-9144-4219E1AF5A0C}
 		{6D1950A8-EFED-4EE2-848D-3EF24BED2240} = {685B773C-8922-47C0-9144-4219E1AF5A0C}
 		{A09ABF03-1602-481C-BA9E-2C22BB813C23} = {01363C09-641F-41CF-857A-E93663279BB5}
+		{2B0A39A0-B576-4DE2-9022-2488DC23EB68} = {01363C09-641F-41CF-857A-E93663279BB5}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4E8CFE0E-1064-4953-B2D7-545AE105B2D9}

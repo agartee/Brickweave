@@ -20,7 +20,7 @@ namespace Brickweave.Messaging.Serialization
         public static JsonSerializerSettings DefaultSettings =>
             new JsonSerializerSettings
             {
-                Formatting = Formatting.Indented,
+                Formatting = Formatting.None,
                 NullValueHandling = NullValueHandling.Ignore,
                 ContractResolver = new CamelCasePropertyNamesContractResolver()
             }.ConfigureForNodaTime(DateTimeZoneProviders.Tzdb);

@@ -56,7 +56,7 @@ namespace Brickweave.Samples.WebApp
                 .AddCqrs(domainAssemblies)
                 .AddEventStore(Configuration.GetConnectionString("eventStore"), domainAssemblies)
                 .AddMessageBus(Configuration.GetConnectionString("serviceBus"), Configuration["serviceBusTopic"])
-                    .WithGlobalUserPropertyStrategy("CustomerId") // not actually in current event models...
+                    .WithGlobalUserPropertyStrategy("Id")
                     .WithUserPropertyStrategy<PersonCreated>(@event => new Dictionary<string, object> { ["LastName"] = @event.LastName })
                     .WithUtf8Encoding()
                     .Services()

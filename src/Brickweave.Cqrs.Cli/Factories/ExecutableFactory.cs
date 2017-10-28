@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Brickweave.Cqrs.Cli.Exceptions;
+using Brickweave.Cqrs.Cli.Extensions;
 using Brickweave.Cqrs.Cli.Models;
 
 namespace Brickweave.Cqrs.Cli.Factories
@@ -32,8 +33,12 @@ namespace Brickweave.Cqrs.Cli.Factories
 
         public IExecutable Create(Type type, Dictionary<string, string> parameterValues)
         {
-            var constructor = type.GetConstructors().First();
+            var constructor = type.GetConstructors()
+                .FirstOrDefault(c => c.ContainsAllParameters(parameterValues.Keys));
             
+            if(constructor == null)
+                throw new ConstructorNotFoundException(type, parameterValues.Keys.ToArray());
+
             return (IExecutable)constructor.Invoke(
                 GetConstructorParameterValues(constructor).ToArray());
 

@@ -16,7 +16,7 @@ namespace Brickweave.Samples.WebApp.Controllers
         [HttpPost, Route("/command/run")]
         public async Task<IActionResult> Run([FromBody]string payload)
         {
-            var result = _runner.Run(payload.Split(' '));
+            var result = await _runner.RunAsync(payload.Split(' '));
 
             return Ok(result);
         }

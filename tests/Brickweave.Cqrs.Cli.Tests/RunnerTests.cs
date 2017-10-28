@@ -28,7 +28,7 @@ namespace Brickweave.Cqrs.Cli.Tests
                 commandExecutor,
                 Substitute.For<IQueryExecutor>());
 
-            var result = await runner.Run(new [] {string.Empty});
+            var result = await runner.RunAsync(new [] {string.Empty});
 
             result.Should().Be("success!");
             await commandExecutor.Received(1).ExecuteAsync(Arg.Any<ICommand>());
@@ -50,7 +50,7 @@ namespace Brickweave.Cqrs.Cli.Tests
                 Substitute.For<ICommandExecutor>(),
                 queryExecutor);
 
-            var result = await runner.Run(new[] { string.Empty });
+            var result = await runner.RunAsync(new[] { string.Empty });
 
             result.Should().Be("success!");
             await queryExecutor.Received(1).ExecuteAsync(Arg.Any<IQuery>());

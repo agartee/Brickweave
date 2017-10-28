@@ -5,6 +5,8 @@ using Brickweave.Samples.WebApp.Tests.Extensions;
 using FluentAssertions;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
 using Xbehave;
 using Xunit;
@@ -29,7 +31,8 @@ namespace Brickweave.Samples.WebApp.Tests.Features
                 {
                     var server = new TestServer(new WebHostBuilder()
                         .UseEnvironment("Development")
-                        .UseStartup<Startup>());
+                        .UseStartup<Startup>()
+                        .ConfigureServices(services => services.AddSingleton<ILoggerFactory>()));
                     var client = server.CreateClient();
                     response = await client.PostAsync(
                         "/person/new", new

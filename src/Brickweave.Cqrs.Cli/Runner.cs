@@ -20,7 +20,7 @@ namespace Brickweave.Cqrs.Cli
             _queryExecutor = queryExecutor;
         }
 
-        public async Task<object> Run(string[] args)
+        public async Task<object> RunAsync(string[] args)
         {
             var executableInfo = _parser.Parse(args);
             var executable = _executableFactory.Create(executableInfo);

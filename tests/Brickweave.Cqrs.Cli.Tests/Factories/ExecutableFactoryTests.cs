@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using Brickweave.Cqrs.Cli.Exceptions;
 using Brickweave.Cqrs.Cli.Factories;
 using Brickweave.Cqrs.Cli.Models;
@@ -60,6 +61,28 @@ namespace Brickweave.Cqrs.Cli.Tests.Factories
 
             exception.Should().NotBeNull();
             exception.TypeShortName.Should().Be("CreateFooBar");
+        }
+
+        [Fact]
+        public void Create_WhenExecutableTypeConstructorDoesNotMatchPassedParameters_Throws()
+        {
+            var factory = new ExecutableFactory(
+                new[] { new BasicParameterValueFactory() },
+                new[] { typeof(CreateFoo) });
+
+            var parameters = new Dictionary<string, string>
+            {
+                ["id"] = "1",
+                ["dateCreated"] = DateTime.Now.ToString(CultureInfo.InvariantCulture),
+                ["foo"] = "bar"
+            };
+
+            var exception = Assert.Throws<ConstructorNotFoundException>(() => 
+                factory.Create(new ExecutableInfo("CreateFoo", parameters)));
+
+            exception.Should().NotBeNull();
+            exception.Type.Should().Be(typeof(CreateFoo));
+            exception.Parameters.Should().BeEquivalentTo(parameters.Keys.ToList());
         }
     }
 }

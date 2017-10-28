@@ -4,6 +4,6 @@ namespace Brickweave.Cqrs.Cli
 {
     public interface IRunner
     {
-        Task<object> Run(string[] args);
+        Task<object> RunAsync(string[] args);
     }
 }

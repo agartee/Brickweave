@@ -5,13 +5,19 @@ namespace Brickweave.Samples.Domain.Persons.Commands
 {
     public class CreatePerson : ICommand<PersonInfo>
     {
-        public CreatePerson(PersonId personId, Name name)
+        public CreatePerson(PersonId id, Name name)
         {
-            PersonId = personId;
+            Id = id;
             Name = name;
         }
 
-        public PersonId PersonId { get; }
+        public CreatePerson(PersonId id, string firstName, string lastName)
+        {
+            Id = id;
+            Name = new Name(firstName, lastName);
+        }
+
+        public PersonId Id { get; }
         public Name Name { get; }
     }
 }

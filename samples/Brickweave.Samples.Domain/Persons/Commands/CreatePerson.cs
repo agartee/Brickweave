@@ -11,9 +11,9 @@ namespace Brickweave.Samples.Domain.Persons.Commands
             Name = name;
         }
 
-        public CreatePerson(PersonId id, string firstName, string lastName)
+        public CreatePerson(string firstName, string lastName)
         {
-            Id = id;
+            Id = PersonId.NewId();
             Name = new Name(firstName, lastName);
         }
 

@@ -19,7 +19,7 @@ namespace Brickweave.EventStore.SqlServer.DependencyInjection
             services
                 .AddScoped<IDocumentSerializer>(s => new JsonDocumentSerializer(shortHandTypes))
                 .AddScoped<IAggregateFactory, ReflectionConventionAggregateFactory>()
-                .AddScoped(s => new EventStoreContext(new DbContextOptionsBuilder().UseSqlServer(connectionString).Options));
+                .AddDbContext<EventStoreContext>(options => options.UseSqlServer(connectionString));
 
             return services;
         }

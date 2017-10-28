@@ -5,6 +5,8 @@ using Brickweave.EventStore.Factories;
 using Brickweave.EventStore.Serialization;
 using Brickweave.EventStore.SqlServer.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.Extensions.Logging;
 
 namespace Brickweave.EventStore.SqlServer
 {

@@ -13,7 +13,7 @@ namespace Brickweave.EventStore.SqlServer
 
         public string Schema { get; }
         public DbSet<EventData> Events { get; set; }
-
+        
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.HasDefaultSchema(Schema);

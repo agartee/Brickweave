@@ -11,6 +11,7 @@ using Brickweave.Samples.Domain.Persons.Events;
 using Brickweave.Samples.Domain.Persons.Services;
 using Brickweave.Samples.Persistence.SqlServer.Repositories;
 using Brickweave.Samples.WebApp.Formatters;
+using Brickweave.Samples.WebApp.Logging;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -52,7 +53,7 @@ namespace Brickweave.Samples.WebApp
                 .Where(a => a.FullName.Contains("Domain"))
                 .ToArray();
 
-            var domainServices = new ServiceCollection()
+            services
                 .AddCqrs(domainAssemblies)
                 .AddEventStore(Configuration.GetConnectionString("eventStore"), domainAssemblies)
                 .AddMessageBus(Configuration.GetConnectionString("serviceBus"), Configuration["serviceBusTopic"])
@@ -60,12 +61,8 @@ namespace Brickweave.Samples.WebApp
                     .WithUserPropertyStrategy<PersonCreated>(@event => new Dictionary<string, object> { ["LastName"] = @event.LastName })
                     .WithUtf8Encoding()
                     .Services()
-                .AddScoped<IPersonRepository, SqlServerPersonRepository>()
-                .BuildServiceProvider();
-
-            services
-                .AddCqrsExecutors(domainServices)
-                .AddCli(domainAssemblies);
+                .AddCli(domainAssemblies)
+                .AddScoped<IPersonRepository, SqlServerPersonRepository>();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, 
@@ -73,7 +70,8 @@ namespace Brickweave.Samples.WebApp
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
-            
+            loggerFactory.AddProvider(new MyLoggerProvider());
+
             app.UseMvc();
 
             CreateDatabase();

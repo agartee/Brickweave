@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using Brickweave.Cqrs.Cli.DependencyInjection;
 using Brickweave.Cqrs.DependencyInjection;
 using Brickweave.Domain.Serialization;
@@ -9,6 +10,7 @@ using Brickweave.EventStore.SqlServer.DependencyInjection;
 using Brickweave.Messaging.ServiceBus.DependencyInjection;
 using Brickweave.Samples.Domain.Persons.Events;
 using Brickweave.Samples.Domain.Persons.Services;
+using Brickweave.Samples.Persistence.SqlServer;
 using Brickweave.Samples.Persistence.SqlServer.Repositories;
 using Brickweave.Samples.WebApp.Formatters;
 using Brickweave.Samples.WebApp.Logging;
@@ -53,16 +55,27 @@ namespace Brickweave.Samples.WebApp
                 .Where(a => a.FullName.Contains("Domain"))
                 .ToArray();
 
+            var migrationsAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
+
             services
                 .AddCqrs(domainAssemblies)
-                .AddEventStore(Configuration.GetConnectionString("eventStore"), domainAssemblies)
-                .AddMessageBus(Configuration.GetConnectionString("serviceBus"), Configuration["serviceBusTopic"])
-                    .WithGlobalUserPropertyStrategy("Id")
-                    .WithUserPropertyStrategy<PersonCreated>(@event => new Dictionary<string, object> { ["LastName"] = @event.LastName })
-                    .WithUtf8Encoding()
+                .AddEventStore(domainAssemblies)
+                    .AddDbContext(options => options.UseSqlServer(Configuration.GetConnectionString("brickweave_samples"),
+                        sql => sql.MigrationsAssembly(migrationsAssembly)))
                     .Services()
-                .AddCli(domainAssemblies)
-                .AddScoped<IPersonRepository, SqlServerPersonRepository>();
+                .AddMessageBus()
+                    .ConfigureMessageSender(Configuration.GetConnectionString("serviceBus"), Configuration["serviceBusTopic"])
+                    .AddGlobalUserPropertyStrategy("Id")
+                    .AddUserPropertyStrategy<PersonCreated>(@event => new Dictionary<string, object> { ["LastName"] = @event.LastName })
+                    .AddUtf8Encoding()
+                    .Services()
+                .AddCli(domainAssemblies);
+
+            services.AddDbContext<SamplesContext>(options => 
+                options.UseSqlServer(Configuration.GetConnectionString("brickweave_samples"),
+                    sql => sql.MigrationsAssembly(migrationsAssembly)));
+
+            services.AddScoped<IPersonRepository, SqlServerPersonRepository>();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, 
@@ -74,13 +87,8 @@ namespace Brickweave.Samples.WebApp
 
             app.UseMvc();
 
-            CreateDatabase();
-        }
-
-        private void CreateDatabase()
-        {
-            var eventStoreContext = new EventStoreContext(new DbContextOptionsBuilder().UseSqlServer(Configuration.GetConnectionString("eventStore")).Options);
-            eventStoreContext.Database.EnsureCreated();
+            app.ApplicationServices.GetService<EventStoreContext>().Database.Migrate();
+            app.ApplicationServices.GetService<SamplesContext>().Database.Migrate();
         }
     }
 }

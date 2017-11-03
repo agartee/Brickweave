@@ -5,7 +5,7 @@ namespace Brickweave.EventStore.SqlServer
 {
     public class EventStoreContext : DbContext
     {
-        public EventStoreContext(DbContextOptions options, string schema = "EventStore")
+        public EventStoreContext(DbContextOptions<EventStoreContext> options, string schema = "EventStore")
             : base(options)
         {
             Schema = schema;

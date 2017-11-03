@@ -18,7 +18,7 @@ namespace Brickweave.EventStore.SqlServer.Tests.Fixtures
             var connectionString = config.GetConnectionString("eventStore");
 
             DbContext = new EventStoreContext(
-                new DbContextOptionsBuilder().UseSqlServer(connectionString).Options);
+                new DbContextOptionsBuilder<EventStoreContext>().UseSqlServer(connectionString).Options);
 
             DbContext.Database.EnsureCreated();
         }

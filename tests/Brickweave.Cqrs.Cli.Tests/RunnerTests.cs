@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using Brickweave.Cqrs.Cli.Factories;
 using Brickweave.Cqrs.Cli.Models;
-using Brickweave.Cqrs.Cli.Parsers;
 using Brickweave.Cqrs.Cli.Tests.Models;
 using FluentAssertions;
 using NSubstitute;
@@ -13,17 +12,38 @@ namespace Brickweave.Cqrs.Cli.Tests
     public class RunnerTests
     {
         [Fact]
+        public async Task Run_WhenHelpArgExists_ReturnsHelpInfo()
+        {
+            var helpInfo = new HelpInfo("test", string.Empty, string.Empty, HelpInfoType.Category);
+
+            var helpParser = Substitute.For<IHelpInfoFactory>();
+            helpParser.Create(Arg.Any<string[]>())
+                .Returns(helpInfo);
+
+            var runner = new Runner(
+                Substitute.For<IExecutableInfoFactory>(),
+                helpParser,
+                Substitute.For<IExecutableFactory>(),
+                Substitute.For<ICommandExecutor>(),
+                Substitute.For<IQueryExecutor>());
+
+            var result = await runner.RunAsync(new[] { "test", "--help" });
+            result.Should().Be(helpInfo);
+        }
+
+        [Fact]
         public async Task Run_WhenCommandIsDetermined_ReturnsCommandHandlerResult()
         {
             var executableFactory = Substitute.For<IExecutableFactory>();
             executableFactory.Create(Arg.Any<ExecutableInfo>())
                 .Returns(new CreateFoo(0, DateTime.MinValue));
-
+            
             var commandExecutor = Substitute.For<ICommandExecutor>();
             commandExecutor.ExecuteAsync(Arg.Any<ICommand>()).Returns("success!");
 
             var runner = new Runner(
-                Substitute.For<IArgParser>(),
+                Substitute.For<IExecutableInfoFactory>(),
+                Substitute.For<IHelpInfoFactory>(),
                 executableFactory,
                 commandExecutor,
                 Substitute.For<IQueryExecutor>());
@@ -45,7 +65,8 @@ namespace Brickweave.Cqrs.Cli.Tests
             queryExecutor.ExecuteAsync(Arg.Any<IQuery>()).Returns("success!");
 
             var runner = new Runner(
-                Substitute.For<IArgParser>(),
+                Substitute.For<IExecutableInfoFactory>(),
+                Substitute.For<IHelpInfoFactory>(),
                 executableFactory,
                 Substitute.For<ICommandExecutor>(),
                 queryExecutor);

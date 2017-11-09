@@ -14,6 +14,30 @@ namespace Brickweave.Cqrs.Cli.Tests.Factories
     public class ExecutableFactoryTests
     {
         [Fact]
+        public void Exists_WhenExists_ReturnsTrue()
+        {
+            var factory = new ExecutableFactory(
+                new[] { new BasicParameterValueFactory() },
+                new[] { typeof(CreateFoo) });
+
+            var result = factory.Exists("CreateFoo");
+
+            result.Should().BeTrue();
+        }
+
+        [Fact]
+        public void Exists_WhenNotExists_ReturnsFalse()
+        {
+            var factory = new ExecutableFactory(
+                new[] { new BasicParameterValueFactory() },
+                new[] { typeof(CreateFoo) });
+
+            var result = factory.Exists("CreateBar");
+
+            result.Should().BeFalse();
+        }
+
+        [Fact]
         public void Create_WhenCommandAssemblyIsRegistered_CreatesCommand()
         {
             var factory = new ExecutableFactory(

@@ -20,6 +20,11 @@ namespace Brickweave.Cqrs.Cli.Factories
             _executables = executables;
         }
 
+        public bool Exists(string name)
+        {
+            return _executables.Any(t => t.Name == name);
+        }
+
         public IExecutable Create(ExecutableInfo executableInfo)
         {
             var executableType = _executables

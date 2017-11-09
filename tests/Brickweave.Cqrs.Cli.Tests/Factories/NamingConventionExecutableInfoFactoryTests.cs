@@ -1,17 +1,17 @@
-﻿using Brickweave.Cqrs.Cli.Parsers;
+﻿using Brickweave.Cqrs.Cli.Factories;
 using FluentAssertions;
 using Xunit;
 
-namespace Brickweave.Cqrs.Cli.Tests.Parsers
+namespace Brickweave.Cqrs.Cli.Tests.Factories
 {
-    public class NamingConventionArgParserTests
+    public class NamingConventionExecutableInfoFactoryTests
     {
         [Fact]
         public void Parse_ReturnsExecutableInfo()
         {
-            var parser = new NamingConventionArgParser();
+            var factory = new NamingConventionExecutableInfoFactory();
 
-            var result = parser.Parse(new[] { "foo", "create", "--id", "12345" });
+            var result = factory.Create(new[] { "foo", "create", "--id", "12345" });
 
             result.Name.Should().Be("CreateFoo");
             result.Parameters.Should().HaveCount(1);
@@ -21,9 +21,9 @@ namespace Brickweave.Cqrs.Cli.Tests.Parsers
         [Fact]
         public void Parse_WhenHasParameterWithNoValue_DefaultsValueToTrue()
         {
-            var parser = new NamingConventionArgParser();
+            var factory = new NamingConventionExecutableInfoFactory();
 
-            var result = parser.Parse(new[] { "foo", "create", "--iscool", "--id", "12345" });
+            var result = factory.Create(new[] { "foo", "create", "--iscool", "--id", "12345" });
 
             result.Name.Should().Be("CreateFoo");
             result.Parameters.Should().HaveCount(1);

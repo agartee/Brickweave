@@ -38,9 +38,11 @@ namespace Brickweave.Samples.WebApp
                 builder.AddUserSecrets<Startup>();
 
             Configuration = builder.Build();
+            ContentRootPath = env.ContentRootPath;
         }
 
         public IConfigurationRoot Configuration { get; }
+        public string ContentRootPath { get; }
 
         public void ConfigureServices(IServiceCollection services)
         {
@@ -69,7 +71,8 @@ namespace Brickweave.Samples.WebApp
                     .AddUserPropertyStrategy<PersonCreated>(@event => new Dictionary<string, object> { ["LastName"] = @event.LastName })
                     .AddUtf8Encoding()
                     .Services()
-                .AddCli(domainAssemblies);
+                .AddCli(domainAssemblies)
+                    .AddCategoryHelpFile("cli-categories.json");
 
             services.AddDbContext<SamplesContext>(options => 
                 options.UseSqlServer(Configuration.GetConnectionString("brickweave_samples"),
@@ -82,9 +85,13 @@ namespace Brickweave.Samples.WebApp
             ILoggerFactory loggerFactory)
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
-            loggerFactory.AddDebug();
-            loggerFactory.AddProvider(new MyLoggerProvider());
 
+            if (env.IsDevelopment())
+            {
+                loggerFactory.AddDebug();
+                loggerFactory.AddProvider(new MyLoggerProvider());
+            }
+            
             app.UseMvc();
 
             app.ApplicationServices.GetService<EventStoreContext>().Database.Migrate();

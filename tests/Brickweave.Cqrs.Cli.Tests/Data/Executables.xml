@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Brickweave.Cqrs.Cli.Tests</name>
+    </assembly>
+    <members>
+        <member name="T:Brickweave.Cqrs.Cli.Tests.Models.CreateFoo">
+            <summary>
+            Create new Foo
+            </summary>
+        </member>
+        <member name="M:Brickweave.Cqrs.Cli.Tests.Models.CreateFoo.#ctor(System.Int32,System.String)">
+            <summary>
+            Create new Foo
+            </summary>
+            <param name="id">Id parameter</param>
+            <param name="bar">Bar parameter</param>
+        </member>
+      
+      <member name="T:Brickweave.Cqrs.Cli.Tests.Models.CreateBar">
+            <summary>
+            Create new Bar
+            </summary>
+        </member>
+        <member name="M:Brickweave.Cqrs.Cli.Tests.Models.CreateBar.#ctor(System.Int32,System.String)">
+            <summary>
+            Create new Bar
+            </summary>
+            <param name="id">Id parameter</param>
+            <param name="foo">Foo parameter</param>
+        </member>
+    </members>
+</doc>

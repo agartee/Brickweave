@@ -4,6 +4,10 @@
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DocumentationFile>bin\Debug\netstandard2.0\Brickweave.Samples.Domain.xml</DocumentationFile>
+  </PropertyGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\..\src\Brickweave.Cqrs\Brickweave.Cqrs.csproj" />
     <ProjectReference Include="..\..\src\Brickweave.Domain\Brickweave.Domain.csproj" />

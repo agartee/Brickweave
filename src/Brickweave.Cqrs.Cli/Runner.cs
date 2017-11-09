@@ -1,29 +1,34 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Threading.Tasks;
 using Brickweave.Cqrs.Cli.Factories;
-using Brickweave.Cqrs.Cli.Parsers;
 
 namespace Brickweave.Cqrs.Cli
 {
     public class Runner : IRunner
     {
-        private readonly IArgParser _parser;
+        private readonly IExecutableInfoFactory _executableInfoFactory;
+        private readonly IHelpInfoFactory _helpInfoFactory;
         private readonly IExecutableFactory _executableFactory;
         private readonly ICommandExecutor _commandExecutor;
         private readonly IQueryExecutor _queryExecutor;
 
-        public Runner(IArgParser parser, IExecutableFactory executableFactory, 
+        public Runner(IExecutableInfoFactory executableInfoFactory, IHelpInfoFactory helpInfoFactory, IExecutableFactory executableFactory, 
             ICommandExecutor commandExecutor, IQueryExecutor queryExecutor)
         {
-            _parser = parser;
+            _executableInfoFactory = executableInfoFactory;
             _executableFactory = executableFactory;
             _commandExecutor = commandExecutor;
             _queryExecutor = queryExecutor;
+            _helpInfoFactory = helpInfoFactory;
         }
 
         public async Task<object> RunAsync(string[] args)
         {
-            var executableInfo = _parser.Parse(args);
-            var executable = _executableFactory.Create(executableInfo);
+            if (args.Any(a => a == "--help"))
+                return _helpInfoFactory.Create(args);
+
+            var executable = _executableFactory.Create(
+                _executableInfoFactory.Create(args));
 
             var result = executable is ICommand
                 ? await _commandExecutor.ExecuteAsync((ICommand)executable)

@@ -3,11 +3,11 @@ using System.Linq;
 using Brickweave.Cqrs.Cli.Extensions;
 using Brickweave.Cqrs.Cli.Models;
 
-namespace Brickweave.Cqrs.Cli.Parsers
+namespace Brickweave.Cqrs.Cli.Factories
 {
-    public class NamingConventionArgParser : IArgParser
+    public class NamingConventionExecutableInfoFactory : IExecutableInfoFactory
     {
-        public ExecutableInfo Parse(string[] args)
+        public ExecutableInfo Create(string[] args)
         {
             var firstParamIndex = GetFirstParamIndex();
             

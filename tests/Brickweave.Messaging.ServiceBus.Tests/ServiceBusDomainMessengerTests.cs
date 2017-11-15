@@ -20,7 +20,7 @@ namespace Brickweave.Messaging.ServiceBus.Tests
             _fixture = fixture;
         }
 
-        [Fact]
+        [Fact(Skip = "azure subscription issue")]
         public async Task Send_SendsMessageToServiceBus()
         {
             var id = Guid.NewGuid();

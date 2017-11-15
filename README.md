@@ -109,7 +109,7 @@ Includes base components to implement event-sourced aggregates and repositories.
 
 Contains base class to quickly and easily implement event-sourced repositories writing to a SQL Server database.
 
-**Simple repository example (no snap-shots)**
+**Simple repository example (no snap-shots):**
 
 ```csharp
 public class SqlServerPersonRepository : SqlServerAggregateRepository<Person>, IPersonRepository

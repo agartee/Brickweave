@@ -7,17 +7,16 @@ namespace Brickweave.Samples.Domain.Persons.Queries
 {
     public class GetPersonHandler : IQueryHandler<GetPerson, PersonInfo>
     {
-        private readonly IPersonRepository _personRepository;
+        private readonly IPersonInfoRepository _personInfoRepository;
 
-        public GetPersonHandler(IPersonRepository personRepository)
+        public GetPersonHandler(IPersonInfoRepository personInfoRepository)
         {
-            _personRepository = personRepository;
+            _personInfoRepository = personInfoRepository;
         }
 
         public async Task<PersonInfo> HandleAsync(GetPerson query)
         {
-            var person = await _personRepository.GetPersonAsync(query.Id);
-            return person.ToInfo();
+            return await _personInfoRepository.GetPersonInfoAsync(query.Id);
         }
     }
 }

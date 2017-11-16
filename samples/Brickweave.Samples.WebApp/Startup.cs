@@ -78,7 +78,9 @@ namespace Brickweave.Samples.WebApp
                 options.UseSqlServer(Configuration.GetConnectionString("brickweave_samples"),
                     sql => sql.MigrationsAssembly(migrationsAssembly)));
 
-            services.AddScoped<IPersonRepository, SqlServerPersonRepository>();
+            services
+                .AddScoped<IPersonRepository, SqlServerPersonRepository>()
+                .AddScoped<IPersonInfoRepository, SqlServerPersonRepository>();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, 

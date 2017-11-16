@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.0</TargetFramework>
-    <UserSecretsId>541367c2-1518-4c2b-a4ce-10c845073372</UserSecretsId>
+    <UserSecretsId>brickweave</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>

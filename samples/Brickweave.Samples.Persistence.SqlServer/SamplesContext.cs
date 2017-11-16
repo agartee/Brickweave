@@ -1,4 +1,4 @@
-﻿using System;
+﻿using Brickweave.Samples.Persistence.SqlServer.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Brickweave.Samples.Persistence.SqlServer
@@ -9,14 +9,6 @@ namespace Brickweave.Samples.Persistence.SqlServer
         {
         }
 
-        public DbSet<PersonData> Persons { get; set; }
-    }
-
-    public class PersonData
-    {
-        public Guid Id { get; set; }
-        public string FirstName { get; set; }
-        public string MiddleName { get; set; }
-        public string LastName { get; set; }
+        public DbSet<PersonSnapshot> Persons { get; set; }
     }
 }

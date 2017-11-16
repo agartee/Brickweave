@@ -11,7 +11,7 @@ For full usage examples, see the included `samples` application.
 
 Contains a base ID model to help clarify model identity as well as improve code readability by adding type protection to identity values. In addition, it includes a custom JSON converter to flatten these IDs on serialization if client/consuming application require a format change.
 
-## Sample ID model
+### Sample ID model
 
 ```csharp
 public class PersonId : Id<Guid>
@@ -27,7 +27,7 @@ public class PersonId : Id<Guid>
 }
 ```
 
-## Wiring-up the services (ASP.NET Core)
+### Wiring-up the services (ASP.NET Core)
 
 ```csharp
 public void ConfigureServices(IServiceCollection services)
@@ -50,7 +50,7 @@ Command and Query processors also come in two flavors: standard (e.g. `ICommandH
 
 Have a look at the sample project to get a feel for DI container wire-up.
 
-## Simple ASP.NET Controller example
+### Simple ASP.NET Controller example
 
 ```csharp
 public class PersonController : Controller
@@ -83,7 +83,7 @@ public class PersonController : Controller
 }
 ```
 
-## Wiring-up the services (ASP.NET Core)
+### Wiring-up the services (ASP.NET Core)
 
 The `IServiceCollection` extension method will perform assembly scans of the provided assemblies and register all implementations of command and query handlers as well as the other required services for handler routing to function.
 
@@ -109,7 +109,7 @@ Includes base components to implement event-sourced aggregates and repositories.
 
 Contains base class to quickly and easily implement event-sourced repositories writing to a SQL Server database.
 
-## Simple repository example (no snap-shots)
+### Simple repository example (no snap-shots)
 
 ```csharp
 public class SqlServerPersonRepository : SqlServerAggregateRepository<Person>, IPersonRepository
@@ -131,7 +131,7 @@ public class SqlServerPersonRepository : SqlServerAggregateRepository<Person>, I
 }
 ```
 
-## Wiring-up the services (ASP.NET Core)
+### Wiring-up the services (ASP.NET Core)
 
 The `IServiceCollection` extension method will perform assembly scans of the provided assemblies and register all implementations of the `IAggregateEvent` to simplify the JSON document being written to the database by removing assembly and namespace declarations in the document. This can significantly reduce the size of the database rows and simplify consumption of the stream by other application if accessed directly. 
 

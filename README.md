@@ -101,7 +101,7 @@ public void ConfigureServices(IServiceCollection services)
 
 # Brickweave.EventStore
 
-Includes base components to implement event-sourced aggregates and repositories. Snap-shotting/memento is not required and is not baked into these services and interfaces.
+Contains base components to implement event-sourced aggregates and repositories. Snap-shotting/memento is not required and is not baked into these services and interfaces. Brickweave's event store was heavily influenced by the [NEventStore](https://github.com/NEventStore/NEventStore) project.
 
 # Brickweave.EventStore.SqlServer
 
@@ -157,11 +157,52 @@ public void ConfigureServices(IServiceCollection services)
 
 # Brickweave.Messaging
 
-Description coming soon!
+Contains the `IDomainMessage` interface and `IDomainMessenger` service to support domain messaging implementation services.
+
+### Simple message example
+
+```csharp
+public class PersonCreated : IDomainEvent
+{
+    public PersonCreated(Guid id, string firstName, string lastName)
+    {
+        Id = id;
+        FirstName = firstName;
+        LastName = lastName;
+    }
+
+    public Guid Id { get; }
+    public string FirstName { get; }
+    public string LastName { get; }
+}
+```
+
+### Simple message sending example (injected IDomainMessenger)
+
+```csharp
+await _messenger.SendAsync(new PersonCreated(new Guid("{2CA40287-46E4-402C-B3CE-879A8B5A684F}"), "Adam", "Gartee"));
+```
 
 # Brickweave.Messaging.MessageBus
 
-Description coming soon!
+Contains services to support domain messaging via Azure Service Bus queues and topics.
+
+### Wiring-up the services (ASP.NET Core)
+
+Azure Service Bus requires key/value pairs to be defined in order to perform subscription filtering. The service configuration extensions support two kinds of message model to Azure Service Bus user property promotion: Global and message specific. Specifying one or more `AddGlobalUserPropertyStrategy` property names will auto-promote properties that share the message name to the `BrokeredMessage`'s `UserProperties` dictionary. Additionally, specific message types can be configured to perform custom `UserProperties` mappings.
+
+```csharp
+public void ConfigureServices(IServiceCollection services)
+{
+    services.AddMessageBus()
+        .ConfigureMessageSender(Configuration.GetConnectionString("serviceBus"), Configuration["serviceBusTopicOrQueue"])
+        .AddGlobalUserPropertyStrategy("Id")
+        .AddUserPropertyStrategy<PersonCreated>(@event => new Dictionary<string, object> { ["LastName"] = @event.LastName })
+        .AddUtf8Encoding()
+
+    ...
+}
+```
 
 # Brickweave.Cqrs.Cli
 

@@ -24,7 +24,7 @@ namespace Brickweave.Samples.Domain.Persons.Commands
 
             await _personRepository.SavePersonAsync(person);
             await _messenger.SendAsync(new PersonCreated(person.Id.Value, person.Name.FirstName, person.Name.LastName));
-
+            
             return person.ToInfo();
         }
     }

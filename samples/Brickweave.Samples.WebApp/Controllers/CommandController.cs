@@ -1,9 +1,11 @@
 ﻿using System.Threading.Tasks;
 using Brickweave.Cqrs.Cli;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Brickweave.Samples.WebApp.Controllers
 {
+    [Authorize]
     public class CommandController : Controller
     {
         private readonly IRunner _runner;

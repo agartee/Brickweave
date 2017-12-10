@@ -1,7 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Brickweave.Cqrs;
 using Brickweave.Messaging;
-using Brickweave.Samples.Domain.Persons.Events;
 using Brickweave.Samples.Domain.Persons.Models;
 using Brickweave.Samples.Domain.Persons.Services;
 
@@ -23,7 +22,7 @@ namespace Brickweave.Samples.Domain.Persons.Commands
             var person = new Person(command.Id, command.Name);
 
             await _personRepository.SavePersonAsync(person);
-            await _messenger.SendAsync(new PersonCreated(person.Id.Value, person.Name.FirstName, person.Name.LastName));
+            //await _messenger.SendAsync(new PersonCreated(person.Id.Value, person.Name.FirstName, person.Name.LastName));
             
             return person.ToInfo();
         }

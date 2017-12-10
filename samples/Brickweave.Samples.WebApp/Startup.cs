@@ -13,7 +13,6 @@ using Brickweave.Samples.Domain.Persons.Services;
 using Brickweave.Samples.Persistence.SqlServer;
 using Brickweave.Samples.Persistence.SqlServer.Repositories;
 using Brickweave.Samples.WebApp.Formatters;
-using Brickweave.Samples.WebApp.Logging;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -38,20 +37,44 @@ namespace Brickweave.Samples.WebApp
                 builder.AddUserSecrets<Startup>();
 
             Configuration = builder.Build();
-            ContentRootPath = env.ContentRootPath;
         }
 
         public IConfigurationRoot Configuration { get; }
-        public string ContentRootPath { get; }
-
+        
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc(options => { options.InputFormatters.Add(new PlainTextInputFormatter()); })
-                .AddJsonOptions(options =>
-                    options.SerializerSettings.Converters.Add(new IdConverter()))
-                .AddJsonOptions(options =>
-                    options.SerializerSettings.Formatting = Formatting.Indented);
+            ConfigureMvc(services);
+            ConfigureSecurity(services);
+            ConfigureBrickweave(services);
+        }
 
+        private void ConfigureMvc(IServiceCollection services)
+        {
+            services.AddMvcCore(options =>
+                {
+                  options.InputFormatters.Add(new PlainTextInputFormatter());  
+                })
+                .AddAuthorization()
+                .AddJsonFormatters(settings =>
+                {
+                    settings.Formatting = Formatting.Indented;
+                    settings.Converters.Add(new IdConverter());
+                });
+        }
+
+        protected virtual void ConfigureSecurity(IServiceCollection services)
+        {
+            services.AddAuthentication("Bearer")
+                .AddIdentityServerAuthentication(options =>
+                {
+                    options.Authority = Configuration["security:authority"];
+                    options.RequireHttpsMetadata = Convert.ToBoolean(Configuration["security:requireHttpsMetadata"]);
+                    options.ApiName = Configuration["security:apiName"];
+                });
+        }
+
+        private void ConfigureBrickweave(IServiceCollection services)
+        {
             var domainAssemblies = AppDomain.CurrentDomain.GetAssemblies()
                 .Where(a => a.FullName.StartsWith("Brickweave"))
                 .Where(a => a.FullName.Contains("Domain"))
@@ -74,7 +97,7 @@ namespace Brickweave.Samples.WebApp
                 .AddCli(domainAssemblies)
                     .AddCategoryHelpFile("cli-categories.json");
 
-            services.AddDbContext<SamplesContext>(options => 
+            services.AddDbContext<SamplesContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("brickweave_samples"),
                     sql => sql.MigrationsAssembly(migrationsAssembly)));
 
@@ -83,17 +106,11 @@ namespace Brickweave.Samples.WebApp
                 .AddScoped<IPersonInfoRepository, SqlServerPersonRepository>();
         }
 
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, 
-            ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
-            loggerFactory.AddConsole(Configuration.GetSection("Logging"));
+            loggerFactory.AddDebug();
 
-            if (env.IsDevelopment())
-            {
-                loggerFactory.AddDebug();
-                loggerFactory.AddProvider(new MyLoggerProvider());
-            }
-            
+            app.UseAuthentication();
             app.UseMvc();
 
             app.ApplicationServices.GetService<EventStoreContext>().Database.Migrate();

@@ -2,23 +2,37 @@
 using System.Net;
 using System.Net.Http;
 using Brickweave.Samples.WebApp.Tests.Extensions;
+using Brickweave.Samples.WebApp.Tests.Fixtures;
 using FluentAssertions;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.TestHost;
 using Newtonsoft.Json.Linq;
 using Xbehave;
 using Xunit;
 
 namespace Brickweave.Samples.WebApp.Tests.Features
 {
+    [Collection("WebApi Acceptance")]
     [Trait("Subject", "Integration")]
     public class PersonFeatures
     {
+        private readonly WebApiFixture _fixture;
+
+        public PersonFeatures(WebApiFixture fixture)
+        {
+            _fixture = fixture;
+        }
+
         [Scenario]
         public void CreatePerson(string firstName, string lastName,
-            HttpResponseMessage response)
+            HttpClient client, HttpResponseMessage response)
         {
-            "Given a first name of 'Adam'"
+            "Given the client is authenticated"
+                .x(async () =>
+                {
+                    var token = await _fixture.GetAuthorizationToken();
+                    client = _fixture.CreateApiClient(token);
+                });
+
+            "And the model specifies a first name of 'Adam'"
                 .x(() => firstName = "Adam");
 
             "and a last name of 'Gartee'"
@@ -27,10 +41,6 @@ namespace Brickweave.Samples.WebApp.Tests.Features
             "When a person is created through the API"
                 .x(async () =>
                 {
-                    var server = new TestServer(new WebHostBuilder()
-                        .UseEnvironment("Development")
-                        .UseStartup<Startup>());
-                    var client = server.CreateClient();
                     response = await client.PostAsync(
                         "/person/new", new
                         {
@@ -56,15 +66,18 @@ namespace Brickweave.Samples.WebApp.Tests.Features
 
         [Scenario]
         public void GetPerson(Guid id, string firstName, string lastName,
-            HttpResponseMessage response)
+            HttpClient client, HttpResponseMessage response)
         {
-            "Given a person exists with a first name of 'Adam' and last name of 'Gartee'"
+            "Given the client is authenticated"
                 .x(async () =>
                 {
-                    var server = new TestServer(new WebHostBuilder()
-                        .UseEnvironment("Development")
-                        .UseStartup<Startup>());
-                    var client = server.CreateClient();
+                    var token = await _fixture.GetAuthorizationToken();
+                    client = _fixture.CreateApiClient(token);
+                });
+
+            "And a person exists with a first name of 'Adam' and last name of 'Gartee'"
+                .x(async () =>
+                {
                     response = await client.PostAsync(
                         "/person/new", new
                         {
@@ -79,10 +92,6 @@ namespace Brickweave.Samples.WebApp.Tests.Features
             $"When a person is fetched through the API by ID ({id})"
                 .x(async () =>
                 {
-                    var server = new TestServer(new WebHostBuilder()
-                        .UseEnvironment("Development")
-                        .UseStartup<Startup>());
-                    var client = server.CreateClient();
                     response = await client.GetAsync(
                         $"/person/{id}");
                 });

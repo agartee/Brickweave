@@ -5,10 +5,12 @@ using Brickweave.Samples.Domain.Persons.Commands;
 using Brickweave.Samples.Domain.Persons.Models;
 using Brickweave.Samples.Domain.Persons.Queries;
 using Brickweave.Samples.WebApp.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Brickweave.Samples.WebApp.Controllers
 {
+    [Authorize]
     public class PersonController : Controller
     {
         private readonly ICommandExecutor _commandExecutor;

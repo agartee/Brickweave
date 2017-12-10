@@ -22,7 +22,7 @@ namespace Brickweave.Samples.WebApp.Data
                 .UseSqlServer(configuration.GetConnectionString("eventstore"),
                     sql => sql.MigrationsAssembly(migrationsAssembly))
                 .Options;
-            
+
             return new SamplesContext(options);
         }
     }

@@ -67,17 +67,7 @@ namespace Brickweave.Cqrs.Cli.Tests.Factories
 
             result.Should().Be(new DateTime(2018, 1, 1, 1, 1, 1));
         }
-
-        [Fact]
-        public void Create_WhenParameterIs_MMddyyyyhhmmsstt_String_ReturnsDateTime()
-        {
-            var factory = new DateTimeParameterFactory(new CultureInfo("en-US"));
-
-            var result = factory.Create(typeof(DateTime), "01/01/2018 01:01:01-0500");
-
-            result.Should().Be(new DateTime(2018, 1, 1, 1, 1, 1));
-        }
-
+        
         [Fact]
         public void Create_WhenParameterIsNull_ReturnsNull()
         {

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using Brickweave.Cqrs.Cli.DependencyInjection;
@@ -95,6 +96,7 @@ namespace Brickweave.Samples.WebApp
                     .AddUtf8Encoding()
                     .Services()
                 .AddCli(domainAssemblies)
+                    .AddDateParsingCulture(new CultureInfo("en-US"))
                     .AddCategoryHelpFile("cli-categories.json");
 
             services.AddDbContext<SamplesContext>(options =>

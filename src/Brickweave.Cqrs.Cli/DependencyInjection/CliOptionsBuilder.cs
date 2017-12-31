@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using Brickweave.Cqrs.Cli.Factories;
@@ -10,6 +11,7 @@ namespace Brickweave.Cqrs.Cli.DependencyInjection
     public class CliOptionsBuilder
     {
         private readonly IServiceCollection _services;
+        private CultureInfo _culture;
 
         public CliOptionsBuilder(IServiceCollection services, params Assembly[] domainAssemblies)
         {
@@ -25,6 +27,7 @@ namespace Brickweave.Cqrs.Cli.DependencyInjection
                 .AddScoped<IParameterValueFactory, WrappedBasicParameterValueFactory>()
                 .AddScoped<IParameterValueFactory, GuidParameterValueFactory>()
                 .AddScoped<IParameterValueFactory, WrappedGuidParameterValueFactory>()
+                .AddScoped<IParameterValueFactory>(s => new DateTimeParameterFactory(_culture))
                 .AddScoped<IExecutableFactory>(provider => new ExecutableFactory(
                     provider.GetServices<IParameterValueFactory>(),
                     executables))
@@ -40,6 +43,12 @@ namespace Brickweave.Cqrs.Cli.DependencyInjection
         public CliOptionsBuilder AddCategoryHelpFile(string filePath)
         {
             _services.AddScoped<ICategoryHelpReader>(services => new JsonFileCategoryHelpReader(filePath));
+            return this;
+        }
+
+        public CliOptionsBuilder AddDateParsingCulture(CultureInfo cultureInfo)
+        {
+            _culture = cultureInfo;
             return this;
         }
         

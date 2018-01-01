@@ -47,6 +47,7 @@ namespace Brickweave.Samples.WebApp
             ConfigureMvc(services);
             ConfigureSecurity(services);
             ConfigureBrickweave(services);
+            ConfigureCustomServices(services);
         }
 
         private void ConfigureMvc(IServiceCollection services)
@@ -80,14 +81,12 @@ namespace Brickweave.Samples.WebApp
                 .Where(a => a.FullName.StartsWith("Brickweave"))
                 .Where(a => a.FullName.Contains("Domain"))
                 .ToArray();
-
-            var migrationsAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
-
+            
             services
                 .AddCqrs(domainAssemblies)
                 .AddEventStore(domainAssemblies)
                     .AddDbContext(options => options.UseSqlServer(Configuration.GetConnectionString("brickweave_samples"),
-                        sql => sql.MigrationsAssembly(migrationsAssembly)))
+                        sql => sql.MigrationsAssembly(GetMigrationAssemblyName())))
                     .Services()
                 .AddMessageBus()
                     .ConfigureMessageSender(Configuration.GetConnectionString("serviceBus"), Configuration["serviceBusTopic"])
@@ -98,10 +97,13 @@ namespace Brickweave.Samples.WebApp
                 .AddCli(domainAssemblies)
                     .AddDateParsingCulture(new CultureInfo("en-US"))
                     .AddCategoryHelpFile("cli-categories.json");
+        }
 
+        private void ConfigureCustomServices(IServiceCollection services)
+        {
             services.AddDbContext<SamplesContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("brickweave_samples"),
-                    sql => sql.MigrationsAssembly(migrationsAssembly)));
+                    sql => sql.MigrationsAssembly(GetMigrationAssemblyName())));
 
             services
                 .AddScoped<IPersonRepository, SqlServerPersonRepository>()
@@ -117,6 +119,11 @@ namespace Brickweave.Samples.WebApp
 
             app.ApplicationServices.GetService<EventStoreContext>().Database.Migrate();
             app.ApplicationServices.GetService<SamplesContext>().Database.Migrate();
+        }
+
+        private static string GetMigrationAssemblyName()
+        {
+            return typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
         }
     }
 }

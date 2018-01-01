@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Brickweave.Cqrs.Cli;
+using Brickweave.Cqrs.Cli.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,7 +19,7 @@ namespace Brickweave.Samples.WebApp.Controllers
         [HttpPost, Route("/command/run")]
         public async Task<IActionResult> Run([FromBody]string payload)
         {
-            var result = await _runner.RunAsync(payload.Split(' '));
+            var result = await _runner.RunAsync(payload.SplitOnSpacesWithQuotes());
 
             return Ok(result);
         }

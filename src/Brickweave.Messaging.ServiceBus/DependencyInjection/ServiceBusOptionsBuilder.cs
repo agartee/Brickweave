@@ -23,7 +23,7 @@ namespace Brickweave.Messaging.ServiceBus.DependencyInjection
         public ServiceBusOptionsBuilder ConfigureMessageSender(
             string connectionString, string topicOrQueue, RetryPolicy retryPolicy = null)
         {
-            _services.AddScoped<IMessageSender>(s => new MessageSender(connectionString, topicOrQueue, retryPolicy ?? RetryPolicy.Default));
+            _services.AddSingleton<IMessageSender>(s => new MessageSender(connectionString, topicOrQueue, retryPolicy ?? RetryPolicy.Default));
             return this;
         }
 

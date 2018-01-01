@@ -4,9 +4,9 @@ namespace Brickweave.Cqrs.Tests.Models
 {
     public class TestCommandWithResultHandler : ICommandHandler<TestCommandWithResult, Result>
     {
-        public async Task<Result> HandleAsync(TestCommandWithResult command)
+        public Task<Result> HandleAsync(TestCommandWithResult command)
         {
-            return new Result(command.Value);
+            return Task.FromResult(new Result(command.Value));
         }
     }
 }

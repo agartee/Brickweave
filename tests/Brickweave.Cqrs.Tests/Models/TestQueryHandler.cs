@@ -4,9 +4,9 @@ namespace Brickweave.Cqrs.Tests.Models
 {
     public class TestQueryHandler : IQueryHandler<TestQuery, Result>
     {
-        public async Task<Result> HandleAsync(TestQuery query)
+        public Task<Result> HandleAsync(TestQuery query)
         {
-            return new Result(query.Value);
+            return Task.FromResult(new Result(query.Value));
         }
     }
 }

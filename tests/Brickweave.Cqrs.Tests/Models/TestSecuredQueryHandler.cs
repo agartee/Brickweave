@@ -5,9 +5,9 @@ namespace Brickweave.Cqrs.Tests.Models
 {
     public class TestSecuredQueryHandler : ISecuredQueryHandler<TestQuery, Result>
     {
-        public async Task<Result> HandleAsync(TestQuery query, ClaimsPrincipal principal)
+        public Task<Result> HandleAsync(TestQuery query, ClaimsPrincipal principal)
         {
-            return new Result(query.Value);
+            return Task.FromResult(new Result(query.Value));
         }
     }
 }

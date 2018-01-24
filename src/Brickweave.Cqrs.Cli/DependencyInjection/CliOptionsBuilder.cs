@@ -24,10 +24,17 @@ namespace Brickweave.Cqrs.Cli.DependencyInjection
                 .AddScoped<IExecutableInfoFactory, NamingConventionExecutableInfoFactory>()
                 .AddScoped<IHelpInfoFactory, HelpInfoFactory>()
                 .AddScoped<IParameterValueFactory, BasicParameterValueFactory>()
+                .AddScoped<ISingleParameterValueFactory, BasicParameterValueFactory>()
                 .AddScoped<IParameterValueFactory, WrappedBasicParameterValueFactory>()
+                .AddScoped<ISingleParameterValueFactory, WrappedBasicParameterValueFactory>()
                 .AddScoped<IParameterValueFactory, GuidParameterValueFactory>()
+                .AddScoped<ISingleParameterValueFactory, GuidParameterValueFactory>()
                 .AddScoped<IParameterValueFactory, WrappedGuidParameterValueFactory>()
-                .AddScoped<IParameterValueFactory>(s => new DateTimeParameterFactory(_culture))
+                .AddScoped<ISingleParameterValueFactory, WrappedGuidParameterValueFactory>()
+                .AddScoped<IParameterValueFactory>(s => new DateTimeParameterValueFactory(_culture))
+                .AddScoped<ISingleParameterValueFactory>(s => new DateTimeParameterValueFactory(_culture))
+                .AddScoped<IParameterValueFactory>(s => new EnumerableParameterValueFactory(s.GetServices<ISingleParameterValueFactory>()))
+                .AddScoped<IParameterValueFactory>(s => new ListParameterValueFactory(s.GetServices<ISingleParameterValueFactory>()))
                 .AddScoped<IExecutableFactory>(provider => new ExecutableFactory(
                     provider.GetServices<IParameterValueFactory>(),
                     executables))

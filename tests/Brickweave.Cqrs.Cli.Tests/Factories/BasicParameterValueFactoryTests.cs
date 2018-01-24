@@ -1,5 +1,6 @@
 ﻿using System;
 using Brickweave.Cqrs.Cli.Factories;
+using Brickweave.Cqrs.Cli.Models;
 using FluentAssertions;
 using Xunit;
 
@@ -26,8 +27,6 @@ namespace Brickweave.Cqrs.Cli.Tests.Factories
         [InlineData(typeof(char?))]
         [InlineData(typeof(bool))]
         [InlineData(typeof(bool?))]
-        [InlineData(typeof(DateTime))]
-        [InlineData(typeof(DateTime?))]
         [InlineData(typeof(string))]
         public void Qualifies_WhenSupportedTypeIsPassed_ReturnsTrue(Type type)
         {
@@ -53,7 +52,7 @@ namespace Brickweave.Cqrs.Cli.Tests.Factories
         {
             var factory = new BasicParameterValueFactory();
 
-            var result = factory.Create(typeof(string), "foo");
+            var result = factory.Create(typeof(string), new ExecutableParameterInfo("value", "foo"));
 
             result.Should().Be("foo");
         }
@@ -63,19 +62,9 @@ namespace Brickweave.Cqrs.Cli.Tests.Factories
         {
             var factory = new BasicParameterValueFactory();
 
-            var result = factory.Create(typeof(int), "123");
+            var result = factory.Create(typeof(int), new ExecutableParameterInfo("value", "123"));
 
             result.Should().Be(123);
-        }
-
-        [Fact]
-        public void Create_WhenTargetTypeIsDateTimeAndValueIsString_ReturnsDateTimeValue()
-        {
-            var factory = new BasicParameterValueFactory();
-
-            var result = factory.Create(typeof(DateTime), "1/1/2017");
-
-            result.Should().Be(new DateTime(2017, 1, 1));
         }
     }
 }

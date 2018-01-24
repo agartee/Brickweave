@@ -2,24 +2,25 @@
 using System.Linq;
 using System.Reflection;
 using Brickweave.Cqrs.Cli.Extensions;
+using Brickweave.Cqrs.Cli.Models;
 
 namespace Brickweave.Cqrs.Cli.Factories
 {
-    public class WrappedGuidParameterValueFactory : IParameterValueFactory
+    public class WrappedGuidParameterValueFactory : ISingleParameterValueFactory
     {
         public bool Qualifies(Type targetType)
         {
             return IsWrappedGuidType(targetType);
         }
 
-        public object Create(Type targetType, object parameterValue)
+        public object Create(Type targetType, ExecutableParameterInfo parameter)
         {
-            if (parameterValue.GetType() != typeof(string))
-                throw new InvalidOperationException($"Unsupported type for {typeof(IExecutable)}:{targetType} parameter conversion: {parameterValue.GetType()}");
+            if (parameter.SingleValue.GetType() != typeof(string))
+                throw new InvalidOperationException($"Unsupported type for {typeof(IExecutable)}:{targetType} parameter conversion: {parameter.SingleValue.GetType()}");
 
             var constructor = GetWrappedGuidConstructor(targetType);
 
-            return constructor.Invoke(new[] { (object) new Guid((string) parameterValue)});
+            return constructor.Invoke(new[] { (object) new Guid(parameter.SingleValue) });
         }
 
         private static ConstructorInfo GetWrappedGuidConstructor(Type type)

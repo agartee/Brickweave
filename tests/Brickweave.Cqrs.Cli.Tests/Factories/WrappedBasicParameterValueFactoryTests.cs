@@ -1,4 +1,5 @@
 ﻿using Brickweave.Cqrs.Cli.Factories;
+using Brickweave.Cqrs.Cli.Models;
 using Brickweave.Cqrs.Cli.Tests.Models;
 using FluentAssertions;
 using Xunit;
@@ -32,7 +33,7 @@ namespace Brickweave.Cqrs.Cli.Tests.Factories
         {
             var factory = new WrappedBasicParameterValueFactory();
 
-            var result = factory.Create(typeof(FooId), "1");
+            var result = factory.Create(typeof(FooId), new ExecutableParameterInfo("value", "1"));
 
             result.Should().BeOfType<FooId>();
             result.As<FooId>().Value.Should().Be("1");

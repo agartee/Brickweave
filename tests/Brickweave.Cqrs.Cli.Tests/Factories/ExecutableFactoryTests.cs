@@ -41,16 +41,15 @@ namespace Brickweave.Cqrs.Cli.Tests.Factories
         public void Create_WhenCommandAssemblyIsRegistered_CreatesCommand()
         {
             var factory = new ExecutableFactory(
-                new [] { new BasicParameterValueFactory() },
+                new IParameterValueFactory[] { new BasicParameterValueFactory(), new DateTimeParameterValueFactory(CultureInfo.InvariantCulture) },
                 new [] { typeof(CreateFoo) });
 
             var created = new DateTime(2017, 1, 1, 14, 0, 0);
-            var result = factory.Create(typeof(CreateFoo), new Dictionary<string, string>
-            {
-                ["bar"] = "something",
-                ["id"] = "12345",
-                ["datecreated"] = created.ToString(CultureInfo.InvariantCulture)
-            });
+            var result = factory.Create(
+                typeof(CreateFoo),
+                new ExecutableParameterInfo("bar", "something"),
+                new ExecutableParameterInfo("id", "12345"),
+                new ExecutableParameterInfo("datecreated", created.ToString(CultureInfo.InvariantCulture)));
 
             result.Should().NotBeNull();
             result.Should().BeOfType<CreateFoo>();
@@ -66,7 +65,7 @@ namespace Brickweave.Cqrs.Cli.Tests.Factories
                 new[] { new BasicParameterValueFactory() },
                 new[] { typeof(CreateFoo) });
 
-            var result = factory.Create(typeof(CreateFoo), new Dictionary<string, string>());
+            var result = factory.Create(typeof(CreateFoo));
 
             result.Should().NotBeNull();
             result.Should().BeOfType<CreateFoo>();
@@ -81,9 +80,8 @@ namespace Brickweave.Cqrs.Cli.Tests.Factories
                 new[] { typeof(CreateFoo) });
 
             var exception = Assert.Throws<TypeNotFoundException>(() => factory.Create(new ExecutableInfo(
-                "CreateFooBar", new Dictionary<string, string>())));
+                "CreateFooBar", Enumerable.Empty<ExecutableParameterInfo>())));
 
-            exception.Should().NotBeNull();
             exception.TypeShortName.Should().Be("CreateFooBar");
         }
 
@@ -93,20 +91,32 @@ namespace Brickweave.Cqrs.Cli.Tests.Factories
             var factory = new ExecutableFactory(
                 new[] { new BasicParameterValueFactory() },
                 new[] { typeof(CreateFoo) });
-
-            var parameters = new Dictionary<string, string>
+            
+            var parameters = new List<ExecutableParameterInfo>
             {
-                ["id"] = "1",
-                ["dateCreated"] = DateTime.Now.ToString(CultureInfo.InvariantCulture),
-                ["foo"] = "bar"
+                new ExecutableParameterInfo("id", "1"),
+                new ExecutableParameterInfo("dateCreated", DateTime.Now.ToString(CultureInfo.InvariantCulture)),
+                new ExecutableParameterInfo("foo", "bar")
             };
-
+            
             var exception = Assert.Throws<ConstructorNotFoundException>(() => 
                 factory.Create(new ExecutableInfo("CreateFoo", parameters)));
 
-            exception.Should().NotBeNull();
             exception.Type.Should().Be(typeof(CreateFoo));
-            exception.Parameters.Should().BeEquivalentTo(parameters.Keys.ToList());
+            exception.Parameters.Should().BeEquivalentTo(parameters.Select(p => p.Name).ToList());
+        }
+
+        [Fact]
+        public void Create_WhenNoParameterFactoryQualifiesForCommandConstructorParameterType_Throws()
+        {
+            var factory = new ExecutableFactory(
+                Enumerable.Empty<IParameterValueFactory>(),
+                new[] { typeof(CreateFoo) });
+
+            var exception = Assert.Throws<NoQualifyingParameterValueFactoryException>(() => factory.Create(new ExecutableInfo("CreateFoo", 
+                new [] { new ExecutableParameterInfo("id", "1") })));
+            
+            exception.TypeShortName.Should().Be("Int32");
         }
     }
 }

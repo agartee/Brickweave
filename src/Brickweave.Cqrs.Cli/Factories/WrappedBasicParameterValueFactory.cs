@@ -2,22 +2,23 @@
 using System.Linq;
 using System.Reflection;
 using Brickweave.Cqrs.Cli.Extensions;
+using Brickweave.Cqrs.Cli.Models;
 
 namespace Brickweave.Cqrs.Cli.Factories
 {
-    public class WrappedBasicParameterValueFactory : IParameterValueFactory
+    public class WrappedBasicParameterValueFactory : ISingleParameterValueFactory
     {
         public bool Qualifies(Type targetType)
         {
             return IsWrappedBasicType(targetType);
         }
 
-        public object Create(Type targetType, object parameterValue)
+        public object Create(Type targetType, ExecutableParameterInfo parameter)
         {
             var constructor = GetWrappedBasicConstructor(targetType);
             var parameterType = GetWrappedBasicType(targetType);
 
-            return constructor.Invoke(new [] { Convert.ChangeType(parameterValue, parameterType) });
+            return constructor.Invoke(new [] { Convert.ChangeType(parameter.SingleValue, parameterType) });
         }
 
         private static ConstructorInfo GetWrappedBasicConstructor(Type type)

@@ -19,7 +19,6 @@ namespace Brickweave.Cqrs.Tests
             var exception = await Assert.ThrowsAsync<CommandHandlerNotRegisteredException>(
                 () => commandExecutor.ExecuteAsync(new TestCommand()));
 
-            exception.Should().NotBeNull();
             exception.Command.Should().BeOfType<TestCommand>();
         }
 
@@ -29,11 +28,9 @@ namespace Brickweave.Cqrs.Tests
             var serviceProvider = Substitute.For<IServiceProvider>();
             var commandExecutor = new CommandExecutor(serviceProvider);
 
-            var exception = await Assert.ThrowsAsync<ArgumentNullException>(
+            await Assert.ThrowsAsync<ArgumentNullException>(
                 () => commandExecutor.ExecuteAsync(null));
-            
-            exception.Should().BeOfType<ArgumentNullException>();
-        }
+            }
 
         [Fact]
         public async Task ExecuteAsync_WhenHandlerIsRegistered_ExecutesHandler()

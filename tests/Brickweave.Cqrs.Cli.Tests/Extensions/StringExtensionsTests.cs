@@ -17,11 +17,11 @@ namespace Brickweave.Cqrs.Cli.Tests.Extensions
         }
 
         [Fact]
-        public void SplitArgs_WithSimpleWords_ReturnsCorrectArray()
+        public void ParseExecutableString_WithSimpleWords_ReturnsCorrectArray()
         {
             var input = "adam was here";
 
-            var result = input.SplitOnSpacesWithQuotes();
+            var result = input.ParseExecutableString();
 
             result[0].Should().Be("adam");
             result[1].Should().Be("was");
@@ -29,15 +29,75 @@ namespace Brickweave.Cqrs.Cli.Tests.Extensions
         }
 
         [Fact]
-        public void SplitArgs_WithWordsWrappedInDoubleQuotes_ReturnsCorrectArray()
+        public void ParseExecutableString_WithWordsWrappedInDoubleQuotes_ReturnsCorrectArray()
         {
             var input = "\"adam gartee\" was here";
 
-            var result = input.SplitOnSpacesWithQuotes();
+            var result = input.ParseExecutableString();
 
             result[0].Should().Be("adam gartee");
             result[1].Should().Be("was");
             result[2].Should().Be("here");
+        }
+
+        [Fact]
+        public void ParseExecutableString_WithWordsWrappedInDoubleQuotesAndContainsComma_ReturnsCorrectArray()
+        {
+            var input = "\"gartee, adam\" was here";
+
+            var result = input.ParseExecutableString();
+
+            result[0].Should().Be("gartee, adam");
+            result[1].Should().Be("was");
+            result[2].Should().Be("here");
+        }
+
+        [Fact]
+        public void ParseExecutableString_WithTrailingCommaInValue_ReturnsCorrectArray()
+        {
+            var input = "create foo --id 12345 --values a,b,c --iscool";
+
+            var result = input.ParseExecutableString();
+
+            result[0].Should().Be("create");
+            result[1].Should().Be("foo");
+            result[2].Should().Be("--id");
+            result[3].Should().Be("12345");
+            result[4].Should().Be("--values");
+            result[5].Should().Be("a~b~c");
+            result[6].Should().Be("--iscool");
+        }
+
+        [Fact]
+        public void ParseExecutableString_WithSpacesAndTrailingCommaInValue_ReturnsCorrectArray()
+        {
+            var input = "create foo --id 12345 --values a, b, c --iscool";
+
+            var result = input.ParseExecutableString();
+
+            result[0].Should().Be("create");
+            result[1].Should().Be("foo");
+            result[2].Should().Be("--id");
+            result[3].Should().Be("12345");
+            result[4].Should().Be("--values");
+            result[5].Should().Be("a~b~c");
+            result[6].Should().Be("--iscool");
+        }
+
+        [Fact]
+        public void ParseExecutableString_WithWordsWrappedInDoubleQuotesAndTrailingCommaInValue_ReturnsCorrectArray()
+        {
+            var input = "create foo --id 12345 --values \"a\", \"b\", \"c\" --iscool";
+
+            var result = input.ParseExecutableString();
+
+            result[0].Should().Be("create");
+            result[1].Should().Be("foo");
+            result[2].Should().Be("--id");
+            result[3].Should().Be("12345");
+            result[4].Should().Be("--values");
+            result[5].Should().Be("a~b~c");
+            result[6].Should().Be("--iscool");
         }
     }
 }

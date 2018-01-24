@@ -2,17 +2,13 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <VersionPrefix>0.6.1</VersionPrefix>
+    <VersionPrefix>0.7.0</VersionPrefix>
     <Authors>Adam Gartee</Authors>
     <Company>Adam Gartee</Company>
     <Description>Lightweight package adding command language interpreter (CLI) functionality to support the Brickweave.Cqrs library</Description>
     <PackageLicenseUrl>https://github.com/agartee/Brickweave/blob/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/agartee/Brickweave</PackageProjectUrl>
   </PropertyGroup>
-
-  <ItemGroup>
-    <Compile Remove="Splitter.cs" />
-  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="LiteGuard" Version="2.0.1" />

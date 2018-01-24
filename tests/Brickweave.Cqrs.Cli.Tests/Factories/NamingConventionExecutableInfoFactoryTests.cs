@@ -1,4 +1,5 @@
-﻿using Brickweave.Cqrs.Cli.Factories;
+﻿using System.Linq;
+using Brickweave.Cqrs.Cli.Factories;
 using FluentAssertions;
 using Xunit;
 
@@ -15,7 +16,7 @@ namespace Brickweave.Cqrs.Cli.Tests.Factories
 
             result.Name.Should().Be("CreateFoo");
             result.Parameters.Should().HaveCount(1);
-            result.Parameters["id"].Should().Be("12345");
+            result.Parameters.First(p => p.Name.Equals("id")).Values.First().Should().Be("12345");
         }
 
         [Fact]
@@ -27,7 +28,19 @@ namespace Brickweave.Cqrs.Cli.Tests.Factories
 
             result.Name.Should().Be("CreateFoo");
             result.Parameters.Should().HaveCount(1);
-            result.Parameters["iscool"].Should().Be("true");
+            result.Parameters.First(p => p.Name.Equals("iscool")).Values.First().Should().Be("true");
+        }
+
+        [Fact]
+        public void Parse_WhenArgHasMultipleParameterValues_ReturnsExecutableInfoWithMultipleParameterValues()
+        {
+            var factory = new NamingConventionExecutableInfoFactory();
+
+            var result = factory.Create(new[] { "foo", "create", "--ids", "1~2~3" });
+
+            result.Name.Should().Be("CreateFoo");
+            result.Parameters.Should().HaveCount(1);
+            result.Parameters.First().Values.Should().BeEquivalentTo("1", "2", "3");
         }
     }
 }

@@ -48,13 +48,12 @@ namespace Brickweave.Domain.Tests.Serialization
         public void ReadJson_Throws()
         {
             var converter = new IdConverter();
-            var exception = Record.Exception(() => converter.ReadJson(
+
+            Assert.Throws<NotSupportedException>(() => converter.ReadJson(
                 Arg.Any<JsonReader>(),
                 Arg.Any<Type>(),
                 Arg.Any<object>(),
                 Arg.Any<JsonSerializer>()));
-
-            exception.Should().BeOfType<NotSupportedException>();
         }
 
         public class MyId : Id<Guid>

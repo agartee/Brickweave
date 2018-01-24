@@ -1,5 +1,6 @@
 ﻿using System;
 using Brickweave.Cqrs.Cli.Factories;
+using Brickweave.Cqrs.Cli.Models;
 using Brickweave.Cqrs.Cli.Tests.Models;
 using FluentAssertions;
 using Xunit;
@@ -41,7 +42,7 @@ namespace Brickweave.Cqrs.Cli.Tests.Factories
         {
             var factory = new WrappedGuidParameterValueFactory();
 
-            var result = factory.Create(typeof(BarId), "{5AB66721-6713-4BDC-94EE-0C8BB28760D6}");
+            var result = factory.Create(typeof(BarId), new ExecutableParameterInfo("value", "{5AB66721-6713-4BDC-94EE-0C8BB28760D6}"));
 
             result.Should().BeOfType<BarId>();
             result.As<BarId>().Value.Should().Be(new Guid("{5AB66721-6713-4BDC-94EE-0C8BB28760D6}"));
@@ -52,9 +53,9 @@ namespace Brickweave.Cqrs.Cli.Tests.Factories
         {
             var factory = new WrappedGuidParameterValueFactory();
 
-            var exception = Assert.Throws<InvalidOperationException>(() => factory.Create(typeof(BarId), 1));
+            var exception = Assert.Throws<FormatException>(() => 
+                factory.Create(typeof(BarId), new ExecutableParameterInfo("value", "1")));
 
-            exception.Should().NotBeNull();
             _output.WriteLine(exception.Message);
         }
     }

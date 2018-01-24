@@ -1,27 +1,28 @@
 ﻿using System;
 using Brickweave.Cqrs.Cli.Extensions;
+using Brickweave.Cqrs.Cli.Models;
 
 namespace Brickweave.Cqrs.Cli.Factories
 {
-    public class BasicParameterValueFactory : IParameterValueFactory
+    public class BasicParameterValueFactory : ISingleParameterValueFactory
     {
         public bool Qualifies(Type targetType)
         {
             return targetType.IsBasicType();
         }
 
-        public object Create(Type targetType, object parameterValue)
+        public object Create(Type targetType, ExecutableParameterInfo parameter)
         {
             try
             {
                 return targetType == typeof(object)
-                    ? parameterValue
-                    : Convert.ChangeType(parameterValue, targetType);
+                    ? parameter.SingleValue
+                    : Convert.ChangeType(parameter.SingleValue, targetType);
             }
             catch (Exception ex)
             {
                 throw new InvalidOperationException(
-                    $"Unable to convert {parameterValue} to type {targetType}", ex);
+                    $"Unable to convert {parameter.SingleValue} to type {targetType}", ex);
             }
         }
     }

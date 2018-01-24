@@ -19,7 +19,6 @@ namespace Brickweave.Cqrs.Tests
             var exception = await Assert.ThrowsAsync<QueryHandlerNotRegisteredException>(
                 () => queryProcessor.ExecuteAsync(new TestQuery("1")));
 
-            exception.Should().NotBeNull();
             exception.Query.Should().BeOfType<TestQuery>();
         }
 

@@ -1,21 +1,19 @@
 ﻿using System;
 using Brickweave.Cqrs.Cli.Extensions;
+using Brickweave.Cqrs.Cli.Models;
 
 namespace Brickweave.Cqrs.Cli.Factories
 {
-    public class GuidParameterValueFactory : IParameterValueFactory
+    public class GuidParameterValueFactory : ISingleParameterValueFactory
     {
         public bool Qualifies(Type targetType)
         {
             return targetType.IsGuidType();
         }
 
-        public object Create(Type targetType, object parameterValue)
+        public object Create(Type targetType, ExecutableParameterInfo parameter)
         {
-            if(parameterValue.GetType() != typeof(string))
-                throw new InvalidOperationException($"Unsupported type for {typeof(IExecutable)}:{targetType} parameter conversion: {parameterValue.GetType()}");
-
-            return new Guid((string) parameterValue);
+            return new Guid(parameter.SingleValue);
         }
     }
 }

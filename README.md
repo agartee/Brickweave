@@ -46,26 +46,24 @@ Contains interface definitions for CQRS patterned commands and queries, as well 
 
 Commands and queries are separated to create clarity of intent within the application. This can be especially helpful for folks new to these patterns. Command and query handlers are services that define a single unit of work to process the request. This draws clear boundries around the action and should be contained within an applications domain layer as opposed to directly in the UI or buried within support services and surrounded with condition checking. 
 
-Command and Query processors also come in two flavors: standard (e.g. `ICommandHandler` and `IQueryHandler`) and secured (e.g. `ISecuredCommandHandler` and `ISecuredQueryHandler`). Secured handlers work just like standard ones, but the secured versions are intended to perform authorization checks within the handler, and thus require a `ClaimsPrincipal` be passed along-side the command or query. No special action is required to differentiate between the two variants from the command/query executor level. The executor will find the right one.
+Command and Query handlers also come in two flavors: standard (e.g. `ICommandHandler` and `IQueryHandler`) and secured (e.g. `ISecuredCommandHandler` and `ISecuredQueryHandler`). Secured handlers work just like standard ones, but the secured versions are intended to perform authorization checks within the handler, and thus require a `ClaimsPrincipal` be passed along-side the command or query. No special action is required to differentiate between the two variants from the command/query executor level. The dispatcher service(s) will find the right one.
 
 ### Simple ASP.NET Controller example
 
 ```csharp
 public class PersonController : Controller
 {
-    private readonly ICommandExecutor _commandExecutor;
-    private readonly IQueryExecutor _queryExecutor;
-
-    public PersonController(ICommandExecutor commandExecutor, IQueryExecutor queryExecutor)
+    private readonly IDispatcher _dispatcher;
+    
+    public PersonController(IDispatcher dispatcher)
     {
-        _commandExecutor = commandExecutor;
-        _queryExecutor = queryExecutor;
+        _dispatcher = dispatcher;
     }
 
     [HttpGet, Route("/person/{id}")]
     public async Task<IActionResult> Get(Guid id)
     {
-        var result = await _queryExecutor.ExecuteAsync(new GetPerson(new PersonId(id)));
+        var result = await _dispatcher.DispatchQueryAsync(new GetPerson(new PersonId(id)));
 
         return Ok(result);
     }
@@ -73,7 +71,7 @@ public class PersonController : Controller
     [HttpPost, Route("/person/new")]
     public async Task<IActionResult> Create([FromBody] CreatePersonRequest request)
     {
-        var result = await _commandExecutor.ExecuteAsync(new CreatePerson(
+        var result = await _dispatcher.DispatchCommandAsync(new CreatePerson(
             PersonId.NewId(), new Name(request.FirstName, request.LastName)));
 
         return Ok(result);

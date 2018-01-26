@@ -3,6 +3,8 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using Brickweave.Cqrs.Cli.Factories;
+using Brickweave.Cqrs.Cli.Factories.Help;
+using Brickweave.Cqrs.Cli.Factories.ParameterValues;
 using Brickweave.Cqrs.Cli.Readers;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -20,7 +22,7 @@ namespace Brickweave.Cqrs.Cli.DependencyInjection
                 .ToList();
 
             services
-                .AddScoped<IRunner, Runner>()
+                .AddScoped<ICliDispatcher, CliDispatcher>()
                 .AddScoped<IExecutableInfoFactory, NamingConventionExecutableInfoFactory>()
                 .AddScoped<IHelpInfoFactory, HelpInfoFactory>()
                 .AddScoped<IParameterValueFactory, BasicParameterValueFactory>()

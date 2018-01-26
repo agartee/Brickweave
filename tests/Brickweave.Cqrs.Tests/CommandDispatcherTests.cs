@@ -8,13 +8,13 @@ using Xunit;
 
 namespace Brickweave.Cqrs.Tests
 {
-    public class CommandExecutorTests
+    public class CommandDispatcherTests
     {
         [Fact]
         public async Task ExecuteAsync_WhenCommandHandlerIsNotRegistered_Throws()
         {
             var serviceProvider = Substitute.For<IServiceProvider>();
-            var commandExecutor = new CommandExecutor(serviceProvider);
+            var commandExecutor = new CommandDispatcher(serviceProvider);
             
             var exception = await Assert.ThrowsAsync<CommandHandlerNotRegisteredException>(
                 () => commandExecutor.ExecuteAsync(new TestCommand()));
@@ -26,7 +26,7 @@ namespace Brickweave.Cqrs.Tests
         public async Task ExecuteAsync_WhenCommandIsNull_Throws()
         {
             var serviceProvider = Substitute.For<IServiceProvider>();
-            var commandExecutor = new CommandExecutor(serviceProvider);
+            var commandExecutor = new CommandDispatcher(serviceProvider);
 
             await Assert.ThrowsAsync<ArgumentNullException>(
                 () => commandExecutor.ExecuteAsync(null));
@@ -42,7 +42,7 @@ namespace Brickweave.Cqrs.Tests
             serviceProvider.GetService(typeof(ICommandHandler<TestCommand>))
                 .Returns(handler);
 
-            var commandExecutor = new CommandExecutor(serviceProvider);
+            var commandExecutor = new CommandDispatcher(serviceProvider);
             await commandExecutor.ExecuteAsync(new TestCommand());
 
             handlerWasCalled.Should().BeTrue();
@@ -58,7 +58,7 @@ namespace Brickweave.Cqrs.Tests
             serviceProvider.GetService(typeof(ISecuredCommandHandler<TestCommand>))
                 .Returns(handler);
 
-            var commandExecutor = new CommandExecutor(serviceProvider);
+            var commandExecutor = new CommandDispatcher(serviceProvider);
             await commandExecutor.ExecuteAsync(new TestCommand());
 
             handlerWasCalled.Should().BeTrue();
@@ -73,7 +73,7 @@ namespace Brickweave.Cqrs.Tests
             serviceProvider.GetService(typeof(ICommandHandler<TestCommandWithResult, Result>))
                 .Returns(handler);
 
-            var commandExecutor = new CommandExecutor(serviceProvider);
+            var commandExecutor = new CommandDispatcher(serviceProvider);
             var result = await commandExecutor.ExecuteAsync(new TestCommandWithResult("1"));
 
             result.Should().Be(new Result("1"));
@@ -88,7 +88,7 @@ namespace Brickweave.Cqrs.Tests
             serviceProvider.GetService(typeof(ISecuredCommandHandler<TestCommandWithResult, Result>))
                 .Returns(handler);
 
-            var commandExecutor = new CommandExecutor(serviceProvider);
+            var commandExecutor = new CommandDispatcher(serviceProvider);
             var result = await commandExecutor.ExecuteAsync(new TestCommandWithResult("1"));
 
             result.Should().Be(new Result("1"));

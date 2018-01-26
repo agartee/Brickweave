@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Linq;
 using Brickweave.Cqrs.Cli.Exceptions;
 using Brickweave.Cqrs.Cli.Factories;
+using Brickweave.Cqrs.Cli.Factories.ParameterValues;
 using Brickweave.Cqrs.Cli.Models;
 using Brickweave.Cqrs.Cli.Tests.Models;
 using FluentAssertions;

@@ -1,12 +1,12 @@
 ﻿using System;
-using Brickweave.Cqrs.Cli.Factories;
+using Brickweave.Cqrs.Cli.Factories.ParameterValues;
 using Brickweave.Cqrs.Cli.Models;
 using Brickweave.Cqrs.Cli.Tests.Models;
 using FluentAssertions;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace Brickweave.Cqrs.Cli.Tests.Factories
+namespace Brickweave.Cqrs.Cli.Tests.Factories.ParameterValues
 {
     public class GuidParameterValueFactoryTests
     {

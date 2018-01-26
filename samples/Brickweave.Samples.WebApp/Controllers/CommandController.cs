@@ -1,6 +1,5 @@
 ﻿using System.Threading.Tasks;
 using Brickweave.Cqrs.Cli;
-using Brickweave.Cqrs.Cli.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,18 +8,17 @@ namespace Brickweave.Samples.WebApp.Controllers
     [Authorize]
     public class CommandController : Controller
     {
-        private readonly IRunner _runner;
+        private readonly ICliDispatcher _cliDispatcher;
 
-        public CommandController(IRunner runner)
+        public CommandController(ICliDispatcher cliDispatcher)
         {
-            _runner = runner;
+            _cliDispatcher = cliDispatcher;
         }
 
         [HttpPost, Route("/command/run")]
-        public async Task<IActionResult> Run([FromBody]string payload)
+        public async Task<IActionResult> Run([FromBody]string commandText)
         {
-            var args = payload.ParseExecutableString();
-            var result = await _runner.RunAsync(args);
+            var result = await _cliDispatcher.DispatchAsync(commandText);
 
             return Ok(result);
         }

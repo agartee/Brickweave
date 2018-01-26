@@ -8,13 +8,13 @@ using Xunit;
 
 namespace Brickweave.Cqrs.Tests
 {
-    public class QueryExecutorTests
+    public class QueryDispatcherTests
     {
         [Fact]
         public async Task ExecuteAsync_WhenQueryHandlerIsNotRegistered_Throws()
         {
             var serviceLocator = Substitute.For<IServiceProvider>();
-            var queryProcessor = new QueryExecutor(serviceLocator);
+            var queryProcessor = new QueryDispatcher(serviceLocator);
 
             var exception = await Assert.ThrowsAsync<QueryHandlerNotRegisteredException>(
                 () => queryProcessor.ExecuteAsync(new TestQuery("1")));
@@ -26,7 +26,7 @@ namespace Brickweave.Cqrs.Tests
         public async Task ExecuteAsync_WhenQueryIsNull_Throws()
         {
             var serviceLocator = Substitute.For<IServiceProvider>();
-            var queryProcessor = new QueryExecutor(serviceLocator);
+            var queryProcessor = new QueryDispatcher(serviceLocator);
 
             var exception = await Assert.ThrowsAsync<ArgumentNullException>(
                 () => queryProcessor.ExecuteAsync(null));
@@ -43,7 +43,7 @@ namespace Brickweave.Cqrs.Tests
             serviceLocator.GetService(typeof(IQueryHandler<TestQuery, Result>))
                 .Returns(handler);
 
-            var queryProcessor = new QueryExecutor(serviceLocator);
+            var queryProcessor = new QueryDispatcher(serviceLocator);
             var result = await queryProcessor.ExecuteAsync(new TestQuery("1"));
 
             result.Should().Be(new Result("1"));
@@ -58,7 +58,7 @@ namespace Brickweave.Cqrs.Tests
             serviceLocator.GetService(typeof(IQueryHandler<TestQuery, Result>))
                 .Returns(handler);
 
-            var queryProcessor = new QueryExecutor(serviceLocator);
+            var queryProcessor = new QueryDispatcher(serviceLocator);
             var result = await queryProcessor.ExecuteAsync(new TestQuery("1"));
 
             result.Should().Be(new Result("1"));

@@ -13,7 +13,7 @@ namespace Brickweave.Cqrs.Cli.Extensions
             return char.ToUpper(s[0]) + s.Substring(1);
         }
 
-        public static string[] ParseExecutableString(this string s)
+        public static string[] ParseCommandText(this string s)
         {
             var results = new List<string>();
 

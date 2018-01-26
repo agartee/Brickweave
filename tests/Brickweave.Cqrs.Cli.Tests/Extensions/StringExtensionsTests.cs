@@ -17,11 +17,11 @@ namespace Brickweave.Cqrs.Cli.Tests.Extensions
         }
 
         [Fact]
-        public void ParseExecutableString_WithSimpleWords_ReturnsCorrectArray()
+        public void ParseCommandText_WithSimpleWords_ReturnsCorrectArray()
         {
             var input = "adam was here";
 
-            var result = input.ParseExecutableString();
+            var result = input.ParseCommandText();
 
             result[0].Should().Be("adam");
             result[1].Should().Be("was");
@@ -29,11 +29,11 @@ namespace Brickweave.Cqrs.Cli.Tests.Extensions
         }
 
         [Fact]
-        public void ParseExecutableString_WithWordsWrappedInDoubleQuotes_ReturnsCorrectArray()
+        public void ParseCommandText_WithWordsWrappedInDoubleQuotes_ReturnsCorrectArray()
         {
             var input = "\"adam gartee\" was here";
 
-            var result = input.ParseExecutableString();
+            var result = input.ParseCommandText();
 
             result[0].Should().Be("adam gartee");
             result[1].Should().Be("was");
@@ -41,11 +41,11 @@ namespace Brickweave.Cqrs.Cli.Tests.Extensions
         }
 
         [Fact]
-        public void ParseExecutableString_WithWordsWrappedInDoubleQuotesAndContainsComma_ReturnsCorrectArray()
+        public void ParseCommandText_WithWordsWrappedInDoubleQuotesAndContainsComma_ReturnsCorrectArray()
         {
             var input = "\"gartee, adam\" was here";
 
-            var result = input.ParseExecutableString();
+            var result = input.ParseCommandText();
 
             result[0].Should().Be("gartee, adam");
             result[1].Should().Be("was");
@@ -53,11 +53,11 @@ namespace Brickweave.Cqrs.Cli.Tests.Extensions
         }
 
         [Fact]
-        public void ParseExecutableString_WithTrailingCommaInValue_ReturnsCorrectArray()
+        public void ParseCommandText_WithTrailingCommaInValue_ReturnsCorrectArray()
         {
             var input = "create foo --id 12345 --values a,b,c --iscool";
 
-            var result = input.ParseExecutableString();
+            var result = input.ParseCommandText();
 
             result[0].Should().Be("create");
             result[1].Should().Be("foo");
@@ -69,11 +69,11 @@ namespace Brickweave.Cqrs.Cli.Tests.Extensions
         }
 
         [Fact]
-        public void ParseExecutableString_WithSpacesAndTrailingCommaInValue_ReturnsCorrectArray()
+        public void ParseCommandText_WithSpacesAndTrailingCommaInValue_ReturnsCorrectArray()
         {
             var input = "create foo --id 12345 --values a, b, c --iscool";
 
-            var result = input.ParseExecutableString();
+            var result = input.ParseCommandText();
 
             result[0].Should().Be("create");
             result[1].Should().Be("foo");
@@ -85,11 +85,11 @@ namespace Brickweave.Cqrs.Cli.Tests.Extensions
         }
 
         [Fact]
-        public void ParseExecutableString_WithWordsWrappedInDoubleQuotesAndTrailingCommaInValue_ReturnsCorrectArray()
+        public void ParseCommandText_WithWordsWrappedInDoubleQuotesAndTrailingCommaInValue_ReturnsCorrectArray()
         {
             var input = "create foo --id 12345 --values \"a\", \"b\", \"c\" --iscool";
 
-            var result = input.ParseExecutableString();
+            var result = input.ParseCommandText();
 
             result[0].Should().Be("create");
             result[1].Should().Be("foo");

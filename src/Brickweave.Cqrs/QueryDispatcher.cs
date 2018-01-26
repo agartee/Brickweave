@@ -8,11 +8,11 @@ using LiteGuard;
 
 namespace Brickweave.Cqrs
 {
-    public class QueryExecutor : IQueryExecutor
+    public class QueryDispatcher : IQueryDispatcher
     {
         private readonly IServiceProvider _serviceProvider;
 
-        public QueryExecutor(IServiceProvider serviceProvider)
+        public QueryDispatcher(IServiceProvider serviceProvider)
         {
             _serviceProvider = serviceProvider;
         }

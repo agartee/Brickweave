@@ -1,13 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Brickweave.Cqrs.Cli.Factories;
+using Brickweave.Cqrs.Cli.Factories.Help;
 using Brickweave.Cqrs.Cli.Models;
 using Brickweave.Cqrs.Cli.Readers;
 using FluentAssertions;
 using NSubstitute;
 using Xunit;
 
-namespace Brickweave.Cqrs.Cli.Tests.Factories
+namespace Brickweave.Cqrs.Cli.Tests.Factories.Help
 {
     public class HelpInfoFactoryTests
     {

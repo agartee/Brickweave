@@ -10,8 +10,9 @@ namespace Brickweave.Cqrs.DependencyInjection
         public static IServiceCollection AddCqrs(this IServiceCollection services, params Assembly[] domainAssemblies)
         {
             return services
-                .AddScoped<ICommandExecutor, CommandExecutor>()
-                .AddScoped<IQueryExecutor, QueryExecutor>()
+                .AddScoped<IDispatcher, Dispatcher>()
+                .AddScoped<ICommandDispatcher, CommandDispatcher>()
+                .AddScoped<IQueryDispatcher, QueryDispatcher>()
                 .AddHandlers(typeof(ICommandHandler<>), domainAssemblies)
                 .AddHandlers(typeof(ICommandHandler<,>), domainAssemblies)
                 .AddHandlers(typeof(ISecuredCommandHandler<>), domainAssemblies)
@@ -23,8 +24,8 @@ namespace Brickweave.Cqrs.DependencyInjection
         public static IServiceCollection AddCqrsExecutors(
             this IServiceCollection services, IServiceProvider domainServiceProvider)
         {
-            services.AddScoped(provider => domainServiceProvider.GetService<ICommandExecutor>());
-            services.AddScoped(provider => domainServiceProvider.GetService<IQueryExecutor>());
+            services.AddScoped(provider => domainServiceProvider.GetService<ICommandDispatcher>());
+            services.AddScoped(provider => domainServiceProvider.GetService<IQueryDispatcher>());
 
             return services;
         }

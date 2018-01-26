@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using Brickweave.Cqrs.Cli.Exceptions;
-using Brickweave.Cqrs.Cli.Factories;
+using Brickweave.Cqrs.Cli.Factories.ParameterValues;
 using Brickweave.Cqrs.Cli.Models;
 using Brickweave.Cqrs.Cli.Tests.Models;
 using FluentAssertions;
 using Xunit;
 
-namespace Brickweave.Cqrs.Cli.Tests.Factories
+namespace Brickweave.Cqrs.Cli.Tests.Factories.ParameterValues
 {
     public class EnumerableParameterValueFactoryTests
     {

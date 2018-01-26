@@ -2,7 +2,7 @@
 using Brickweave.Cqrs.Cli.Extensions;
 using Brickweave.Cqrs.Cli.Models;
 
-namespace Brickweave.Cqrs.Cli.Factories
+namespace Brickweave.Cqrs.Cli.Factories.ParameterValues
 {
     public class BasicParameterValueFactory : ISingleParameterValueFactory
     {

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using Brickweave.Cqrs.Cli.Exceptions;
 using Brickweave.Cqrs.Cli.Extensions;
+using Brickweave.Cqrs.Cli.Factories.ParameterValues;
 using Brickweave.Cqrs.Cli.Models;
 
 namespace Brickweave.Cqrs.Cli.Factories

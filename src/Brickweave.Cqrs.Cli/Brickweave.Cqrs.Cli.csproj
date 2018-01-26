@@ -8,7 +8,6 @@
     <Description>Lightweight package adding command language interpreter (CLI) functionality to support the Brickweave.Cqrs library</Description>
     <PackageLicenseUrl>https://github.com/agartee/Brickweave/blob/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/agartee/Brickweave</PackageProjectUrl>
-    <Version>0.7.1</Version>
   </PropertyGroup>
 
   <ItemGroup>

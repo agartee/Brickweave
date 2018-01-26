@@ -12,7 +12,7 @@ namespace Brickweave.Cqrs.Cli.Tests.Factories
 {
     public class ListParameterValueFactoryTests
     {
-        [Theory(Skip = "mysteriously failing from command line but passing in VS and executes as expected in production.")]
+        [Theory]
         [InlineData(typeof(List<string>))]
         [InlineData(typeof(List<FooId>))]
         [InlineData(typeof(IList<string>))]

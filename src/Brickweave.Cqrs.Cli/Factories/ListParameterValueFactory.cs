@@ -18,7 +18,8 @@ namespace Brickweave.Cqrs.Cli.Factories
 
         public bool Qualifies(Type targetType)
         {
-            return targetType == typeof(IList<>) || typeof(IList).IsAssignableFrom(targetType);
+            return targetType.IsGenericType && targetType.GetGenericTypeDefinition() == typeof(IList<>) 
+                || targetType.IsGenericType && targetType.GetGenericTypeDefinition() == typeof(List<>);
         }
 
         public object Create(Type targetType, ExecutableParameterInfo parameter)

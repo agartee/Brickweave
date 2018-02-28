@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Brickweave.Cqrs.Cli.Extensions;
 using Brickweave.Cqrs.Cli.Models;
@@ -48,12 +47,10 @@ namespace Brickweave.Cqrs.Cli.Factories
                     var paramName = arg.Substring(2);
 
                     var paramValues = ParameterHasValue(i)
-                        ? args[i + 1]
+                        ? GetParamValues(i)
                         : GetArglessParameterDefaultValue();
 
-                    parameters.Add(new ExecutableParameterInfo(paramName, 
-                        paramValues.Split(new []{ MultiParameterValueSeparator.Default }, StringSplitOptions.None)));
-                    
+                    parameters.Add(new ExecutableParameterInfo(paramName, paramValues));
                     i++;
                 }
 
@@ -64,9 +61,22 @@ namespace Brickweave.Cqrs.Cli.Factories
                     return args.Length > i + 1 && !args[i + 1].StartsWith("-");
                 }
 
-                string GetArglessParameterDefaultValue()
+                string[] GetParamValues(int i)
                 {
-                    return "true";
+                    var results = new List<string>();
+
+                    for (int j = i; j < args.Length; j++)
+                    {
+                        if (!args[j].StartsWith("-"))
+                            results.Add(args[j]);
+                    }
+
+                    return results.ToArray();
+                }
+
+                string[] GetArglessParameterDefaultValue()
+                {
+                    return new [] { "true" };
                 }
             }
         }

@@ -32,15 +32,15 @@ namespace Brickweave.Cqrs.Cli.Tests.Factories
         }
 
         [Fact]
-        public void Parse_WhenArgHasMultipleParameterValues_ReturnsExecutableInfoWithMultipleParameterValues()
+        public void Parse_WhenArgHasMultipleParameterValuesInSeparateArgs_ReturnsExecutableInfoWithMultipleParameterValues()
         {
             var factory = new NamingConventionExecutableInfoFactory();
 
-            var result = factory.Create(new[] { "foo", "create", "--ids", "1~2~3" });
+            var result = factory.Create(new[] { "foo", "create", "--ids", "1", "2" });
 
             result.Name.Should().Be("CreateFoo");
             result.Parameters.Should().HaveCount(1);
-            result.Parameters.First().Values.Should().BeEquivalentTo("1", "2", "3");
+            result.Parameters.First().Values.Should().BeEquivalentTo("1", "2");
         }
     }
 }

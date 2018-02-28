@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using Brickweave.Cqrs.Cli.Factories;
+﻿using System;
+using System.Linq;
 
 namespace Brickweave.Cqrs.Cli.Extensions
 {
@@ -15,79 +15,11 @@ namespace Brickweave.Cqrs.Cli.Extensions
 
         public static string[] ParseCommandText(this string s)
         {
-            var results = new List<string>();
-
-            var current = string.Empty;
-            var isInQuoteBlock = false;
-            var isInMultiValueBlock = false;
-
-            for (var i = 0; i < s.Length; i++)
-            {
-                var character = s[i];
-
-                switch (character)
-                {
-                    case ' ':
-                        if (isInQuoteBlock)
-                        {
-                            current += character;
-                            break;
-                        }
-                        
-                        if (isInMultiValueBlock)
-                        {
-                            for (var j = i + 1; j < s.Length; j++)
-                            {
-                                if (s[j] == '-')
-                                {
-                                    isInMultiValueBlock = false;
-                                    results.Add(current);
-                                    current = string.Empty;
-                                    break;
-                                }
-
-                                if (s[j] != ' ')
-                                {
-                                    break;
-                                }
-                            }
-                        }
-
-                        else
-                        {
-                            results.Add(current);
-                            current = string.Empty;
-                        }
-                        
-                        break;
-                    case '"':
-                        isInQuoteBlock = !isInQuoteBlock;
-                        break;
-                    case ',':
-                        if (isInQuoteBlock)
-                        {
-                            current += character;
-                            break;
-                        }
-
-                        if (isInMultiValueBlock)
-                        {
-                            current += MultiParameterValueSeparator.Default;
-                            break;
-                        }
-
-                        isInMultiValueBlock = true;
-                        current += MultiParameterValueSeparator.Default;
-                        break;
-                    default:
-                        current += character;
-                        break;
-                }
-            }
-
-            results.Add(current);
-
-            return results.ToArray();
+            return s.Split('"')
+                .Select((element, index) => index % 2 == 0
+                    ? element.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)
+                    : new[] { element })
+                .SelectMany(element => element).ToArray();
         }
     }
 }

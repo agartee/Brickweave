@@ -51,53 +51,5 @@ namespace Brickweave.Cqrs.Cli.Tests.Extensions
             result[1].Should().Be("was");
             result[2].Should().Be("here");
         }
-
-        [Fact]
-        public void ParseCommandText_WithTrailingCommaInValue_ReturnsCorrectArray()
-        {
-            var input = "create foo --id 12345 --values a,b,c --iscool";
-
-            var result = input.ParseCommandText();
-
-            result[0].Should().Be("create");
-            result[1].Should().Be("foo");
-            result[2].Should().Be("--id");
-            result[3].Should().Be("12345");
-            result[4].Should().Be("--values");
-            result[5].Should().Be("a~b~c");
-            result[6].Should().Be("--iscool");
-        }
-
-        [Fact]
-        public void ParseCommandText_WithSpacesAndTrailingCommaInValue_ReturnsCorrectArray()
-        {
-            var input = "create foo --id 12345 --values a, b, c --iscool";
-
-            var result = input.ParseCommandText();
-
-            result[0].Should().Be("create");
-            result[1].Should().Be("foo");
-            result[2].Should().Be("--id");
-            result[3].Should().Be("12345");
-            result[4].Should().Be("--values");
-            result[5].Should().Be("a~b~c");
-            result[6].Should().Be("--iscool");
-        }
-
-        [Fact]
-        public void ParseCommandText_WithWordsWrappedInDoubleQuotesAndTrailingCommaInValue_ReturnsCorrectArray()
-        {
-            var input = "create foo --id 12345 --values \"a\", \"b\", \"c\" --iscool";
-
-            var result = input.ParseCommandText();
-
-            result[0].Should().Be("create");
-            result[1].Should().Be("foo");
-            result[2].Should().Be("--id");
-            result[3].Should().Be("12345");
-            result[4].Should().Be("--values");
-            result[5].Should().Be("a~b~c");
-            result[6].Should().Be("--iscool");
-        }
     }
 }

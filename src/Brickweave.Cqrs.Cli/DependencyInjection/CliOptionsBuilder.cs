@@ -20,7 +20,7 @@ namespace Brickweave.Cqrs.Cli.DependencyInjection
             var executables = domainAssemblies.SelectMany(a => a.ExportedTypes)
                 .Where(t => typeof(IExecutable).IsAssignableFrom(t.GetTypeInfo()))
                 .ToList();
-
+            
             services
                 .AddScoped<ICliDispatcher, CliDispatcher>()
                 .AddScoped<IExecutableInfoFactory, NamingConventionExecutableInfoFactory>()

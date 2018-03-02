@@ -51,5 +51,26 @@ namespace Brickweave.Cqrs.Cli.Tests.Extensions
             result[1].Should().Be("was");
             result[2].Should().Be("here");
         }
+
+        [Fact]
+        public void Wrap_WithStringNotExceedingLimit_ReturnsSingleLine()
+        {
+            var input = "Adam was here";
+
+            var result = input.Wrap(15);
+
+            result[0].Should().Be(input);
+        }
+
+        [Fact]
+        public void Wrap_WithStringExceedingLimit_ReturnsTwoLines()
+        {
+            var input = "Adam was here";
+
+            var result = input.Wrap(10);
+
+            result[0].Should().Be("Adam was");
+            result[1].Should().Be("here");
+        }
     }
 }

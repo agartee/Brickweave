@@ -40,7 +40,7 @@ namespace Brickweave.Cqrs.Cli.DependencyInjection
                 .AddScoped<IExecutableFactory>(provider => new ExecutableFactory(
                     provider.GetServices<IParameterValueFactory>(),
                     executables))
-                .AddScoped<IExecutableHelpReader>(s => new NamingConventionXmlDocumentationFileHelpReader(domainAssemblies
+                .AddScoped<IExecutableHelpReader>(s => new XmlDocumentationFileHelpReader(domainAssemblies
                     .Select(a => Path.Combine(
                         Path.GetDirectoryName(a.Location), 
                         $"{a.GetName().Name}.xml"))

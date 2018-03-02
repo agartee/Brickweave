@@ -17,7 +17,7 @@
             <param name="bar">Bar parameter</param>
         </member>
       
-      <member name="T:Brickweave.Cqrs.Cli.Tests.Models.CreateBar">
+        <member name="T:Brickweave.Cqrs.Cli.Tests.Models.CreateBar">
             <summary>
             Create new Bar
             </summary>
@@ -29,5 +29,30 @@
             <param name="id">Id parameter</param>
             <param name="foo">Foo parameter</param>
         </member>
+
+        <member name="T:Brickweave.Cqrs.Cli.Tests.Models.ListFoos">
+          <summary>
+            List Foos
+          </summary>
+        </member>
+        <member name="M:Brickweave.Cqrs.Cli.Tests.Models.ListFoos.#ctor()">
+          <summary>
+            List Foos
+          </summary>
+          <subject>foo</subject>
+        </member>
+
+        <member name="T:Brickweave.Cqrs.Cli.Tests.Models.ListBars">
+          <summary>
+            Get Bars
+          </summary>
+        </member>
+        <member name="M:Brickweave.Cqrs.Cli.Tests.Models.ListBars.#ctor()">
+          <summary>
+            Get Bars
+          </summary>
+          <action>get</action>
+        </member>
+
     </members>
 </doc>

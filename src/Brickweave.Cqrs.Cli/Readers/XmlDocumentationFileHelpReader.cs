@@ -11,11 +11,11 @@ using LiteGuard;
 
 namespace Brickweave.Cqrs.Cli.Readers
 {
-    public class NamingConventionXmlDocumentationFileHelpReader : IExecutableHelpReader
+    public class XmlDocumentationFileHelpReader : IExecutableHelpReader
     {
         private readonly string[] _filePaths;
 
-        public NamingConventionXmlDocumentationFileHelpReader(params string[] filePaths)
+        public XmlDocumentationFileHelpReader(params string[] filePaths)
         {
             _filePaths = filePaths;
         }
@@ -57,9 +57,8 @@ namespace Brickweave.Cqrs.Cli.Readers
 
             HelpInfo CreateHelpInfo(XElement constructorElement)
             {
-                var splitTypeName = SplitTypeName(GetTypeName(constructorElement));
-                var subjectName = string.Join(" ", splitTypeName.Skip(1));
-                var actionName = splitTypeName.First();
+                var subjectName = GetSubjectName(constructorElement);
+                var actionName = GetActionName(constructorElement);
 
                 return new HelpInfo(
                     actionName,
@@ -74,7 +73,21 @@ namespace Brickweave.Cqrs.Cli.Readers
                             HelpInfoType.Parameter))
                         .ToArray());
             }
-            
+
+            string GetSubjectName(XElement constructorElement)
+            {
+                var result = constructorElement.Element("subject")?.Value;
+
+                return result ?? string.Join(" ", SplitTypeName(GetTypeName(constructorElement)).Skip(1));
+            }
+
+            string GetActionName(XElement constructorElement)
+            {
+                var result = constructorElement.Element("action")?.Value;
+
+                return result ?? SplitTypeName(GetTypeName(constructorElement)).First();
+            }
+
             string GetTypeName(XElement constructorElement)
             {
                 return constructorElement.Attribute("name").Value

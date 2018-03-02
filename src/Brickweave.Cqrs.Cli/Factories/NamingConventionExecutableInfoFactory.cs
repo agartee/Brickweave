@@ -65,10 +65,12 @@ namespace Brickweave.Cqrs.Cli.Factories
                 {
                     var results = new List<string>();
 
-                    for (int j = i; j < args.Length; j++)
+                    for (var j = i + 1; j < args.Length; j++)
                     {
-                        if (!args[j].StartsWith("-"))
-                            results.Add(args[j]);
+                        if (args[j].StartsWith("-"))
+                            break;
+
+                        results.Add(args[j]);
                     }
 
                     return results.ToArray();

@@ -16,7 +16,8 @@ namespace Brickweave.Cqrs.Cli.Tests.Factories
 
             result.Name.Should().Be("CreateFoo");
             result.Parameters.Should().HaveCount(1);
-            result.Parameters.First(p => p.Name.Equals("id")).Values.First().Should().Be("12345");
+            result.Parameters.First(p => p.Name.Equals("id"))
+                .Values.First().Should().Be("12345");
         }
 
         [Fact]
@@ -28,7 +29,8 @@ namespace Brickweave.Cqrs.Cli.Tests.Factories
 
             result.Name.Should().Be("CreateFoo");
             result.Parameters.Should().HaveCount(1);
-            result.Parameters.First(p => p.Name.Equals("iscool")).Values.First().Should().Be("true");
+            result.Parameters.First(p => p.Name.Equals("iscool"))
+                .Values.First().Should().Be("true");
         }
 
         [Fact]
@@ -40,7 +42,24 @@ namespace Brickweave.Cqrs.Cli.Tests.Factories
 
             result.Name.Should().Be("CreateFoo");
             result.Parameters.Should().HaveCount(1);
-            result.Parameters.First().Values.Should().BeEquivalentTo("1", "2");
+
+            result.Parameters.First(p => p.Name.Equals("ids"))
+                .Values.Should().BeEquivalentTo("1", "2");
+        }
+
+        [Fact]
+        public void Parse_WhenArgHasMultipleMultiParameterValuesInSeparateArgs_ReturnsExecutableInfoWithMultipleParameterValues()
+        {
+            var factory = new NamingConventionExecutableInfoFactory();
+
+            var result = factory.Create(new[] { "foo", "create", "--ids", "1", "2", "--other" , "a", "b" });
+
+            result.Name.Should().Be("CreateFoo");
+            result.Parameters.Should().HaveCount(2);
+            result.Parameters.First(p => p.Name.Equals("ids"))
+                .Values.Should().BeEquivalentTo("1", "2");
+            result.Parameters.First(p => p.Name.Equals("other"))
+                .Values.Should().BeEquivalentTo("a", "b");
         }
     }
 }

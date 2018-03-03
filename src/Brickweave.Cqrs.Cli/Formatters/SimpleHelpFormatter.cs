@@ -31,7 +31,7 @@ namespace Brickweave.Cqrs.Cli.Formatters
             void WriteParentInfoToConsole()
             {
                 stringBuilder.AppendLine();
-                stringBuilder.AppendLine(helpInfo.Type == HelpInfoType.Category ? "Group:" : "Command:");
+                stringBuilder.AppendLine(helpInfo.Type == HelpInfoType.Category ? "Category:" : "Command:");
                 stringBuilder.AppendLine();
 
                 FormatAndWriteToConsole(helpInfo.Name, helpInfo.Description);

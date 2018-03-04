@@ -2,7 +2,7 @@
 using Brickweave.Cqrs.Cli.Models;
 using Brickweave.Cqrs.Cli.Readers;
 
-namespace Brickweave.Cqrs.Cli.Factories.Help
+namespace Brickweave.Cqrs.Cli.Factories
 {
     public class HelpInfoFactory : IHelpInfoFactory
     {

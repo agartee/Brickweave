@@ -5,9 +5,6 @@
     </assembly>
     <members>
         <member name="T:Brickweave.Cqrs.Cli.Tests.Models.CreateFoo">
-            <summary>
-            Create new Foo
-            </summary>
         </member>
         <member name="M:Brickweave.Cqrs.Cli.Tests.Models.CreateFoo.#ctor(System.Int32,System.String)">
             <summary>
@@ -18,9 +15,6 @@
         </member>
       
         <member name="T:Brickweave.Cqrs.Cli.Tests.Models.CreateBar">
-            <summary>
-            Create new Bar
-            </summary>
         </member>
         <member name="M:Brickweave.Cqrs.Cli.Tests.Models.CreateBar.#ctor(System.Int32,System.String)">
             <summary>
@@ -31,27 +25,11 @@
         </member>
 
         <member name="T:Brickweave.Cqrs.Cli.Tests.Models.ListFoos">
+        </member>
+        <member name="M:Brickweave.Cqrs.Cli.Tests.Models.ListFoos.#ctor">
           <summary>
             List Foos
           </summary>
-        </member>
-        <member name="M:Brickweave.Cqrs.Cli.Tests.Models.ListFoos.#ctor()">
-          <summary>
-            List Foos
-          </summary>
-          <subject>foo</subject>
-        </member>
-
-        <member name="T:Brickweave.Cqrs.Cli.Tests.Models.ListBars">
-          <summary>
-            Get Bars
-          </summary>
-        </member>
-        <member name="M:Brickweave.Cqrs.Cli.Tests.Models.ListBars.#ctor()">
-          <summary>
-            Get Bars
-          </summary>
-          <action>get</action>
         </member>
 
     </members>

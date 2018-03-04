@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
 using Brickweave.Cqrs.Cli.Exceptions;
+using Brickweave.Cqrs.Cli.Factories;
 using Brickweave.Cqrs.Cli.Models;
 using LiteGuard;
 
@@ -14,9 +15,16 @@ namespace Brickweave.Cqrs.Cli.Readers
     public class XmlDocumentationFileHelpReader : IExecutableHelpReader
     {
         private readonly string[] _filePaths;
+        private readonly IEnumerable<IExecutableRegistration> _executableRegistrations;
 
-        public XmlDocumentationFileHelpReader(params string[] filePaths)
+        public XmlDocumentationFileHelpReader(params string[] filePaths) 
+            : this(Enumerable.Empty<IExecutableRegistration>(), filePaths)
         {
+        }
+
+        public XmlDocumentationFileHelpReader(IEnumerable<IExecutableRegistration> executableRegistrations, params string[] filePaths)
+        {
+            _executableRegistrations = executableRegistrations;
             _filePaths = filePaths;
         }
         
@@ -27,7 +35,7 @@ namespace Brickweave.Cqrs.Cli.Readers
                 .ToList();
         }
 
-        private static IEnumerable<HelpInfo> Read(string filePath, HelpAdjacencyCriteria adjacencyCriteria)
+        private IEnumerable<HelpInfo> Read(string filePath, HelpAdjacencyCriteria adjacencyCriteria)
         {
             Guard.AgainstNullArgument(nameof(adjacencyCriteria), adjacencyCriteria);
 
@@ -57,8 +65,10 @@ namespace Brickweave.Cqrs.Cli.Readers
 
             HelpInfo CreateHelpInfo(XElement constructorElement)
             {
-                var subjectName = GetSubjectName(constructorElement);
-                var actionName = GetActionName(constructorElement);
+                var typeName = GetTypeName(constructorElement);
+
+                var subjectName = GetSubjectName(typeName);
+                var actionName = GetActionName(typeName);
 
                 return new HelpInfo(
                     actionName,
@@ -74,18 +84,24 @@ namespace Brickweave.Cqrs.Cli.Readers
                         .ToArray());
             }
 
-            string GetSubjectName(XElement constructorElement)
+            string GetSubjectName(string typeName)
             {
-                var result = constructorElement.Element("subject")?.Value;
+                var registered = _executableRegistrations
+                    .FirstOrDefault(r => r.Type.Name == typeName);
 
-                return result ?? string.Join(" ", SplitTypeName(GetTypeName(constructorElement)).Skip(1));
+                return registered != null
+                    ? registered.SubjectName
+                    : string.Join(" ", SplitTypeName(typeName).Skip(1));
             }
 
-            string GetActionName(XElement constructorElement)
+            string GetActionName(string typeName)
             {
-                var result = constructorElement.Element("action")?.Value;
+                var registered = _executableRegistrations
+                    .FirstOrDefault(r => r.Type.Name == typeName);
 
-                return result ?? SplitTypeName(GetTypeName(constructorElement)).First();
+                return registered != null
+                    ? registered.ActionName
+                    : SplitTypeName(typeName).First();
             }
 
             string GetTypeName(XElement constructorElement)

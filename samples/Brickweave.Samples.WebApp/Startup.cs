@@ -10,6 +10,7 @@ using Brickweave.EventStore.SqlServer;
 using Brickweave.EventStore.SqlServer.DependencyInjection;
 using Brickweave.Messaging.ServiceBus.DependencyInjection;
 using Brickweave.Samples.Domain.Persons.Events;
+using Brickweave.Samples.Domain.Persons.Queries;
 using Brickweave.Samples.Domain.Persons.Services;
 using Brickweave.Samples.Persistence.SqlServer;
 using Brickweave.Samples.Persistence.SqlServer.Repositories;
@@ -96,7 +97,8 @@ namespace Brickweave.Samples.WebApp
                     .Services()
                 .AddCli(domainAssemblies)
                     .AddDateParsingCulture(new CultureInfo("en-US"))
-                    .AddCategoryHelpFile("cli-categories.json");
+                    .AddCategoryHelpFile("cli-categories.json")
+                    .OverrideQueryName<ListPersons>("list", "person");
         }
 
         private void ConfigureCustomServices(IServiceCollection services)

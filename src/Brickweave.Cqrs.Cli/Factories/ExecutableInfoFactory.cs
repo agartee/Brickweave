@@ -5,32 +5,61 @@ using Brickweave.Cqrs.Cli.Models;
 
 namespace Brickweave.Cqrs.Cli.Factories
 {
-    public class NamingConventionExecutableInfoFactory : IExecutableInfoFactory
+    public class ExecutableInfoFactory : IExecutableInfoFactory
     {
+        private readonly IEnumerable<IExecutableRegistration> _executableRegistrations;
+
+        public ExecutableInfoFactory(params IExecutableRegistration[] executableRegistrations)
+        {
+            _executableRegistrations = executableRegistrations;
+        }
+
         public ExecutableInfo Create(string[] args)
         {
             var firstParamIndex = GetFirstParamIndex();
             
-            return new ExecutableInfo(GetName(), GetParameters());
+            return new ExecutableInfo(
+                GetNameByRegistration() ?? GetNameByConvention(), 
+                GetParameters());
             
             int GetFirstParamIndex()
             {
-                return args
+                var firstParam = args
                     .Select((arg, index) => new { Value = arg, Index = index })
-                    .First(arg => arg.Value.StartsWith("-"))
-                    .Index;
+                    .FirstOrDefault(arg => arg.Value.StartsWith("-"));
+
+                return firstParam?.Index ?? args.Length;
             }
 
-            string GetName()
+            string GetNameByRegistration()
+            {
+                var nameParts = args
+                    .Take(firstParamIndex)
+                    .Select(p => p.ToLower())
+                    .ToList();
+
+                var actionName = nameParts[nameParts.Count - 1];
+                var subjectName = string.Join(" ", nameParts.Take(nameParts.Count - 1));
+
+                return _executableRegistrations
+                    .Where(r => r.SubjectName == subjectName)
+                    .FirstOrDefault(r => r.ActionName == actionName)?
+                    .Type.Name;
+            }
+
+            string GetNameByConvention()
             {
                 var nameParts = args
                     .Take(firstParamIndex)
                     .Select(p => p.UppercaseFirst())
                     .ToList();
 
-                var orderedNameParts = new List<string> { nameParts[nameParts.Count - 1] };
-                orderedNameParts.AddRange(nameParts.Take(nameParts.Count - 1));
+                var actionName = nameParts[nameParts.Count - 1];
+                var subjectNameParts = nameParts.Take(nameParts.Count - 1);
 
+                var orderedNameParts = new List<string> { actionName };
+                orderedNameParts.AddRange(subjectNameParts);
+                
                 return string.Join("", orderedNameParts);
             }
 

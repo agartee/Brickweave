@@ -1,6 +1,6 @@
 ﻿using Brickweave.Cqrs.Cli.Models;
 
-namespace Brickweave.Cqrs.Cli.Factories.Help
+namespace Brickweave.Cqrs.Cli.Factories
 {
     public interface IHelpInfoFactory
     {

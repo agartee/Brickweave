@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Brickweave.Cqrs.Cli.Exceptions;
+using Brickweave.Cqrs.Cli.Factories;
 using Brickweave.Cqrs.Cli.Models;
 using Brickweave.Cqrs.Cli.Readers;
+using Brickweave.Cqrs.Cli.Tests.Models;
 using FluentAssertions;
 using Xunit;
 
@@ -18,7 +21,7 @@ namespace Brickweave.Cqrs.Cli.Tests.Readers
             var results = reader.GetHelpInfo(new HelpAdjacencyCriteria("foo"))
                 .ToArray();
 
-            results.Should().HaveCount(2);
+            results.Should().HaveCount(1);
 
             var result1 = results.First(h => h.Name == "create");
             result1.Name.Should().Be("create");
@@ -40,13 +43,6 @@ namespace Brickweave.Cqrs.Cli.Tests.Readers
             result1Param2.Description.Should().Be("Bar parameter");
             result1Param2.Type.Should().Be(HelpInfoType.Parameter);
             result1Param2.Children.Should().HaveCount(0);
-
-            var result2 = results.First(h => h.Name == "list");
-            result2.Name.Should().Be("list");
-            result2.Subject.Should().Be("foo");
-            result2.Description.Should().Be("List Foos");
-            result2.Type.Should().Be(HelpInfoType.Executable);
-            result2.Children.Should().HaveCount(0);
         }
 
         [Fact]
@@ -82,9 +78,13 @@ namespace Brickweave.Cqrs.Cli.Tests.Readers
         }
 
         [Fact]
-        public void GetHelpInfo_WhenFileContainsDataForCommandWithExplicitSubject_ReturnsHelpInfo()
+        public void GetHelpInfo_WithRegisteredCommand_ReturnsHelpInfo()
         {
-            var reader = new XmlDocumentationFileHelpReader("Data\\Executables.xml");
+            var reader = new XmlDocumentationFileHelpReader(new List<IExecutableRegistration>
+                {
+                    new ExecutableRegistration<ListFoos>("list", "foo")
+                },
+                "Data\\Executables.xml");
 
             var results = reader.GetHelpInfo(new HelpAdjacencyCriteria("foo", "list"))
                 .ToArray();
@@ -98,25 +98,7 @@ namespace Brickweave.Cqrs.Cli.Tests.Readers
             result1.Type.Should().Be(HelpInfoType.Executable);
             result1.Children.Should().HaveCount(0);
         }
-
-        [Fact]
-        public void GetHelpInfo_WhenFileContainsDataForCommandWithExplicitAction_ReturnsHelpInfo()
-        {
-            var reader = new XmlDocumentationFileHelpReader("Data\\Executables.xml");
-
-            var results = reader.GetHelpInfo(new HelpAdjacencyCriteria("bars", "get"))
-                .ToArray();
-
-            results.Should().HaveCount(1);
-
-            var result1 = results.First(h => h.Name == "get");
-            result1.Name.Should().Be("get");
-            result1.Subject.Should().Be("bars");
-            result1.Description.Should().Be("Get Bars");
-            result1.Type.Should().Be(HelpInfoType.Executable);
-            result1.Children.Should().HaveCount(0);
-        }
-
+        
         [Fact]
         public void GetHelpInfo_WhenFileContainsNoData_ReturnsEmptyList()
         {

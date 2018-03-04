@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Brickweave.Cqrs.Cli.Factories;
-using Brickweave.Cqrs.Cli.Factories.Help;
 using Brickweave.Cqrs.Cli.Models;
 using Brickweave.Cqrs.Cli.Tests.Models;
 using FluentAssertions;

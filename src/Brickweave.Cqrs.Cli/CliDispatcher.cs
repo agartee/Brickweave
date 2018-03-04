@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using Brickweave.Cqrs.Cli.Extensions;
 using Brickweave.Cqrs.Cli.Factories;
-using Brickweave.Cqrs.Cli.Factories.Help;
 
 namespace Brickweave.Cqrs.Cli
 {

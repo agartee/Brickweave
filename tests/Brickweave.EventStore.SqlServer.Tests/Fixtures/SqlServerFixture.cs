@@ -27,7 +27,7 @@ namespace Brickweave.EventStore.SqlServer.Tests.Fixtures
 
         public void ClearDatabase()
         {
-            var sql = $"DELETE FROM [{DbContext.Schema}].[{EventData.TABLE_NAME}]";
+            var sql = $"DELETE FROM [{EventStoreContext.SCHEMA_NAME}].[{EventData.TABLE_NAME}]";
             DbContext.Database.ExecuteSqlCommand(sql);
         }
     }

@@ -5,18 +5,19 @@ namespace Brickweave.EventStore.SqlServer
 {
     public class EventStoreContext : DbContext
     {
-        public EventStoreContext(DbContextOptions<EventStoreContext> options, string schema = "EventStore")
+        public const string SCHEMA_NAME = "EventStore";
+
+        public EventStoreContext(DbContextOptions options)
             : base(options)
         {
-            Schema = schema;
+            
         }
 
-        public string Schema { get; }
         public DbSet<EventData> Events { get; set; }
         
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.HasDefaultSchema(Schema);
+            modelBuilder.HasDefaultSchema(SCHEMA_NAME);
 
             base.OnModelCreating(modelBuilder);
         }

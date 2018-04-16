@@ -1,7 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Brickweave.Cqrs;
 using Brickweave.Messaging;
-using Brickweave.Samples.Domain.Persons.Events;
 using Brickweave.Samples.Domain.Persons.Models;
 using Brickweave.Samples.Domain.Persons.Services;
 

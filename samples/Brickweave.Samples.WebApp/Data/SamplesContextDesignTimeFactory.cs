@@ -19,7 +19,7 @@ namespace Brickweave.Samples.WebApp.Data
             var migrationsAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
 
             var options = new DbContextOptionsBuilder<SamplesDbContext>()
-                .UseSqlServer(configuration.GetConnectionString("eventstore"),
+                .UseSqlServer(configuration.GetConnectionString("brickweave_samples"),
                     sql => sql.MigrationsAssembly(migrationsAssembly))
                 .Options;
 

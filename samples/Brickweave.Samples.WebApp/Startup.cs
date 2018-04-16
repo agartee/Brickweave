@@ -6,7 +6,6 @@ using System.Reflection;
 using Brickweave.Cqrs.Cli.DependencyInjection;
 using Brickweave.Cqrs.DependencyInjection;
 using Brickweave.Domain.Serialization;
-using Brickweave.EventStore.SqlServer;
 using Brickweave.EventStore.SqlServer.DependencyInjection;
 using Brickweave.Messaging.ServiceBus.DependencyInjection;
 using Brickweave.Samples.Domain.Persons.Events;

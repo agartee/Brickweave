@@ -6,9 +6,9 @@ using Brickweave.EventStore.SqlServer.Tests.Models;
 
 namespace Brickweave.EventStore.SqlServer.Tests.Repositories
 {
-    public class TestSqlServerAggregateRepository : SqlServerAggregateRepository<TestAggregate>
+    public class TestSqlServerAggregateRepository : SqlServerAggregateRepository<TestAggregate, EventStoreDbContext>
     {
-        public TestSqlServerAggregateRepository(EventStoreContext dbContext, IDocumentSerializer serializer, 
+        public TestSqlServerAggregateRepository(EventStoreDbContext dbContext, IDocumentSerializer serializer, 
             IAggregateFactory aggregateFactory) : base(dbContext, serializer, aggregateFactory)
         {
             

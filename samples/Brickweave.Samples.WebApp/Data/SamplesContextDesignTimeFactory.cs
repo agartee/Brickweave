@@ -7,9 +7,9 @@ using Microsoft.Extensions.Configuration;
 
 namespace Brickweave.Samples.WebApp.Data
 {
-    public class SamplesContextDesignTimeFactory : IDesignTimeDbContextFactory<SamplesContext>
+    public class SamplesContextDesignTimeFactory : IDesignTimeDbContextFactory<SamplesDbContext>
     {
-        public SamplesContext CreateDbContext(string[] args)
+        public SamplesDbContext CreateDbContext(string[] args)
         {
             var configuration = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
@@ -18,12 +18,12 @@ namespace Brickweave.Samples.WebApp.Data
 
             var migrationsAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
 
-            var options = new DbContextOptionsBuilder<SamplesContext>()
+            var options = new DbContextOptionsBuilder<SamplesDbContext>()
                 .UseSqlServer(configuration.GetConnectionString("eventstore"),
                     sql => sql.MigrationsAssembly(migrationsAssembly))
                 .Options;
 
-            return new SamplesContext(options);
+            return new SamplesDbContext(options);
         }
     }
 }

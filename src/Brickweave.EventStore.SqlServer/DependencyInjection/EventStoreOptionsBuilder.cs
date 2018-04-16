@@ -27,7 +27,7 @@ namespace Brickweave.EventStore.SqlServer.DependencyInjection
         
         public EventStoreOptionsBuilder AddDbContext(Action<DbContextOptionsBuilder> optionsAction)
         {
-            _services.AddDbContext<EventStoreContext>(optionsAction);
+            _services.AddDbContext<EventStoreDbContext>(optionsAction);
             return this;
         }
         

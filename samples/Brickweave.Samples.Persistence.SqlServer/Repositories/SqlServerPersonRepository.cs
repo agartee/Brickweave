@@ -9,11 +9,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Brickweave.Samples.Persistence.SqlServer.Repositories
 {
-    public class SqlServerPersonRepository : SqlServerAggregateRepository<Person>, IPersonRepository, IPersonInfoRepository
+    public class SqlServerPersonRepository : SqlServerAggregateRepository<Person, SamplesDbContext>, IPersonRepository, IPersonInfoRepository
     {
-        private readonly SamplesContext _samplesContext;
+        private readonly SamplesDbContext _samplesContext;
 
-        public SqlServerPersonRepository(EventStoreContext dbContext, SamplesContext samplesContext, 
+        public SqlServerPersonRepository(SamplesDbContext dbContext, SamplesDbContext samplesContext, 
             IDocumentSerializer serializer, IAggregateFactory aggregateFactory) 
             : base(dbContext, serializer, aggregateFactory)
         {

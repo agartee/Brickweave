@@ -8,20 +8,38 @@ using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.EntityFrameworkCore.Storage.Internal;
 using System;
 
-namespace Brickweave.Samples.WebApp.Data.Migrations.Samples
+namespace Brickweave.Samples.WebApp.Data.Migrations
 {
-    [DbContext(typeof(SamplesContext))]
-    [Migration("20171103115333_init")]
+    [DbContext(typeof(SamplesDbContext))]
+    [Migration("20180416191606_init")]
     partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.0.0-rtm-26452")
+                .HasAnnotation("ProductVersion", "2.0.1-rtm-125")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("Brickweave.Samples.Persistence.SqlServer.PersonSnapshot", b =>
+            modelBuilder.Entity("Brickweave.EventStore.SqlServer.Entities.EventData", b =>
+                {
+                    b.Property<Guid>("EventId")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int>("CommitSequence");
+
+                    b.Property<DateTime>("Created");
+
+                    b.Property<string>("Json");
+
+                    b.Property<Guid>("StreamId");
+
+                    b.HasKey("EventId");
+
+                    b.ToTable("Event");
+                });
+
+            modelBuilder.Entity("Brickweave.Samples.Persistence.SqlServer.Entities.PersonSnapshot", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd();
@@ -29,8 +47,6 @@ namespace Brickweave.Samples.WebApp.Data.Migrations.Samples
                     b.Property<string>("FirstName");
 
                     b.Property<string>("LastName");
-
-                    b.Property<string>("MiddleName");
 
                     b.HasKey("Id");
 

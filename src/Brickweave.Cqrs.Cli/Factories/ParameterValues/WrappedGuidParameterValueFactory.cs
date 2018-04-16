@@ -10,7 +10,7 @@ namespace Brickweave.Cqrs.Cli.Factories.ParameterValues
     {
         public bool Qualifies(Type targetType)
         {
-            return IsWrappedGuidType(targetType);
+            return GetWrappedGuidConstructor(targetType) != null;
         }
 
         public object Create(Type targetType, ExecutableParameterInfo parameter)
@@ -28,11 +28,6 @@ namespace Brickweave.Cqrs.Cli.Factories.ParameterValues
             return type.GetConstructors()
                 .Where(c => c.GetParameters().Length == 1)
                 .FirstOrDefault(c => c.GetParameters().First().ParameterType.IsGuidType());
-        }
-
-        private static bool IsWrappedGuidType(Type type)
-        {
-            return GetWrappedGuidConstructor(type) != null;
         }
     }
 }

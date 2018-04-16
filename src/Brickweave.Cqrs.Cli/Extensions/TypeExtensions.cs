@@ -28,7 +28,7 @@ namespace Brickweave.Cqrs.Cli.Extensions
             return type == typeof(Guid) || type == typeof(Guid?);
         }
 
-        private static bool IsDateTimeType(this Type type)
+        public static bool IsDateTimeType(this Type type)
         {
             return type == typeof(DateTime) || type == typeof(DateTime?);
         }

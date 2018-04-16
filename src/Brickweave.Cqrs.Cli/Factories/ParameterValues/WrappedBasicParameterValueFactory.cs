@@ -10,7 +10,10 @@ namespace Brickweave.Cqrs.Cli.Factories.ParameterValues
     {
         public bool Qualifies(Type targetType)
         {
-            return IsWrappedBasicType(targetType);
+            return !targetType.IsBasicType() 
+                   && !targetType.IsGuidType() 
+                   && !targetType.IsDateTimeType() 
+                   && GetWrappedBasicType(targetType) != null;
         }
 
         public object Create(Type targetType, ExecutableParameterInfo parameter)
@@ -32,11 +35,6 @@ namespace Brickweave.Cqrs.Cli.Factories.ParameterValues
         {
             return GetWrappedBasicConstructor(type)?.GetParameters()
                 .First().ParameterType;
-        }
-        
-        private static bool IsWrappedBasicType(Type type)
-        {
-            return GetWrappedBasicType(type) != null;
         }
     }
 }

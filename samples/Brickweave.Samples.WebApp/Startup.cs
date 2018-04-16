@@ -83,27 +83,25 @@ namespace Brickweave.Samples.WebApp
                 .Where(a => a.FullName.Contains("Domain"))
                 .ToArray();
             
-            services
-                .AddCqrs(domainAssemblies)
-                .AddEventStore(domainAssemblies)
-                    .AddDbContext(options => options.UseSqlServer(Configuration.GetConnectionString("brickweave_samples"),
-                        sql => sql.MigrationsAssembly(GetMigrationAssemblyName())))
-                    .Services()
-                .AddMessageBus()
-                    .ConfigureMessageSender(Configuration.GetConnectionString("serviceBus"), Configuration["serviceBusTopic"])
-                    .AddGlobalUserPropertyStrategy("Id")
-                    .AddUserPropertyStrategy<PersonCreated>(@event => new Dictionary<string, object> { ["LastName"] = @event.LastName })
-                    .AddUtf8Encoding()
-                    .Services()
-                .AddCli(domainAssemblies)
-                    .AddDateParsingCulture(new CultureInfo("en-US"))
-                    .AddCategoryHelpFile("cli-categories.json")
-                    .OverrideQueryName<ListPersons>("list", "person");
+            services.AddCqrs(domainAssemblies);
+            services.AddEventStore(domainAssemblies);
+            services.AddMessageBus()
+                .ConfigureMessageSender(
+                    Configuration.GetConnectionString("serviceBus"),
+                    Configuration["serviceBusTopic"])
+                .AddGlobalUserPropertyStrategy("Id")
+                .AddUserPropertyStrategy<PersonCreated>(@event =>
+                    new Dictionary<string, object> {["LastName"] = @event.LastName})
+                .AddUtf8Encoding();
+            services.AddCli(domainAssemblies)
+                .AddDateParsingCulture(new CultureInfo("en-US"))
+                .AddCategoryHelpFile("cli-categories.json")
+                .OverrideQueryName<ListPersons>("list", "person");
         }
 
         private void ConfigureCustomServices(IServiceCollection services)
         {
-            services.AddDbContext<SamplesContext>(options =>
+            services.AddDbContext<SamplesDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("brickweave_samples"),
                     sql => sql.MigrationsAssembly(GetMigrationAssemblyName())));
 
@@ -119,8 +117,7 @@ namespace Brickweave.Samples.WebApp
             app.UseAuthentication();
             app.UseMvc();
 
-            app.ApplicationServices.GetService<EventStoreContext>().Database.Migrate();
-            app.ApplicationServices.GetService<SamplesContext>().Database.Migrate();
+            app.ApplicationServices.GetService<SamplesDbContext>().Database.Migrate();
         }
 
         private static string GetMigrationAssemblyName()

@@ -8,14 +8,15 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Brickweave.EventStore.SqlServer
 {
-    public abstract class SqlServerAggregateRepository<TAggregate>
+    public abstract class SqlServerAggregateRepository<TAggregate, TContext>
         where TAggregate : EventSourcedAggregateRoot
+        where TContext : DbContext, IEventStore
     {
-        private readonly EventStoreContext _dbContext;
+        private readonly TContext _dbContext;
         private readonly IDocumentSerializer _serializer;
         private readonly IAggregateFactory _aggregateFactory;
 
-        protected SqlServerAggregateRepository(EventStoreContext dbContext, IDocumentSerializer serializer,
+        protected SqlServerAggregateRepository(TContext dbContext, IDocumentSerializer serializer,
             IAggregateFactory aggregateFactory)
         {
             _dbContext = dbContext;

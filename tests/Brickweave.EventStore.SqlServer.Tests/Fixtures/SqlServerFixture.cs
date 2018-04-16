@@ -17,17 +17,18 @@ namespace Brickweave.EventStore.SqlServer.Tests.Fixtures
 
             var connectionString = config.GetConnectionString("eventStore");
 
-            DbContext = new EventStoreContext(
-                new DbContextOptionsBuilder<EventStoreContext>().UseSqlServer(connectionString).Options);
+            DbContext = new EventStoreDbContext(
+                new DbContextOptionsBuilder<EventStoreDbContext>().UseSqlServer(connectionString).Options);
 
+            DbContext.Database.EnsureDeleted();
             DbContext.Database.EnsureCreated();
         }
 
-        public EventStoreContext DbContext { get; }
+        public EventStoreDbContext DbContext { get; }
 
         public void ClearDatabase()
         {
-            var sql = $"DELETE FROM [{EventStoreContext.SCHEMA_NAME}].[{EventData.TABLE_NAME}]";
+            var sql = $"DELETE FROM [{EventStoreDbContext.SCHEMA_NAME}].[{EventData.TABLE_NAME}]";
             DbContext.Database.ExecuteSqlCommand(sql);
         }
     }

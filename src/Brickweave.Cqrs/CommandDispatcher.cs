@@ -53,7 +53,8 @@ namespace Brickweave.Cqrs
 
         private object GetCommandHandler(ICommand command, Type commandReturnType)
         {
-            foreach (var handlerType in GetPossibleHandlerTypes())
+            var possibleHandlers = GetPossibleHandlerTypes();
+            foreach (var handlerType in possibleHandlers)
             {
                 var result = _serviceProvider.GetService(handlerType);
                 if (result != null)

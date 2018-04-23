@@ -8,6 +8,7 @@
     <Description>Lightweight package to support common CQRS patterns</Description>
     <PackageProjectUrl>https://github.com/agartee/Brickweave</PackageProjectUrl>
     <PackageLicenseUrl>https://github.com/agartee/Brickweave/blob/master/LICENSE</PackageLicenseUrl>
+    <Version>0.6.5</Version>
   </PropertyGroup>
 
   <ItemGroup>

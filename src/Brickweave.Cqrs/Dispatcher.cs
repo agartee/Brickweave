@@ -7,21 +7,33 @@ namespace Brickweave.Cqrs
     {
         private readonly ICommandDispatcher _commandDispatcher;
         private readonly IQueryDispatcher _queryDispatcher;
+        private readonly IProjectionDispatcher _projectionDispatcher;
 
-        public Dispatcher(ICommandDispatcher commandDispatcher, IQueryDispatcher queryDispatcher)
+        public Dispatcher(ICommandDispatcher commandDispatcher,
+            IQueryDispatcher queryDispatcher,
+            IProjectionDispatcher projectionDispatcher)
         {
             _commandDispatcher = commandDispatcher;
             _queryDispatcher = queryDispatcher;
+            _projectionDispatcher = projectionDispatcher;
         }
 
         public async Task<object> DispatchCommandAsync(ICommand command, ClaimsPrincipal user = null)
         {
-            return await _commandDispatcher.ExecuteAsync(command, user);
+            var commandResult = await _commandDispatcher.ExecuteAsync(command, user);
+
+            await _projectionDispatcher.ExecuteAsync(command);
+
+            return commandResult;  
         }
 
         public async Task<TResult> DispatchCommandAsync<TResult>(ICommand<TResult> command, ClaimsPrincipal user = null)
         {
-            return await _commandDispatcher.ExecuteAsync(command, user);
+            var commandResult = await _commandDispatcher.ExecuteAsync(command, user);
+
+            await _projectionDispatcher.ExecuteAsync(command);
+
+            return commandResult;
         }
 
         public async Task<object> DispatchQueryAsync(IQuery query, ClaimsPrincipal user = null)

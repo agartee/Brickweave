@@ -80,6 +80,7 @@ namespace Brickweave.Samples.WebApp
             var domainAssemblies = AppDomain.CurrentDomain.GetAssemblies()
                 .Where(a => a.FullName.StartsWith("Brickweave"))
                 .Where(a => a.FullName.Contains("Domain"))
+               // .Where(a => a.FullName.Contains("Projection"))
                 .ToArray();
             
             services.AddCqrs(domainAssemblies);

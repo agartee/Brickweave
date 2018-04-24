@@ -23,11 +23,6 @@ namespace Brickweave.Cqrs
 
             foreach (dynamic handler in handlers)
             {
-                if (handler == null)
-                {
-                    return; // todo: silently fail?
-                }
-
                 await handler.HandleAsync((dynamic)command);
             }
         }
@@ -35,8 +30,7 @@ namespace Brickweave.Cqrs
         private IEnumerable<object> GetProjectionHandlers(ICommand command)
         {
             return _serviceProvider.GetServices(
-                typeof(IProjectionHandler<>).MakeGenericType(command.GetType())
-                );
+                typeof(IProjectionHandler<>).MakeGenericType(command.GetType()));
         }
     }
 }

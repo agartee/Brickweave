@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Brickweave.Cqrs\Brickweave.Cqrs.csproj" />
+    <ProjectReference Include="..\..\src\Brickweave.Domain\Brickweave.Domain.csproj" />
+    <ProjectReference Include="..\Brickweave.Samples.Domain\Brickweave.Samples.Domain.csproj" />
+  </ItemGroup>
+
+</Project>

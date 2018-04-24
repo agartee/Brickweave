@@ -7,7 +7,7 @@ namespace Brickweave.Samples.Persistence.SqlServer
 {
     public class SamplesDbContext : DbContext, IEventStore
     {
-        public SamplesDbContext(DbContextOptions options) : base(options)
+        public SamplesDbContext(DbContextOptions<SamplesDbContext> options) : base(options)
         {
         }
         

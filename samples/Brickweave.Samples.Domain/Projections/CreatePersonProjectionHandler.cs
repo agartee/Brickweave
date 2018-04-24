@@ -5,7 +5,7 @@ using Brickweave.Samples.Domain.Persons.Commands;
 
 namespace Brickweave.Samples.Domain.Projections
 {
-    public class SampleProjectionHandler : IProjectionHandler<CreatePerson>
+    public class CreatePersonProjectionHandler : IProjectionHandler<CreatePerson>
     {
         public Task HandleAsync(CreatePerson command)
         {

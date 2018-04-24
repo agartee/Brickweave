@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Brickweave.Samples.WebApp.Controllers
 {
-    [Authorize]
+   // [Authorize]
     public class PersonController : Controller
     {
         private readonly IDispatcher _dispatcher;

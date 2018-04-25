@@ -24,7 +24,7 @@ namespace Brickweave.Samples.Persistence.SqlServer.Repositories
         public async Task SavePersonAsync(Person person)
         {
             await SaveUncommittedEventsAsync(person, person.Id.Value,
-                () => AddSnapshotAsync(person));
+                () => AddSnapshot(person));
         }
 
         public async Task<Person> GetPersonAsync(PersonId id)
@@ -40,7 +40,7 @@ namespace Brickweave.Samples.Persistence.SqlServer.Repositories
             return data?.ToInfo();
         }
 
-        private void AddSnapshotAsync(Person person)
+        private void AddSnapshot(Person person)
         {
             _dbContext.Persons.Add(new PersonSnapshot
             {

@@ -24,6 +24,7 @@
     <ProjectReference Include="..\..\src\Brickweave.Cqrs.Cli\Brickweave.Cqrs.Cli.csproj" />
     <ProjectReference Include="..\..\src\Brickweave.Messaging.ServiceBus\Brickweave.Messaging.ServiceBus.csproj" />
     <ProjectReference Include="..\Brickweave.Samples.Persistence.SqlServer\Brickweave.Samples.Persistence.SqlServer.csproj" />
+    <ProjectReference Include="..\Brickweave.Samples.Projection\Brickweave.Samples.Projection.csproj" />
   </ItemGroup>
 
   <ItemGroup>

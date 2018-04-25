@@ -13,12 +13,14 @@ using Brickweave.Samples.Domain.Persons.Queries;
 using Brickweave.Samples.Domain.Persons.Services;
 using Brickweave.Samples.Persistence.SqlServer;
 using Brickweave.Samples.Persistence.SqlServer.Repositories;
+using Brickweave.Samples.Projection;
 using Brickweave.Samples.WebApp.Formatters;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyModel;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
@@ -77,10 +79,7 @@ namespace Brickweave.Samples.WebApp
 
         private void ConfigureBrickweave(IServiceCollection services)
         {
-            var domainAssemblies = AppDomain.CurrentDomain.GetAssemblies()
-                .Where(a => a.FullName.StartsWith("Brickweave"))
-                .Where(a => a.FullName.Contains("Domain"))
-                .ToArray();
+            var domainAssemblies = GetDomainAssemblies();
             
             services.AddCqrs(domainAssemblies);
             services.AddEventStore(domainAssemblies);
@@ -98,10 +97,23 @@ namespace Brickweave.Samples.WebApp
                 .OverrideQueryName<ListPersons>("list", "person");
         }
 
+        private static Assembly[] GetDomainAssemblies()
+        {
+            return DependencyContext.Default.RuntimeLibraries
+                .Where(x => x.Name.StartsWith("Brickweave")
+                    && (x.Name.Contains("Domain") || x.Name.Contains("Projection")))
+                .Select(x => Assembly.Load(new AssemblyName(x.Name)))
+                .ToArray();
+        }
+
         private void ConfigureCustomServices(IServiceCollection services)
         {
             services.AddDbContext<SamplesDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("brickweave_samples"),
+                    sql => sql.MigrationsAssembly(GetMigrationAssemblyName())));
+
+            services.AddDbContext<SamplesProjectionDbContext>(options =>
+                options.UseSqlServer(Configuration.GetConnectionString("brickweave_samples_projection"),
                     sql => sql.MigrationsAssembly(GetMigrationAssemblyName())));
 
             services
@@ -117,6 +129,8 @@ namespace Brickweave.Samples.WebApp
             app.UseMvc();
 
             app.ApplicationServices.GetService<SamplesDbContext>().Database.Migrate();
+            app.ApplicationServices.GetService<SamplesProjectionDbContext>().Database.EnsureCreated();
+            app.ApplicationServices.GetService<SamplesProjectionDbContext>().Database.Migrate();
         }
 
         private static string GetMigrationAssemblyName()

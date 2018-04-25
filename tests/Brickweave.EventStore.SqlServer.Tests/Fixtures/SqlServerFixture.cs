@@ -15,7 +15,7 @@ namespace Brickweave.EventStore.SqlServer.Tests.Fixtures
                 .AddEnvironmentVariables()
                 .Build();
 
-            var connectionString = config.GetConnectionString("eventStore");
+            var connectionString = config.GetConnectionString("brickweave_tests");
 
             DbContext = new EventStoreDbContext(
                 new DbContextOptionsBuilder<EventStoreDbContext>().UseSqlServer(connectionString).Options);

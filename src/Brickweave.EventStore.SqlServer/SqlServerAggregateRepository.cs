@@ -23,8 +23,9 @@ namespace Brickweave.EventStore.SqlServer
             _aggregateFactory = aggregateFactory;
             _serializer = serializer;
         }
-
-        protected async Task SaveUncommittedEventsAsync(EventSourcedAggregateRoot aggregate, Guid streamId)
+        
+        protected async Task SaveUncommittedEventsAsync(EventSourcedAggregateRoot aggregate, Guid streamId,
+            Action onBeforeSaveChanges = null)
         {
             var created = DateTime.UtcNow;
             
@@ -33,6 +34,10 @@ namespace Brickweave.EventStore.SqlServer
                 .ToList();
 
             uncommittedEvents.ForEach(e => _dbContext.Events.Add(e));
+            
+            if (onBeforeSaveChanges != null)
+                onBeforeSaveChanges.Invoke();
+
             await _dbContext.SaveChangesAsync();
 
             aggregate.ClearUncommittedEvents();
@@ -61,13 +66,16 @@ namespace Brickweave.EventStore.SqlServer
             return events.Any() ? _aggregateFactory.Create<TAggregate>(events) : null;
         }
 
-        protected async Task DeleteAsync(Guid streamId)
+        protected async Task DeleteAsync(Guid streamId, Action onBeforeSaveChanges = null)
         {
             var eventData = await _dbContext.Events
                 .Where(e => e.StreamId.Equals(streamId))
                 .ToListAsync();
 
             _dbContext.Events.RemoveRange(eventData);
+
+            if (onBeforeSaveChanges != null)
+                onBeforeSaveChanges.Invoke();
 
             await _dbContext.SaveChangesAsync();
         }

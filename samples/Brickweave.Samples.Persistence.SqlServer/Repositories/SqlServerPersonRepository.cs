@@ -9,21 +9,22 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Brickweave.Samples.Persistence.SqlServer.Repositories
 {
-    public class SqlServerPersonRepository : SqlServerAggregateRepository<Person, SamplesDbContext>, IPersonRepository, IPersonInfoRepository
+    public class SqlServerPersonRepository : SqlServerAggregateRepository<Person, SamplesDbContext>, 
+        IPersonRepository, IPersonInfoRepository
     {
-        private readonly SamplesDbContext _samplesContext;
+        private readonly SamplesDbContext _dbContext;
 
         public SqlServerPersonRepository(SamplesDbContext dbContext, SamplesDbContext samplesContext, 
             IDocumentSerializer serializer, IAggregateFactory aggregateFactory) 
             : base(dbContext, serializer, aggregateFactory)
         {
-            _samplesContext = samplesContext;
+            _dbContext = samplesContext;
         }
         
         public async Task SavePersonAsync(Person person)
         {
-            await SaveUncommittedEventsAsync(person, person.Id.Value);
-            await SaveSnapshotAsync(person);
+            await SaveUncommittedEventsAsync(person, person.Id.Value,
+                () => AddSnapshotAsync(person));
         }
 
         public async Task<Person> GetPersonAsync(PersonId id)
@@ -33,22 +34,20 @@ namespace Brickweave.Samples.Persistence.SqlServer.Repositories
 
         public async Task<PersonInfo> GetPersonInfoAsync(PersonId personId)
         {
-            var data = await _samplesContext.Persons
+            var data = await _dbContext.Persons
                 .FirstOrDefaultAsync(p => p.Id == personId.Value);
 
             return data?.ToInfo();
         }
 
-        private async Task SaveSnapshotAsync(Person person)
+        private void AddSnapshotAsync(Person person)
         {
-            _samplesContext.Persons.Add(new PersonSnapshot
+            _dbContext.Persons.Add(new PersonSnapshot
             {
                 Id = person.Id.Value,
                 FirstName = person.Name.FirstName,
                 LastName = person.Name.LastName
             });
-
-            await _samplesContext.SaveChangesAsync();
         }
     }
 }

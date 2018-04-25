@@ -108,9 +108,9 @@ Contains base class to quickly and easily implement event-sourced repositories w
 ### Simple repository example (no snap-shots)
 
 ```csharp
-public class SqlServerPersonRepository : SqlServerAggregateRepository<Person>, IPersonRepository
+public class SqlServerPersonRepository : SqlServerAggregateRepository<Person, EventStoreDbContext>, IPersonRepository
 {
-    public SqlServerPersonRepository(EventStoreContext dbContext, IDocumentSerializer serializer, IAggregateFactory aggregateFactory) 
+    public SqlServerPersonRepository(EventStoreDbContext dbContext, IDocumentSerializer serializer, IAggregateFactory aggregateFactory) 
         : base(dbContext, serializer, aggregateFactory)
     {
     }
@@ -205,3 +205,25 @@ public void ConfigureServices(IServiceCollection services)
 # Brickweave.Cqrs.Cli
 
 Description coming soon!
+
+# Running the Project from Source
+
+This project is configured to use user secrets for integration tests. Below are the settings needed to run the tests. The sample application is configured to use a simple Identity Server 4 server (included in samples).
+
+```json
+{
+  "connectionStrings": {
+    "brickweave_tests": "server=[server name];database=[database name];integrated security=true;",
+    "brickweave_samples": "server=[server name];database=[database name];integrated security=true;",
+    "serviceBus": "Endpoint=sb://[service bus namespace].servicebus.windows.net/;SharedAccessKeyName=[key name];SharedAccessKey=[secret]"
+  },
+
+  "serviceBusTopic": "[service bus topic name]",
+  "serviceBusSubscription": "[service bus subscription name]",
+  "security": {
+    "authority": "http://localhost:5001",
+    "requireHttpsMetadata": "false",
+    "apiName": "brickweave_api" 
+  } 
+}
+```

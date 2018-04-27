@@ -71,7 +71,7 @@ namespace Brickweave.Cqrs.Cli.Tests.Factories.ParameterValues
             var result = factory.Create(typeof(IEnumerable<string>), new ExecutableParameterInfo("value", "foo", "bar"));
 
             result.Should().BeOfType<List<string>>();
-            result.ShouldBeEquivalentTo(new List<string> { "foo", "bar" });
+            result.Should().BeEquivalentTo(new List<string> { "foo", "bar" });
         }
     }
 }

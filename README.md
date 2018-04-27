@@ -237,10 +237,9 @@ This project is configured to use user secrets for integration tests. Below are 
 
   "serviceBusTopic": "[service bus topic name]",
   "serviceBusSubscription": "[service bus subscription name]",
-  "security": {
-    "authority": "http://localhost:5001",
-    "requireHttpsMetadata": "false",
-    "apiName": "brickweave_api" 
+  "authentication": {
+    "authority": "https://[your namespace].auth0.com/",
+    "audience": "[your api name]"
   } 
 }
 ```

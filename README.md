@@ -239,7 +239,10 @@ This project is configured to use user secrets for integration tests. Below are 
   "serviceBusSubscription": "[service bus subscription name]",
   "authentication": {
     "authority": "https://[your namespace].auth0.com/",
-    "audience": "[your api name]"
+    "audience": "[your Auth0 API name]",
+    "client_id": "[your Auth0 client id]",
+    "client_secret": "[your Auth0 client secret]",
+    "grant_type": "client_credentials"
   } 
 }
 ```

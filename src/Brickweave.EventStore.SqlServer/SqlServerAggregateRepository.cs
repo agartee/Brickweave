@@ -84,7 +84,7 @@ namespace Brickweave.EventStore.SqlServer
         {
             return new EventData
             {
-                EventId = Guid.NewGuid(),
+                Id = Guid.NewGuid(),
                 StreamId = streamId,
                 Json = _serializer.SerializeObject(@event),
                 Created = created,

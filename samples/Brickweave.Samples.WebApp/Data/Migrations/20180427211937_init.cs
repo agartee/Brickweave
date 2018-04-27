@@ -12,7 +12,7 @@ namespace Brickweave.Samples.WebApp.Data.Migrations
                 name: "Event",
                 columns: table => new
                 {
-                    EventId = table.Column<Guid>(nullable: false),
+                    Id = table.Column<Guid>(nullable: false),
                     CommitSequence = table.Column<int>(nullable: false),
                     Created = table.Column<DateTime>(nullable: false),
                     Json = table.Column<string>(nullable: true),
@@ -20,7 +20,7 @@ namespace Brickweave.Samples.WebApp.Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Event", x => x.EventId);
+                    table.PrimaryKey("PK_Event", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -38,7 +38,7 @@ namespace Brickweave.Samples.WebApp.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Persons",
+                name: "Person",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
@@ -47,7 +47,7 @@ namespace Brickweave.Samples.WebApp.Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Persons", x => x.Id);
+                    table.PrimaryKey("PK_Person", x => x.Id);
                 });
         }
 
@@ -60,7 +60,7 @@ namespace Brickweave.Samples.WebApp.Data.Migrations
                 name: "MessageFailure");
 
             migrationBuilder.DropTable(
-                name: "Persons");
+                name: "Person");
         }
     }
 }

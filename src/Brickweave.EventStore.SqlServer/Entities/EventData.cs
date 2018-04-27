@@ -1,5 +1,4 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Brickweave.EventStore.SqlServer.Entities
@@ -9,8 +8,7 @@ namespace Brickweave.EventStore.SqlServer.Entities
     {
         public const string TABLE_NAME = "Event";
 
-        [Key]
-        public Guid EventId { get; set; }
+        public Guid Id { get; set; }
         public Guid StreamId { get; set; }
         public string Json { get; set; }
         public DateTime Created { get; set; }

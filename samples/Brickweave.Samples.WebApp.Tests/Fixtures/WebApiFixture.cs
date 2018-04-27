@@ -12,7 +12,6 @@ namespace Brickweave.Samples.WebApp.Tests.Fixtures
 {
     public class WebApiFixture : IDisposable
     {
-        private const string IDENTITY_AUTHORITY = "https://server";
         private readonly IConfiguration _config;
 
         public WebApiFixture()
@@ -33,7 +32,7 @@ namespace Brickweave.Samples.WebApp.Tests.Fixtures
         {
             var client = new HttpClient();
             var response = await client.PostAsync(
-                "https://gartee.auth0.com/oauth/token",
+                _config["authentication:token_endpoint"],
                 new
                 {
                     client_id = _config["authentication:client_id"],

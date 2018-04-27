@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Brickweave.Messaging.Serialization;
@@ -28,7 +29,8 @@ namespace Brickweave.Messaging.ServiceBus.Tests
             var encoder = new Utf8Encoder();
             var messenger = new ServiceBusDomainMessenger(
                 new [] { new GlobalUserPropertyStrategy("Id") }, 
-                serializer, encoder, _fixture.Sender);
+                serializer, encoder, _fixture.Sender,
+                Enumerable.Empty<IMessageFailureHandler>());
     
             var client = _fixture.CreateClient(id);
 

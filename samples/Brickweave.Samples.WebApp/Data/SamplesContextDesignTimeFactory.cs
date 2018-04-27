@@ -1,6 +1,6 @@
 ﻿using System.IO;
 using System.Reflection;
-using Brickweave.Samples.Persistence.SqlServer;
+using Brickweave.Samples.SqlServer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.Configuration;

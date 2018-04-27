@@ -1,7 +1,7 @@
-﻿using System;
-using Brickweave.Samples.Domain.Persons.Models;
+﻿using Brickweave.Samples.Domain.Persons.Models;
+using System;
 
-namespace Brickweave.Samples.Persistence.SqlServer.Entities
+namespace Brickweave.Samples.SqlServer.Entities
 {
     public class PersonSnapshot
     {

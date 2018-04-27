@@ -202,9 +202,26 @@ public void ConfigureServices(IServiceCollection services)
 }
 ```
 
+# Brickweave.Messaging.SqlServer
+
+Contains services to support message transmission failures to a SQL Server database. While the `IMessageFailureHandler` interface is contained within the `Brickweave.Messaging` package, a SQL Server implementation exists within this package. The `SqlServerMessageFailureWriter` takes as a generic argument the `DbContext` type used to perform a write. A default `Brickweave.Messaging.SqlServer.MessagingDbContext` can be used, or alternatively a custom application `DbContext` that implements the `Brickweave.Messaging.SqlServer.IMessageStore` interface. 
+
+### Wiring-up the services (ASP.NET Core)
+
+```csharp
+public void ConfigureServices(IServiceCollection services)
+{
+    services.AddMessageBus()
+        ...
+        .AddMessageFailureHandler<SqlServerMessageFailureWriter<SamplesDbContext>>();
+
+    ...
+}
+```
+
 # Brickweave.Cqrs.Cli
 
-Description coming soon!
+Contains services to support a command line application to easily execute commands and queries through a single API endpoint. Services to support command line help text is also included. For a full demo of this library, see [the demo project](https://github.com/agartee/brickweave-demo-cli).
 
 # Running the Project from Source
 

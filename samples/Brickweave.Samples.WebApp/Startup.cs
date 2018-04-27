@@ -8,12 +8,14 @@ using Brickweave.Cqrs.DependencyInjection;
 using Brickweave.Domain.Serialization;
 using Brickweave.EventStore.SqlServer.DependencyInjection;
 using Brickweave.Messaging.ServiceBus.DependencyInjection;
+using Brickweave.Messaging.SqlServer;
 using Brickweave.Samples.Domain.Persons.Events;
 using Brickweave.Samples.Domain.Persons.Queries;
 using Brickweave.Samples.Domain.Persons.Services;
-using Brickweave.Samples.Persistence.SqlServer;
-using Brickweave.Samples.Persistence.SqlServer.Repositories;
+using Brickweave.Samples.SqlServer;
+using Brickweave.Samples.SqlServer.Repositories;
 using Brickweave.Samples.WebApp.Formatters;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -45,7 +47,7 @@ namespace Brickweave.Samples.WebApp
         public void ConfigureServices(IServiceCollection services)
         {
             ConfigureMvc(services);
-            ConfigureSecurity(services);
+            ConfigureAuthentication(services);
             ConfigureBrickweave(services);
             ConfigureCustomServices(services);
         }
@@ -64,34 +66,39 @@ namespace Brickweave.Samples.WebApp
                 });
         }
 
-        protected virtual void ConfigureSecurity(IServiceCollection services)
+        protected virtual void ConfigureAuthentication(IServiceCollection services)
         {
-            services.AddAuthentication("Bearer")
-                .AddIdentityServerAuthentication(options =>
-                {
-                    options.Authority = Configuration["security:authority"];
-                    options.RequireHttpsMetadata = Convert.ToBoolean(Configuration["security:requireHttpsMetadata"]);
-                    options.ApiName = Configuration["security:apiName"];
-                });
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(options =>
+            {
+                options.Authority = Configuration["authentication:authority"];
+                options.Audience = Configuration["authentication:audience"];
+            });
         }
 
         private void ConfigureBrickweave(IServiceCollection services)
         {
             var domainAssemblies = AppDomain.CurrentDomain.GetAssemblies()
-                .Where(a => a.FullName.StartsWith("Brickweave"))
-                .Where(a => a.FullName.Contains("Domain"))
+                .Where(a => a.FullName.Contains("Samples.Domain"))
                 .ToArray();
             
             services.AddCqrs(domainAssemblies);
+
             services.AddEventStore(domainAssemblies);
+
             services.AddMessageBus()
                 .ConfigureMessageSender(
                     Configuration.GetConnectionString("serviceBus"),
                     Configuration["serviceBusTopic"])
                 .AddGlobalUserPropertyStrategy("Id")
                 .AddUserPropertyStrategy<PersonCreated>(@event =>
-                    new Dictionary<string, object> {["LastName"] = @event.LastName})
-                .AddUtf8Encoding();
+                    new Dictionary<string, object> { ["LastName"] = @event.LastName })
+                .AddUtf8Encoding()
+                .AddMessageFailureHandler<SqlServerMessageFailureWriter<SamplesDbContext>>();
+
             services.AddCli(domainAssemblies)
                 .AddDateParsingCulture(new CultureInfo("en-US"))
                 .AddCategoryHelpFile("cli-categories.json")
@@ -111,8 +118,6 @@ namespace Brickweave.Samples.WebApp
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
-            loggerFactory.AddDebug();
-
             app.UseAuthentication();
             app.UseMvc();
 

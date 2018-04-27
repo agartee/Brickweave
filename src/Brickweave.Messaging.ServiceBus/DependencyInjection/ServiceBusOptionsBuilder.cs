@@ -40,6 +40,12 @@ namespace Brickweave.Messaging.ServiceBus.DependencyInjection
             return this;
         }
 
+        public ServiceBusOptionsBuilder AddMessageFailureHandler<T>() where T : class, IMessageFailureHandler
+        {
+            _services.AddScoped<IMessageFailureHandler, T>();
+            return this;
+        }
+
         public ServiceBusOptionsBuilder AddUtf8Encoding()
         {
             _services.AddScoped<IMessageEncoder, Utf8Encoder>();

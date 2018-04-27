@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Brickweave.Messaging.Serialization;
@@ -14,14 +15,17 @@ namespace Brickweave.Messaging.ServiceBus
         private readonly IMessageSerializer _serializer;
         private readonly IMessageEncoder _encoder;
         private readonly IMessageSender _sender;
-    
+        private readonly IEnumerable<IMessageFailureHandler> _messageFailureHandlers;
+
         public ServiceBusDomainMessenger(IEnumerable<IUserPropertyStrategy> userPropertyStrategies, 
-            IMessageSerializer serializer, IMessageEncoder encoder, IMessageSender sender)
+            IMessageSerializer serializer, IMessageEncoder encoder, IMessageSender sender,
+            IEnumerable<IMessageFailureHandler> messageFailureHandlers)
         {
             _userPropertyStrategies = userPropertyStrategies;
             _serializer = serializer;
-            _sender = sender;
             _encoder = encoder;
+            _sender = sender;
+            _messageFailureHandlers = messageFailureHandlers;
         }
 
         public async Task SendAsync(IDomainEvent @event)
@@ -36,8 +40,28 @@ namespace Brickweave.Messaging.ServiceBus
 
         public async Task SendAsync(IEnumerable<IDomainEvent> events)
         {
+            var exceptions = new List<Exception>();
+
             foreach (var domainEvent in events)
-                await _sender.SendAsync(BuildBrokeredMessage(domainEvent));
+            {
+                try
+                {
+                    await _sender.SendAsync(BuildBrokeredMessage(domainEvent));
+                }
+                catch(Exception ex)
+                {
+                    exceptions.Add(ex);
+
+                    _messageFailureHandlers.ToList()
+                        .ForEach(async h => await h.Handle(domainEvent, ex));
+                }
+            }
+
+            if (!_messageFailureHandlers.Any())
+            {
+                throw new AggregateException("One or more errors occurred while sending domain messages.",
+                    exceptions);
+            }
         }
 
         private Message BuildBrokeredMessage(IDomainEvent domainEvent)

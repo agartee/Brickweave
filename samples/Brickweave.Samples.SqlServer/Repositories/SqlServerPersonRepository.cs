@@ -4,10 +4,10 @@ using Brickweave.EventStore.Serialization;
 using Brickweave.EventStore.SqlServer;
 using Brickweave.Samples.Domain.Persons.Models;
 using Brickweave.Samples.Domain.Persons.Services;
-using Brickweave.Samples.Persistence.SqlServer.Entities;
+using Brickweave.Samples.SqlServer.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace Brickweave.Samples.Persistence.SqlServer.Repositories
+namespace Brickweave.Samples.SqlServer.Repositories
 {
     public class SqlServerPersonRepository : SqlServerAggregateRepository<Person, SamplesDbContext>, 
         IPersonRepository, IPersonInfoRepository

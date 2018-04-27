@@ -5,11 +5,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="2.0.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="2.0.2" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\src\Brickweave.Domain\Brickweave.Domain.csproj" />
     <ProjectReference Include="..\..\src\Brickweave.EventStore.SqlServer\Brickweave.EventStore.SqlServer.csproj" />
+    <ProjectReference Include="..\..\src\Brickweave.Messaging.SqlServer\Brickweave.Messaging.SqlServer.csproj" />
     <ProjectReference Include="..\Brickweave.Samples.Domain\Brickweave.Samples.Domain.csproj" />
   </ItemGroup>
 

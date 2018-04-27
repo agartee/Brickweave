@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Brickweave.Samples.WebApp.Tests.Extensions;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
+using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json.Linq;
 
 namespace Brickweave.Samples.WebApp.Tests.Fixtures
@@ -12,9 +13,15 @@ namespace Brickweave.Samples.WebApp.Tests.Fixtures
     public class WebApiFixture : IDisposable
     {
         private const string IDENTITY_AUTHORITY = "https://server";
+        private readonly IConfiguration _config;
 
         public WebApiFixture()
         {
+            _config = new ConfigurationBuilder()
+                .AddUserSecrets<WebApiFixture>()
+                .AddEnvironmentVariables()
+                .Build();
+
             ApiServer = new TestServer(new WebHostBuilder()
                 .UseEnvironment("Development")
                 .UseStartup<Startup>());
@@ -29,10 +36,10 @@ namespace Brickweave.Samples.WebApp.Tests.Fixtures
                 "https://gartee.auth0.com/oauth/token",
                 new
                 {
-                    client_id = "O4ZlPeTy0MMBpREn8B3V7AZkkjvWb6a4",
-                    client_secret = "8baXhlWQrjuFqeoCIaJt4ZDIeryZxkIacISSIVnSbKhSw2pe6e5H1EqK-85E4ovY",
-                    audience = "brickweave",
-                    grant_type = "client_credentials"
+                    client_id = _config["authentication:client_id"],
+                    client_secret = _config["authentication:client_secret"],
+                    audience = _config["authentication:audience"],
+                    grant_type = _config["authentication:grant_type"]
                 }.ToStringContent());
 
             var json = await response.Content.ReadAsStringAsync();

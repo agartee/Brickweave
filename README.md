@@ -87,7 +87,7 @@ The `IServiceCollection` extension method will perform assembly scans of the pro
 public void ConfigureServices(IServiceCollection services)
 {
     var domainAssemblies = AppDomain.CurrentDomain.GetAssemblies()
-        .Where(a => a.FullName.StartsWith("Brickweave"))
+        .Where(a => a.FullName.StartsWith("MyApp"))
         .Where(a => a.FullName.Contains("Domain"))
         .ToArray();
 

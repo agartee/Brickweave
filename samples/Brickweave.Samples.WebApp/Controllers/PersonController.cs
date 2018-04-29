@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Brickweave.Cqrs;
 using Brickweave.Samples.Domain.Persons.Commands;
@@ -21,18 +22,20 @@ namespace Brickweave.Samples.WebApp.Controllers
         }
 
         [HttpGet, Route("/person/{id}")]
-        public async Task<IActionResult> Get(Guid id)
+        public async Task<IActionResult> Get(Guid id, CancellationToken cancellationToken = default(CancellationToken))
         {
-            var result = await _dispatcher.DispatchQueryAsync(new GetPerson(new PersonId(id)));
+            var result = await _dispatcher.DispatchQueryAsync(new GetPerson(new PersonId(id)), 
+                cancellationToken: cancellationToken);
 
             return Ok(result);
         }
 
         [HttpPost, Route("/person/new")]
-        public async Task<IActionResult> Create([FromBody] CreatePersonRequest request)
+        public async Task<IActionResult> Create([FromBody] CreatePersonRequest request, CancellationToken cancellationToken = default(CancellationToken))
         {
             var result = await _dispatcher.DispatchCommandAsync(new CreatePerson(
-                PersonId.NewId(), new Name(request.FirstName, request.LastName)));
+                PersonId.NewId(), new Name(request.FirstName, request.LastName)),
+                cancellationToken: cancellationToken);
 
             return Ok(result);
         }

@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Threading;
+using System.Threading.Tasks;
 using Brickweave.Cqrs;
 using Brickweave.Samples.Domain.Persons.Models;
 using Brickweave.Samples.Domain.Persons.Services;
@@ -14,7 +15,7 @@ namespace Brickweave.Samples.Domain.Persons.Queries
             _personInfoRepository = personInfoRepository;
         }
 
-        public async Task<PersonInfo> HandleAsync(GetPerson query)
+        public async Task<PersonInfo> HandleAsync(GetPerson query, CancellationToken cancellationToken = default(CancellationToken))
         {
             return await _personInfoRepository.GetPersonInfoAsync(query.Id);
         }

@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Threading;
+using System.Threading.Tasks;
 using Brickweave.Cqrs;
 using Brickweave.Messaging;
 using Brickweave.Samples.Domain.Persons.Events;
@@ -18,7 +19,7 @@ namespace Brickweave.Samples.Domain.Persons.Commands
             _messenger = messenger;
         }
 
-        public async Task<PersonInfo> HandleAsync(CreatePerson command)
+        public async Task<PersonInfo> HandleAsync(CreatePerson command, CancellationToken cancellationToken = default(CancellationToken))
         {
             var person = new Person(command.Id, command.Name);
 

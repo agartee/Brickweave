@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Brickweave.Cqrs.Exceptions;
 using Brickweave.Cqrs.Tests.Models;
@@ -36,7 +37,7 @@ namespace Brickweave.Cqrs.Tests
         public async Task ExecuteAsync_WhenHandlerIsRegistered_ExecutesHandler()
         {
             var handlerWasCalled = false;
-            var handler = new TestCommandHandler(() => handlerWasCalled = true);
+            var handler = new TestCommandHandler(() => handlerWasCalled = true, null);
 
             var serviceProvider = Substitute.For<IServiceProvider>();
             serviceProvider.GetService(typeof(ICommandHandler<TestCommand>))
@@ -49,10 +50,30 @@ namespace Brickweave.Cqrs.Tests
         }
 
         [Fact]
+        public async Task ExecuteAsync_WhenHandlerIsRegistered_ExecutesHandlerWithCancellationRequest()
+        {
+            var handlerWasCalledWithCancellationRequest = false;
+            var handler = new TestCommandHandler(null, () => handlerWasCalledWithCancellationRequest = true);
+
+            var serviceProvider = Substitute.For<IServiceProvider>();
+            serviceProvider.GetService(typeof(ICommandHandler<TestCommand>))
+                .Returns(handler);
+
+            // Simulate cancellation for the command handler.
+            var cancellationTokenSource = new CancellationTokenSource();
+            cancellationTokenSource.Cancel();
+
+            var commandExecutor = new CommandDispatcher(serviceProvider);
+            await commandExecutor.ExecuteAsync(new TestCommand(), cancellationToken: cancellationTokenSource.Token);
+
+            handlerWasCalledWithCancellationRequest.Should().BeTrue();
+        }
+
+        [Fact]
         public async Task ExecuteAsync_WhenSecuredHandlerIsRegistered_ExecutesHandler()
         {
             var handlerWasCalled = false;
-            var handler = new TestSecuredCommandHandler(() => handlerWasCalled = true);
+            var handler = new TestSecuredCommandHandler(() => handlerWasCalled = true, null);
 
             var serviceProvider = Substitute.For<IServiceProvider>();
             serviceProvider.GetService(typeof(ISecuredCommandHandler<TestCommand>))
@@ -62,6 +83,25 @@ namespace Brickweave.Cqrs.Tests
             await commandExecutor.ExecuteAsync(new TestCommand());
 
             handlerWasCalled.Should().BeTrue();
+        }
+
+        [Fact]
+        public async Task ExecuteAsync_WhenSecuredHandlerIsRegistered_ExecutesHandlerWithCancellationRequest()
+        {
+            var handlerWasCalledWithCancellationRequest = false;
+            var handler = new TestSecuredCommandHandler(null, () => handlerWasCalledWithCancellationRequest = true);
+
+            var serviceProvider = Substitute.For<IServiceProvider>();
+            serviceProvider.GetService(typeof(ISecuredCommandHandler<TestCommand>))
+                .Returns(handler);
+
+            var cancellationTokenSource = new CancellationTokenSource();
+            cancellationTokenSource.Cancel();
+
+            var commandExecutor = new CommandDispatcher(serviceProvider);
+            await commandExecutor.ExecuteAsync(new TestCommand(), cancellationToken: cancellationTokenSource.Token);
+
+            handlerWasCalledWithCancellationRequest.Should().BeTrue();
         }
 
         [Fact]

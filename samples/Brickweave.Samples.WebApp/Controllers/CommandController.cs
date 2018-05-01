@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Threading;
+using System.Threading.Tasks;
 using Brickweave.Cqrs.Cli;
 using Brickweave.Cqrs.Cli.Formatters;
 using Brickweave.Cqrs.Cli.Models;
@@ -18,9 +19,9 @@ namespace Brickweave.Samples.WebApp.Controllers
         }
 
         [HttpPost, Route("/command/run")]
-        public async Task<IActionResult> Run([FromBody]string commandText)
+        public async Task<IActionResult> Run([FromBody]string commandText, CancellationToken cancellationToken = default(CancellationToken))
         {
-            var result = await _cliDispatcher.DispatchAsync(commandText);
+            var result = await _cliDispatcher.DispatchAsync(commandText, cancellationToken);
 
             var value = result is HelpInfo info
                 ? SimpleHelpFormatter.Format(info) : result;

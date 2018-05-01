@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Security.Claims;
+using System.Threading;
 using System.Threading.Tasks;
 using Brickweave.Cqrs.Exceptions;
 using Brickweave.Cqrs.Extensions;
@@ -17,7 +18,7 @@ namespace Brickweave.Cqrs
             _serviceProvider = serviceProvider;
         }
 
-        public async Task<object> ExecuteAsync(ICommand command, ClaimsPrincipal user = null)
+        public async Task<object> ExecuteAsync(ICommand command, ClaimsPrincipal user = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             Guard.AgainstNullArgument(nameof(command), command);
 
@@ -26,29 +27,29 @@ namespace Brickweave.Cqrs
             if (command.GetCommandReturnType() != null)
             {
                 if(handler is ISecured)
-                    return await handler.HandleAsync((dynamic)command, user);
+                    return await handler.HandleAsync((dynamic)command, user, cancellationToken);
 
-                return await handler.HandleAsync((dynamic)command);
+                return await handler.HandleAsync((dynamic)command, cancellationToken);
             }
 
             if (handler is ISecured)
-                await handler.HandleAsync((dynamic)command, user);
+                await handler.HandleAsync((dynamic)command, user, cancellationToken);
             else
-                await handler.HandleAsync((dynamic)command);
+                await handler.HandleAsync((dynamic)command, cancellationToken);
 
             return null;
         }
 
-        public async Task<TResult> ExecuteAsync<TResult>(ICommand<TResult> command, ClaimsPrincipal user = null)
+        public async Task<TResult> ExecuteAsync<TResult>(ICommand<TResult> command, ClaimsPrincipal user = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             Guard.AgainstNullArgument(nameof(command), command);
 
             dynamic handler = GetCommandHandler(command, typeof(TResult));
 
             if (handler is ISecured)
-                return await handler.HandleAsync((dynamic)command, user);
+                return await handler.HandleAsync((dynamic)command, user, cancellationToken);
 
-            return await handler.HandleAsync((dynamic)command);
+            return await handler.HandleAsync((dynamic)command, cancellationToken);
         }
 
         private object GetCommandHandler(ICommand command, Type commandReturnType)

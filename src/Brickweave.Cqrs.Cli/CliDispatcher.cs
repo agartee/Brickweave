@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Brickweave.Cqrs.Cli.Extensions;
 using Brickweave.Cqrs.Cli.Factories;
@@ -23,7 +24,7 @@ namespace Brickweave.Cqrs.Cli
             _helpInfoFactory = helpInfoFactory;
         }
 
-        public async Task<object> DispatchAsync(string commandText)
+        public async Task<object> DispatchAsync(string commandText, CancellationToken cancellationToken = default(CancellationToken))
         {
             var args = commandText.ParseCommandText();
 
@@ -35,8 +36,8 @@ namespace Brickweave.Cqrs.Cli
                 executableInfo);
 
             var result = executable is ICommand
-                ? await _commandDispatcher.ExecuteAsync((ICommand)executable)
-                : await _queryDispatcher.ExecuteAsync((IQuery)executable);
+                ? await _commandDispatcher.ExecuteAsync((ICommand)executable, cancellationToken: cancellationToken)
+                : await _queryDispatcher.ExecuteAsync((IQuery)executable, cancellationToken: cancellationToken);
 
             return result;
         }

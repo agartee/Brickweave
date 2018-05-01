@@ -1,3 +1,6 @@
 ﻿{
-  "person": "Manage Person data" 
+  "person": "Manage person data",
+  "person things": "Manage person things",
+  "place": "Manage place data",
+  "place things": "Manage place things"
 }

@@ -25,34 +25,41 @@ namespace Brickweave.Cqrs.Cli.Readers
         {
             Guard.AgainstNullArgument(nameof(adjacencyCriteria), adjacencyCriteria);
 
-            if(!File.Exists(_filePath))
+            if (!File.Exists(_filePath))
                 throw new CategoryHelpFileNotFoundExeption();
 
             var data = TryDeserialize(File.ReadAllText(_filePath));
 
             var categories = data
                 .Where(kvp => IsSubjectOrOneLevelDeeper(kvp.Key))
-                .Select(kvp => new HelpInfo(
-                    kvp.Key.IndexOf(' ') > -1
-                        ? kvp.Key.Substring(kvp.Key.IndexOf(' ') + 1)
-                        : kvp.Key,
-                    kvp.Key.Split(' ').FirstOrDefault(),
-                    kvp.Value,
-                    HelpInfoType.Category))
-                .ToList();
+                .Select(kvp => new
+                {
+                    Name = GetName(kvp),
+                    FullName = kvp.Key,
+                    Subject = GetSubject(kvp),
+                    Description = kvp.Value,
+                    Type = HelpInfoType.Category
+                }).ToList();
 
             if (adjacencyCriteria.Equals(HelpAdjacencyCriteria.Empty()))
-                return _defaultHelpInfo.WithChildren(categories);
-
-            if (categories.Any(h => h.Subject == adjacencyCriteria.Subject))
             {
+                var children = categories
+                    .Select(o => new HelpInfo(o.Name, o.Subject, o.Description, o.Type));
+
+                return _defaultHelpInfo.WithChildren(children);
+            }
+            else
+            {
+                var children = categories
+                    .Where(h => h.FullName != adjacencyCriteria.Subject)
+                    .Select(o => new HelpInfo(o.Name, o.Subject, o.Description, o.Type));
+
                 return categories
-                    .First(h => h.Name == adjacencyCriteria.Subject)
-                    .WithChildren(categories.Where(h => h.Name != adjacencyCriteria.Subject));
+                    .Where(h => h.FullName == adjacencyCriteria.Subject)
+                    .Select(o => new HelpInfo(o.Name, o.Subject, o.Description, o.Type))
+                    .FirstOrDefault()?.WithChildren(children);
             }
 
-            return null;
-            
             Dictionary<string, string> TryDeserialize(string json)
             {
                 try { return JsonConvert.DeserializeObject<Dictionary<string, string>>(json); }
@@ -70,6 +77,27 @@ namespace Brickweave.Cqrs.Cli.Readers
 
                 return key.StartsWith(adjacencyCriteria.Subject)
                     && (keySplit.Length == adjacencySplit.Length || keySplit.Length == adjacencySplit.Length + 1);
+            }
+
+            string GetName(KeyValuePair<string, string> kvp)
+            {
+                var keySplit = kvp.Key.Split(' ');
+
+                if (keySplit.Count() == 1)
+                    return kvp.Key;
+
+                return kvp.Key.Substring(kvp.Key.LastIndexOf(' ') + 1);
+            }
+
+            string GetSubject(KeyValuePair<string, string> kvp)
+            {
+                var keySplit = kvp.Key.Split(' ');
+                int keyPartCount = keySplit.Count();
+
+                if (keyPartCount == 1)
+                    return kvp.Key;
+
+                return keySplit[keyPartCount - 2];
             }
         }
     }

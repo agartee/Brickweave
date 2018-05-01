@@ -9,6 +9,9 @@
 *.userosscache
 *.sln.docstates
 
+# Powershell script config
+*.ps1.config
+
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 appsettings.local.json

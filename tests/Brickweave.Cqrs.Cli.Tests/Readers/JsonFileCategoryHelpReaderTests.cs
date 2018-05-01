@@ -31,6 +31,26 @@ namespace Brickweave.Cqrs.Cli.Tests.Readers
         }
 
         [Fact]
+        public void GetHelpInfo_WhenFileContainsDataAndPassingSubCategory_ReturnsHelpInfoForCategoryAndOneLevelDeep()
+        {
+            var reader = new JsonFileCategoryHelpReader("Data\\Categories.json");
+
+            var result = reader.GetHelpInfo(new HelpAdjacencyCriteria("category1 subcategory1"));
+
+            result.Name.Should().Be("subcategory1");
+            result.Subject.Should().Be("category1");
+            result.Description.Should().Be("subcategory1 description");
+            result.Type.Should().Be(HelpInfoType.Category);
+
+            result.Children.Should().HaveCount(1);
+            var child = result.Children.First();
+            child.Name.Should().Be("subcategory2");
+            child.Subject.Should().Be("subcategory1");
+            child.Description.Should().Be("subcategory2 description");
+            child.Type.Should().Be(HelpInfoType.Category);
+        }
+
+        [Fact]
         public void GetHelpInfo_WhenEmptyAdjacencyCriteria_ReturnsDefaultInfoWithFirstTierCategories()
         {
             var reader = new JsonFileCategoryHelpReader("Data\\Categories.json",

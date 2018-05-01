@@ -37,7 +37,7 @@ namespace Brickweave.Cqrs.Cli.Factories
             {
                 return new HelpInfo(
                     categoryBySubjectCriteria.Subject, 
-                    categoryBySubjectCriteria.Subject, 
+                    categoryBySubjectCriteria.Subject,
                     string.Empty, 
                     HelpInfoType.Category, 
                     executablesBySubject);

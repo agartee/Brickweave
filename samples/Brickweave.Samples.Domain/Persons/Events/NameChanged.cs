@@ -2,7 +2,7 @@
 
 namespace Brickweave.Samples.Domain.Persons.Events
 {
-    public class NameChanged : IAggregateEvent
+    public class NameChanged : IEvent
     {
         public NameChanged(string firstName, string lastName)
         {

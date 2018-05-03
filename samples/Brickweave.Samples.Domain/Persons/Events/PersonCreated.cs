@@ -4,7 +4,7 @@ using Brickweave.Messaging;
 
 namespace Brickweave.Samples.Domain.Persons.Events
 {
-    public class PersonCreated : IAggregateEvent, IDomainEvent
+    public class PersonCreated : IEvent, IDomainEvent
     {
         public PersonCreated(Guid id, string firstName, string lastName)
         {

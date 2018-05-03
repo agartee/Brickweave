@@ -11,7 +11,7 @@ using System;
 namespace Brickweave.Samples.WebApp.Data.Migrations
 {
     [DbContext(typeof(SamplesDbContext))]
-    [Migration("20180427211937_init")]
+    [Migration("20180503174609_init")]
     partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -60,9 +60,7 @@ namespace Brickweave.Samples.WebApp.Data.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("FirstName");
-
-                    b.Property<string>("LastName");
+                    b.Property<string>("Json");
 
                     b.HasKey("Id");
 

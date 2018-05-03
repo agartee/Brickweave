@@ -42,8 +42,7 @@ namespace Brickweave.Samples.WebApp.Data.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
-                    FirstName = table.Column<string>(nullable: true),
-                    LastName = table.Column<string>(nullable: true)
+                    Json = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {

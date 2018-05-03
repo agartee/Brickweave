@@ -1,6 +1,5 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations.Schema;
-using Brickweave.Samples.Domain.Persons.Models;
 
 namespace Brickweave.Samples.SqlServer.Entities
 {
@@ -10,14 +9,6 @@ namespace Brickweave.Samples.SqlServer.Entities
         public const string TABLE_NAME = "Person";
 
         public Guid Id { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-
-        public PersonInfo ToInfo()
-        {
-            return new PersonInfo(
-                new PersonId(Id),
-                new Name(FirstName, LastName));
-        }
+        public string Json { get; set; }
     }
 }

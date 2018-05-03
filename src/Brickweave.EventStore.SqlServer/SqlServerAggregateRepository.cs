@@ -25,7 +25,7 @@ namespace Brickweave.EventStore.SqlServer
         }
         
         protected async Task SaveUncommittedEventsAsync(EventSourcedAggregateRoot aggregate, Guid streamId,
-            Action onBeforeSaveChanges = null)
+            Func<Task> onBeforeSaveChanges = null)
         {
             var created = DateTime.UtcNow;
             
@@ -36,7 +36,7 @@ namespace Brickweave.EventStore.SqlServer
             uncommittedEvents.ForEach(e => _dbContext.Events.Add(e));
             
             if (onBeforeSaveChanges != null)
-                onBeforeSaveChanges.Invoke();
+                await onBeforeSaveChanges.Invoke();
 
             await _dbContext.SaveChangesAsync();
 
@@ -60,7 +60,7 @@ namespace Brickweave.EventStore.SqlServer
                 .ToListAsync();
 
             var events = eventData
-                .Select(d => _serializer.DeserializeObject<IAggregateEvent>(d.Json))
+                .Select(d => _serializer.DeserializeObject<IEvent>(d.Json))
                 .ToList();
 
             return events.Any() ? _aggregateFactory.Create<TAggregate>(events) : null;
@@ -80,7 +80,7 @@ namespace Brickweave.EventStore.SqlServer
             await _dbContext.SaveChangesAsync();
         }
 
-        private EventData CreateEventData(Guid streamId, IAggregateEvent @event, DateTime created, int commitSequence)
+        private EventData CreateEventData(Guid streamId, IEvent @event, DateTime created, int commitSequence)
         {
             return new EventData
             {

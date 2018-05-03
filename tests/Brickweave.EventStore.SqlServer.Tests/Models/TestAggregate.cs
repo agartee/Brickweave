@@ -11,7 +11,7 @@ namespace Brickweave.EventStore.SqlServer.Tests.Models
             Register<TestAggregateCreated>(Apply);
         }
 
-        public TestAggregate(IEnumerable<IAggregateEvent> events) : this()
+        public TestAggregate(IEnumerable<IEvent> events) : this()
         {
             events.ToList().ForEach(ApplyEvent);
         }

@@ -1,10 +1,14 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Brickweave.EventStore.Factories;
 using Brickweave.EventStore.Serialization;
 using Brickweave.EventStore.SqlServer;
 using Brickweave.Samples.Domain.Persons.Models;
 using Brickweave.Samples.Domain.Persons.Services;
 using Brickweave.Samples.SqlServer.Entities;
+using Brickweave.Samples.SqlServer.Extensions;
+using Brickweave.Samples.SqlServer.Serialization;
 using Microsoft.EntityFrameworkCore;
 
 namespace Brickweave.Samples.SqlServer.Repositories
@@ -24,7 +28,7 @@ namespace Brickweave.Samples.SqlServer.Repositories
         public async Task SavePersonAsync(Person person)
         {
             await SaveUncommittedEventsAsync(person, person.Id.Value,
-                () => AddSnapshot(person));
+                async () => await AddSnapshotAsync(person));
         }
 
         public async Task<Person> GetPersonAsync(PersonId id)
@@ -40,14 +44,27 @@ namespace Brickweave.Samples.SqlServer.Repositories
             return data?.ToInfo();
         }
 
-        private void AddSnapshot(Person person)
+        public async Task<IEnumerable<PersonInfo>> ListPeopleAsync()
         {
-            _dbContext.Persons.Add(new PersonSnapshot
-            {
-                Id = person.Id.Value,
-                FirstName = person.Name.FirstName,
-                LastName = person.Name.LastName
-            });
+            var data = await _dbContext.Persons.ToListAsync();
+
+            return data.Select(p => p.ToInfo());
+        }
+
+        private async Task AddSnapshotAsync(Person person)
+        {
+            if (await PersonExistsAsync(person))
+                _dbContext.Persons.Update(person.ToSnapshot());
+            else
+                _dbContext.Persons.Add(person.ToSnapshot());
+        }
+
+        private async Task<bool> PersonExistsAsync(Person person)
+        {
+            var data = await _dbContext.Persons.AsNoTracking()
+                .FirstOrDefaultAsync(p => p.Id == person.Id.Value);
+
+            return data != null;
         }
     }
 }

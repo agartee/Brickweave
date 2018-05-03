@@ -15,7 +15,7 @@ namespace Brickweave.EventStore.SqlServer.DependencyInjection
         public EventStoreOptionsBuilder(IServiceCollection services, params Assembly[] domainAssemblies)
         {
             var shortHandTypes = domainAssemblies.SelectMany(a => a.ExportedTypes)
-                .Where(t => typeof(IAggregateEvent).IsAssignableFrom(t))
+                .Where(t => typeof(IEvent).IsAssignableFrom(t))
                 .ToArray();
 
             services

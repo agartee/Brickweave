@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Brickweave.Cqrs.Cli;
 using Brickweave.Cqrs.Cli.Formatters;
 using Brickweave.Cqrs.Cli.Models;
@@ -20,12 +21,19 @@ namespace Brickweave.Samples.WebApp.Controllers
         [HttpPost, Route("/command/run")]
         public async Task<IActionResult> Run([FromBody]string commandText)
         {
-            var result = await _cliDispatcher.DispatchAsync(commandText);
+            try
+            {
+                var result = await _cliDispatcher.DispatchAsync(commandText);
 
-            var value = result is HelpInfo info
-                ? SimpleHelpFormatter.Format(info) : result;
+                var value = result is HelpInfo info
+                    ? SimpleHelpFormatter.Format(info) : result;
 
-            return Ok(value);
+                return Ok(value);
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex);
+            }
         }
     }
 }

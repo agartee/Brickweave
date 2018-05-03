@@ -45,9 +45,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Brickweave.Messaging.Tests"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Brickweave.Samples.WebApp", "samples\Brickweave.Samples.WebApp\Brickweave.Samples.WebApp.csproj", "{B6147E2B-4A89-459C-B346-FF5EC57BB1A8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Brickweave.Messaging.SqlServer", "src\Brickweave.Messaging.SqlServer\Brickweave.Messaging.SqlServer.csproj", "{FC551C26-1EBF-4C37-A575-322B5FA2DDFB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Brickweave.Messaging.SqlServer", "src\Brickweave.Messaging.SqlServer\Brickweave.Messaging.SqlServer.csproj", "{FC551C26-1EBF-4C37-A575-322B5FA2DDFB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Brickweave.Messaging.SqlServer.Tests", "tests\Brickweave.Messaging.SqlServer.Tests\Brickweave.Messaging.SqlServer.Tests.csproj", "{FC25B164-A295-40AB-B952-3F5335B4C223}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Brickweave.Messaging.SqlServer.Tests", "tests\Brickweave.Messaging.SqlServer.Tests\Brickweave.Messaging.SqlServer.Tests.csproj", "{FC25B164-A295-40AB-B952-3F5335B4C223}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Brickweave.Samples.Domain.Tests", "samples\Brickweave.Samples.Domain.Tests\Brickweave.Samples.Domain.Tests.csproj", "{E3B2070A-452A-43EE-89B2-5AE48C367649}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -135,6 +137,10 @@ Global
 		{FC25B164-A295-40AB-B952-3F5335B4C223}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FC25B164-A295-40AB-B952-3F5335B4C223}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FC25B164-A295-40AB-B952-3F5335B4C223}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E3B2070A-452A-43EE-89B2-5AE48C367649}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E3B2070A-452A-43EE-89B2-5AE48C367649}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E3B2070A-452A-43EE-89B2-5AE48C367649}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E3B2070A-452A-43EE-89B2-5AE48C367649}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -160,6 +166,7 @@ Global
 		{B6147E2B-4A89-459C-B346-FF5EC57BB1A8} = {0FEF9B3D-FB35-4B88-95F1-5FC50B032C6A}
 		{FC551C26-1EBF-4C37-A575-322B5FA2DDFB} = {685B773C-8922-47C0-9144-4219E1AF5A0C}
 		{FC25B164-A295-40AB-B952-3F5335B4C223} = {01363C09-641F-41CF-857A-E93663279BB5}
+		{E3B2070A-452A-43EE-89B2-5AE48C367649} = {0FEF9B3D-FB35-4B88-95F1-5FC50B032C6A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4E8CFE0E-1064-4953-B2D7-545AE105B2D9}

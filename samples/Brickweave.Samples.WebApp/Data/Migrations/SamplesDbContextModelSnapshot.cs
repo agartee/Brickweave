@@ -59,9 +59,7 @@ namespace Brickweave.Samples.WebApp.Data.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("FirstName");
-
-                    b.Property<string>("LastName");
+                    b.Property<string>("Json");
 
                     b.HasKey("Id");
 

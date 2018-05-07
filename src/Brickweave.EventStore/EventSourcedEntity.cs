@@ -36,15 +36,5 @@ namespace Brickweave.EventStore
         {
             events.ToList().ForEach(e => ApplyEvent(e));
         }
-
-        public IEnumerable<IEvent> GetUncommittedEvents()
-        {
-            return EventQueue.ToArray();
-        }
-
-        public void ClearUncommittedEvents()
-        {
-            EventQueue.Clear();
-        }
     }
 }

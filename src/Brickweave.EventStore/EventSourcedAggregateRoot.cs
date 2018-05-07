@@ -8,5 +8,15 @@ namespace Brickweave.EventStore
         {
 
         }
+
+        public IEnumerable<IEvent> GetUncommittedEvents()
+        {
+            return EventQueue.ToArray();
+        }
+
+        public void ClearUncommittedEvents()
+        {
+            EventQueue.Clear();
+        }
     }
 }

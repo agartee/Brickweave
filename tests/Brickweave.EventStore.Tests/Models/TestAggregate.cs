@@ -56,7 +56,7 @@ namespace Brickweave.EventStore.Tests.Models
 
         private void Apply(ChildAdded @event)
         {
-            _children.Add(new ChildEntity(@event.Id, EventQueue, Router));
+            _children.Add(new ChildEntity(@event.Id, EventQueue, EventRouter));
         }
     }
 }

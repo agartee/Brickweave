@@ -62,7 +62,7 @@ namespace Brickweave.Samples.Domain.Persons.Models
 
         private void Apply(PhoneAdded @event)
         {
-            _phones.Add(new Phone(new PhoneId(@event.Id), @event.Number, EventQueue, Router));
+            _phones.Add(new Phone(new PhoneId(@event.Id), @event.Number, EventQueue, EventRouter));
         }
     }
 }

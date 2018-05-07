@@ -6,18 +6,18 @@ namespace Brickweave.EventStore
 {
     public abstract class EventSourcedEntity
     {
-        protected EventSourcedEntity(Queue<IEvent> eventQueue, IEventRouter router)
+        protected EventSourcedEntity(Queue<IEvent> eventQueue, IEventRouter eventRouter)
         {
             EventQueue = eventQueue;
-            Router = router;
+            EventRouter = eventRouter;
         }
 
-        protected IEventRouter Router { get; }
+        protected IEventRouter EventRouter { get; }
         protected Queue<IEvent> EventQueue { get; }
 
         protected void Register<THandler>(Action<THandler> route, object id = null)
         {
-            Router.Register(route, id);
+            EventRouter.Register(route, id);
         }
 
         protected void RaiseEvent(IEvent @event)
@@ -28,7 +28,7 @@ namespace Brickweave.EventStore
 
         protected void ApplyEvent(IEvent @event)
         {
-            Router.Dispatch(@event, GetType(),
+            EventRouter.Dispatch(@event, GetType(),
                 @event is IChildEvent ? ((IChildEvent) @event).GetEntityId() : null); 
         }
 

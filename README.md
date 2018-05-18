@@ -1,13 +1,16 @@
+# Brickweave
+![Brickweave](https://github.com/agartee/brickweave/raw/master/assets/logo/brickweave200x200.png)
+
 [![NuGet version](https://img.shields.io/nuget/v/LiteGuard.svg?style=flat)](https://www.nuget.org/packages?q=Brickweave)
 [![Build status](https://ci.appveyor.com/api/projects/status/gk6r7gupecbc23rn?svg=true)](https://ci.appveyor.com/project/agartee/brickweave)
 
-# What is Brickweave?
+## What is Brickweave?
 
 Brickweave is a suite of .NET Standard 2.0 framework libraries to support developers on their Domain Driven Design journeys and provide clear, simple patterns to achieve DDD, CQRS, ES and domain messaging without getting bogged down with an overwhelming number of implementation decisions.
 
 For full usage examples, see the included ***samples*** application.
 
-# Brickweave.Domain
+## Brickweave.Domain
 
 Contains a base ID model to help clarify model identity as well as improve code readability by adding type protection to identity values. In addition, it includes a custom JSON converter to flatten these IDs on serialization if client/consuming application require a format change.
 
@@ -40,7 +43,7 @@ public void ConfigureServices(IServiceCollection services)
 }
 ```
 
-# Brickweave.Cqrs
+## Brickweave.Cqrs
 
 Contains interface definitions for CQRS patterned commands and queries, as well as execution services to simplify DI requirements with the host application/API. It can work in tandem with the Brickweave.Domain library or without.
 
@@ -97,11 +100,11 @@ public void ConfigureServices(IServiceCollection services)
 }
 ```
 
-# Brickweave.EventStore
+## Brickweave.EventStore
 
 Contains base components to implement event-sourced aggregates and repositories. Snap-shotting/memento is not required and is not baked into these services and interfaces. Brickweave's event store was heavily influenced by the [NEventStore](https://github.com/NEventStore/NEventStore) project.
 
-# Brickweave.EventStore.SqlServer
+## Brickweave.EventStore.SqlServer
 
 Contains base class to quickly and easily implement event-sourced repositories writing to a SQL Server database.
 
@@ -153,7 +156,7 @@ public void ConfigureServices(IServiceCollection services)
 }
 ```
 
-# Brickweave.Messaging
+## Brickweave.Messaging
 
 Contains the `IDomainMessage` interface and `IDomainMessenger` service to support domain messaging implementation services.
 
@@ -181,7 +184,7 @@ public class PersonCreated : IDomainEvent
 await _messenger.SendAsync(new PersonCreated(new Guid("{2CA40287-46E4-402C-B3CE-879A8B5A684F}"), "Adam", "Gartee"));
 ```
 
-# Brickweave.Messaging.MessageBus
+## Brickweave.Messaging.MessageBus
 
 Contains services to support domain messaging via Azure Service Bus queues and topics.
 
@@ -202,7 +205,7 @@ public void ConfigureServices(IServiceCollection services)
 }
 ```
 
-# Brickweave.Messaging.SqlServer
+## Brickweave.Messaging.SqlServer
 
 Contains services to support message transmission failures to a SQL Server database. While the `IMessageFailureHandler` interface is contained within the `Brickweave.Messaging` package, a SQL Server implementation exists within this package. The `SqlServerMessageFailureWriter` takes as a generic argument the `DbContext` type used to perform a write. A default `Brickweave.Messaging.SqlServer.MessagingDbContext` can be used, or alternatively a custom application `DbContext` that implements the `Brickweave.Messaging.SqlServer.IMessageStore` interface. 
 
@@ -219,11 +222,11 @@ public void ConfigureServices(IServiceCollection services)
 }
 ```
 
-# Brickweave.Cqrs.Cli
+## Brickweave.Cqrs.Cli
 
 Contains services to support a command line application to easily execute commands and queries through a single API endpoint. Services to support command line help text is also included. For a full demo of this library, see [the demo project](https://github.com/agartee/brickweave-demo-cli).
 
-# Running the Project from Source
+## Running the Project from Source
 
 This project is configured to use user secrets for integration tests. Below are the settings needed to run the tests. The sample application is configured to use a simple Identity Server 4 server (included in samples).
 

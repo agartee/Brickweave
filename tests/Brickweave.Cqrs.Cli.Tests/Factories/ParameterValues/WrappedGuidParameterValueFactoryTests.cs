@@ -58,5 +58,15 @@ namespace Brickweave.Cqrs.Cli.Tests.Factories.ParameterValues
 
             _output.WriteLine(exception.Message);
         }
+
+        [Fact]
+        public void Create_WhenParameterValueIsNull_ReturnsNull()
+        {
+            var factory = new WrappedGuidParameterValueFactory();
+
+            var result = factory.Create(typeof(FooId), null);
+
+            result.Should().BeNull();
+        }
     }
 }

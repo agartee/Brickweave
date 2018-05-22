@@ -18,6 +18,9 @@ namespace Brickweave.Cqrs.Cli.Factories.ParameterValues
 
         public object Create(Type targetType, ExecutableParameterInfo parameter)
         {
+            if (parameter == null)
+                return null;
+
             var constructor = GetWrappedBasicConstructor(targetType);
             var parameterType = GetWrappedBasicType(targetType);
 

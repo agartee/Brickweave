@@ -38,5 +38,15 @@ namespace Brickweave.Cqrs.Cli.Tests.Factories.ParameterValues
             result.Should().BeOfType<FooId>();
             result.As<FooId>().Value.Should().Be("1");
         }
+
+        [Fact]
+        public void Create_WhenParameterValueIsNull_ReturnsNull()
+        {
+            var factory = new WrappedBasicParameterValueFactory();
+
+            var result = factory.Create(typeof(FooId), null);
+
+            result.Should().BeNull();
+        }
     }
 }

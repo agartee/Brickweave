@@ -15,6 +15,9 @@ namespace Brickweave.Cqrs.Cli.Factories.ParameterValues
 
         public object Create(Type targetType, ExecutableParameterInfo parameter)
         {
+            if (parameter == null)
+                return null;
+
             if (parameter.SingleValue.GetType() != typeof(string))
                 throw new InvalidOperationException($"Unsupported type for {typeof(IExecutable)}:{targetType} parameter conversion: {parameter.SingleValue.GetType()}");
 

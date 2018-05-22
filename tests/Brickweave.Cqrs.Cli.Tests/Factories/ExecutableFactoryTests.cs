@@ -119,5 +119,28 @@ namespace Brickweave.Cqrs.Cli.Tests.Factories
             
             exception.TypeShortName.Should().Be("Int32");
         }
+
+        [Fact]
+        public void Create_WhenObjectParameterIsNotProvided_ReturnsCommandWithNullObjectProperty()
+        {
+            var name = "bar1";
+
+            var factory = new ExecutableFactory(
+                new IParameterValueFactory[] 
+                {
+                    new BasicParameterValueFactory(),
+                    new WrappedGuidParameterValueFactory()
+                },
+                new[] { typeof(GetBar) });
+
+            var executableInfo = new ExecutableInfo("GetBar",
+                new[] { new ExecutableParameterInfo("name", name) });
+
+            var result = factory.Create(executableInfo) as GetBar;
+
+            result.Should().NotBeNull();
+            result.Id.Should().BeNull();
+            result.Name.Should().Be(name);
+        }
     }
 }

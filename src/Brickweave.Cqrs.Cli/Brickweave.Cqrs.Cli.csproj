@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <VersionPrefix>0.12.3</VersionPrefix>
+    <VersionPrefix>0.12.4</VersionPrefix>
     <Authors>Adam Gartee</Authors>
     <Company>Adam Gartee</Company>
     <Description>Lightweight package adding command language interpreter (CLI) functionality to support the Brickweave.Cqrs library</Description>

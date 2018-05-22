@@ -66,5 +66,15 @@ namespace Brickweave.Cqrs.Cli.Tests.Factories.ParameterValues
 
             result.Should().Be(123);
         }
+
+        [Fact]
+        public void Create_WhenTargetTypeIsNullableAndValueIsTrue_ReturnsTrue()
+        {
+            var factory = new BasicParameterValueFactory();
+
+            var result = factory.Create(typeof(bool?), new ExecutableParameterInfo("value", "true"));
+
+            result.Should().Be(true);
+        }
     }
 }

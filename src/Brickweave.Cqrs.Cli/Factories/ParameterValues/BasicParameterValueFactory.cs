@@ -17,13 +17,28 @@ namespace Brickweave.Cqrs.Cli.Factories.ParameterValues
             {
                 return targetType == typeof(object)
                     ? parameter.SingleValue
-                    : Convert.ChangeType(parameter.SingleValue, targetType);
+                    : ChangeType(parameter.SingleValue, targetType);
             }
             catch (Exception ex)
             {
                 throw new InvalidOperationException(
                     $"Unable to convert {parameter.SingleValue} to type {targetType}", ex);
             }
+        }
+        
+        private static object ChangeType(object value, Type conversion)
+        {
+            var t = conversion;
+
+            if (t.IsGenericType && t.GetGenericTypeDefinition().Equals(typeof(Nullable<>)))
+            {
+                if (value == null)
+                    return null;
+
+                t = Nullable.GetUnderlyingType(t);
+            }
+
+            return Convert.ChangeType(value, t);
         }
     }
 }

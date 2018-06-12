@@ -4,14 +4,14 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <Authors>Adam Gartee</Authors>
     <Company>Adam Gartee</Company>
-    <VersionPrefix>0.3.0</VersionPrefix>
+    <VersionPrefix>0.4.0</VersionPrefix>
     <Description>Lightweight package to support common Domain Messaging patterns</Description>
     <PackageLicenseUrl>https://github.com/agartee/Brickweave/blob/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/agartee/Brickweave</PackageProjectUrl>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
+    <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
     <PackageReference Include="NodaTime.Serialization.JsonNet" Version="2.0.0" />
   </ItemGroup>
 

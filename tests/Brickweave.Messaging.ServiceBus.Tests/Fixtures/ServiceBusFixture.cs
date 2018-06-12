@@ -12,7 +12,6 @@ namespace Brickweave.Messaging.ServiceBus.Tests.Fixtures
         public ServiceBusFixture()
         {
             var config = new ConfigurationBuilder()
-                .SetBasePath(AppContext.BaseDirectory)
                 .AddUserSecrets<ServiceBusFixture>()
                 .AddEnvironmentVariables()
                 .Build();

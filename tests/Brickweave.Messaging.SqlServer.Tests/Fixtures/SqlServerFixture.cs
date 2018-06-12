@@ -11,7 +11,6 @@ namespace Brickweave.EventStore.SqlServer.Tests.Fixtures
         public SqlServerFixture()
         {
             var config = new ConfigurationBuilder()
-                .SetBasePath(AppContext.BaseDirectory)
                 .AddUserSecrets<SqlServerFixture>()
                 .AddEnvironmentVariables()
                 .Build();

@@ -85,5 +85,17 @@ namespace Brickweave.Cqrs.Cli.Tests.Factories
             result.Name.Should().Be(nameof(ListFoos));
             result.Parameters.Should().HaveCount(0);
         }
+
+        [Fact]
+        public void Create_WhenParametersContainKeyValuePair_ReturnsExecutableInfo()
+        {
+            var factory = new ExecutableInfoFactory(
+                new ExecutableRegistration<ListBars>("list", "bar"));
+
+            var result = factory.Create(new[] { "bar", "list", "--attributes", "key[=this is a value]" });
+
+            result.Name.Should().Be(nameof(ListBars));
+            result.Parameters.Should().HaveCount(1);
+        }
     }
 }

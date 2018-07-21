@@ -104,7 +104,7 @@ namespace Brickweave.Cqrs.Cli.Factories
 
                     return results.ToArray();
                 }
-
+                
                 string[] GetArglessParameterDefaultValue()
                 {
                     return new [] { "true" };

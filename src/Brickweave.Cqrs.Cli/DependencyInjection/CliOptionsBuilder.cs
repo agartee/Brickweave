@@ -27,16 +27,36 @@ namespace Brickweave.Cqrs.Cli.DependencyInjection
                 .AddScoped<ICliDispatcher, CliDispatcher>()
                 .AddScoped<IExecutableInfoFactory>(provider =>
                     new ExecutableInfoFactory(_executableRegistrations.ToArray()))
+                .AddScoped<BasicParameterValueFactory>()
+                .AddScoped<WrappedBasicParameterValueFactory>()
+                .AddScoped<GuidParameterValueFactory>()
+                .AddScoped<WrappedGuidParameterValueFactory>()
+                .AddScoped<KeyValuePairParameterValueFactory>()
                 .AddScoped<IParameterValueFactory, BasicParameterValueFactory>()
-                .AddScoped<ISingleParameterValueFactory, BasicParameterValueFactory>()
                 .AddScoped<IParameterValueFactory, WrappedBasicParameterValueFactory>()
-                .AddScoped<ISingleParameterValueFactory, WrappedBasicParameterValueFactory>()
                 .AddScoped<IParameterValueFactory, GuidParameterValueFactory>()
-                .AddScoped<ISingleParameterValueFactory, GuidParameterValueFactory>()
                 .AddScoped<IParameterValueFactory, WrappedGuidParameterValueFactory>()
-                .AddScoped<ISingleParameterValueFactory, WrappedGuidParameterValueFactory>()
                 .AddScoped<IParameterValueFactory>(s => new DateTimeParameterValueFactory(_culture))
+                .AddScoped<IParameterValueFactory>(s => new KeyValuePairParameterValueFactory(
+                    new ISingleParameterValueFactory[] {
+                        s.GetService<BasicParameterValueFactory>(),
+                        s.GetService<WrappedBasicParameterValueFactory>(),
+                        s.GetService<GuidParameterValueFactory>(),
+                        s.GetService<WrappedGuidParameterValueFactory>()
+                    }))
+                .AddScoped<ISingleParameterValueFactory, WrappedBasicParameterValueFactory>()
+                .AddScoped<ISingleParameterValueFactory, BasicParameterValueFactory>()
+                .AddScoped<ISingleParameterValueFactory, GuidParameterValueFactory>()
+                .AddScoped<ISingleParameterValueFactory, WrappedGuidParameterValueFactory>()
                 .AddScoped<ISingleParameterValueFactory>(s => new DateTimeParameterValueFactory(_culture))
+                .AddScoped<ISingleParameterValueFactory>(s => new KeyValuePairParameterValueFactory(
+                    new ISingleParameterValueFactory[] {
+                        s.GetService<BasicParameterValueFactory>(),
+                        s.GetService<WrappedBasicParameterValueFactory>(),
+                        s.GetService<GuidParameterValueFactory>(),
+                        s.GetService<WrappedGuidParameterValueFactory>()
+                    }))
+                .AddScoped<IParameterValueFactory, DictionaryParameterValueFactory>()
                 .AddScoped<IParameterValueFactory>(s => new EnumerableParameterValueFactory(s.GetServices<ISingleParameterValueFactory>()))
                 .AddScoped<IParameterValueFactory>(s => new ListParameterValueFactory(s.GetServices<ISingleParameterValueFactory>()))
                 .AddScoped<IExecutableFactory>(provider => new ExecutableFactory(

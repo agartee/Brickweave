@@ -68,7 +68,8 @@ namespace Brickweave.Cqrs.Cli.Tests.Factories.ParameterValues
             var factory = new ListParameterValueFactory(
                 new IParameterValueFactory[] { new BasicParameterValueFactory() });
 
-            var result = factory.Create(typeof(IEnumerable<string>), new ExecutableParameterInfo("value", "foo", "bar"));
+            var result = factory.Create(typeof(IEnumerable<string>), 
+                new ExecutableParameterInfo("value", "foo", "bar"));
 
             result.Should().BeOfType<List<string>>();
             result.Should().BeEquivalentTo(new List<string> { "foo", "bar" });

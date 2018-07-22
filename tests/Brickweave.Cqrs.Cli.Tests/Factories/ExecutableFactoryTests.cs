@@ -142,22 +142,5 @@ namespace Brickweave.Cqrs.Cli.Tests.Factories
             result.Id.Should().BeNull();
             result.Name.Should().Be(name);
         }
-
-        [Fact]
-        public void Create_WithKeyValuePairParameter_CreatesCommand()
-        {
-            var factory = new ExecutableFactory(
-                new IParameterValueFactory[] { new BasicParameterValueFactory(), new DateTimeParameterValueFactory(CultureInfo.InvariantCulture) },
-                new[] { typeof(ListBars) });
-
-            var result = factory.Create(
-                typeof(ListBars),
-                new ExecutableParameterInfo("attributes", "key[=value]"));
-
-            result.Should().NotBeNull();
-            result.Should().BeOfType<ListBars>();
-            result.As<ListBars>().Attributes.First().Key.Should().Be("key");
-            result.As<ListBars>().Attributes.First().Value.Should().Be("value");
-        }
     }
 }

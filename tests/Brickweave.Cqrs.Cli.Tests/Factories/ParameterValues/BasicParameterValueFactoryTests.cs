@@ -28,6 +28,7 @@ namespace Brickweave.Cqrs.Cli.Tests.Factories.ParameterValues
         [InlineData(typeof(bool))]
         [InlineData(typeof(bool?))]
         [InlineData(typeof(string))]
+        [InlineData(typeof(object))]
         public void Qualifies_WhenSupportedTypeIsPassed_ReturnsTrue(Type type)
         {
             var factory = new BasicParameterValueFactory();
@@ -75,6 +76,36 @@ namespace Brickweave.Cqrs.Cli.Tests.Factories.ParameterValues
             var result = factory.Create(typeof(bool?), new ExecutableParameterInfo("value", "true"));
 
             result.Should().Be(true);
+        }
+
+        [Fact]
+        public void Create_WhenTargetTypeIsObjectAndValueIsString_ReturnsStringValue()
+        {
+            var factory = new BasicParameterValueFactory();
+
+            var result = factory.Create(typeof(object), new ExecutableParameterInfo("value", (string)"foo"));
+
+            result.Should().Be("foo");
+        }
+
+        [Fact]
+        public void Create_WhenTargetTypeIsObjectAndValueIsNumeric_ReturnsLongValue()
+        {
+            var factory = new BasicParameterValueFactory();
+
+            var result = factory.Create(typeof(object), new ExecutableParameterInfo("value", (string)"1"));
+
+            result.Should().Be(1L);
+        }
+
+        [Fact]
+        public void Create_WhenTargetTypeIsObjectAndValueIsGuid_ReturnsGuidValue()
+        {
+            var factory = new BasicParameterValueFactory();
+
+            var result = factory.Create(typeof(object), new ExecutableParameterInfo("value", (string)"1"));
+
+            result.Should().Be(1L);
         }
     }
 }

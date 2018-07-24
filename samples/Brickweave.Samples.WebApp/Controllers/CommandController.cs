@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Brickweave.Samples.WebApp.Controllers
 {
-    [Authorize]
+    //[Authorize]
     public class CommandController : Controller
     {
         private readonly ICliDispatcher _cliDispatcher;

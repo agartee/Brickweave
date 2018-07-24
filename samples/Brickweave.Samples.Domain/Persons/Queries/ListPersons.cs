@@ -10,11 +10,11 @@ namespace Brickweave.Samples.Domain.Persons.Queries
         /// List people
         /// </summary>
         /// <param name="attributes">person attributes</param>
-        public ListPersons(IDictionary<string, IEnumerable<string>> attributes)
+        public ListPersons(IDictionary<string, IEnumerable<object>> attributes = null)
         {
-            Attributes = attributes;
+            Attributes = attributes ?? new Dictionary<string, IEnumerable<object>>();
         }
 
-        public IDictionary<string, IEnumerable<string>> Attributes { get; }
+        public IDictionary<string, IEnumerable<object>> Attributes { get; }
     }
 }

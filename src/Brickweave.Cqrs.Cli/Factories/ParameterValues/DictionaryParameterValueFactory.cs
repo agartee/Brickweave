@@ -22,6 +22,9 @@ namespace Brickweave.Cqrs.Cli.Factories.ParameterValues
 
         public object Create(Type targetType, ExecutableParameterInfo parameter)
         {
+            if (parameter == null)
+                return null;
+
             var keyType = targetType.GetGenericArguments().First();
             var valueType = targetType.GetGenericArguments().Last();
 

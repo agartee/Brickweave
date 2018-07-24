@@ -8,7 +8,7 @@ namespace Brickweave.Cqrs.Cli.Factories.ParameterValues
     {
         public bool Qualifies(Type targetType)
         {
-            return targetType.IsBasicType();
+            return targetType.IsBasicType() || targetType == typeof(object);
         }
 
         public object Create(Type targetType, ExecutableParameterInfo parameter)
@@ -16,7 +16,7 @@ namespace Brickweave.Cqrs.Cli.Factories.ParameterValues
             try
             {
                 return targetType == typeof(object)
-                    ? parameter.SingleValue
+                    ? parameter.SingleValue.InterpretType()
                     : ChangeType(parameter.SingleValue, targetType);
             }
             catch (Exception ex)

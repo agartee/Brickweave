@@ -24,6 +24,9 @@ namespace Brickweave.Cqrs.Cli.Factories.ParameterValues
 
         public object Create(Type targetType, ExecutableParameterInfo parameter)
         {
+            if (parameter == null)
+                return null;
+
             var genericType = targetType.GetGenericArguments().First();
             var paramFactory = _parameterValueFactories.ToList()
                 .FirstOrDefault(f => f.Qualifies(genericType));

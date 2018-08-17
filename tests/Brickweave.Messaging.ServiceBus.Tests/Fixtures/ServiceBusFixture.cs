@@ -7,37 +7,32 @@ namespace Brickweave.Messaging.ServiceBus.Tests.Fixtures
 {
     public class ServiceBusFixture
     {
+        private readonly IConfiguration _config;
+
         private readonly Func<Guid, ISubscriptionClient> _createClient;
 
         public ServiceBusFixture()
         {
-            var config = new ConfigurationBuilder()
+            _config = new ConfigurationBuilder()
                 .AddUserSecrets<ServiceBusFixture>()
                 .AddEnvironmentVariables()
                 .Build();
-
-            var connectionString = config.GetConnectionString("serviceBus");
-
-            Sender = new MessageSender(
-                connectionString,
-                config["serviceBusTopic"], 
-                RetryPolicy.Default);
-
-            _createClient = (id) =>
-            {
-                var client = new SubscriptionClient(
-                    connectionString,
-                    config["serviceBusTopic"],
-                    config["serviceBusSubscription"],
-                    ReceiveMode.ReceiveAndDelete);
-
-                return client;
-            };
+                        
+            Sender = new MessageSender(ConnectionString, Topic, RetryPolicy.Default);
         }
-        
+
+        private string ConnectionString => _config.GetConnectionString("serviceBus");
+        private string Topic => _config["serviceBusTopic"];
+        private string Subscription => _config["serviceBusSubscription"];
+
         public IMessageSender Sender { get; }
 
-        public ISubscriptionClient CreateClient(Guid id) => 
-            _createClient.Invoke(id);
+        public ISubscriptionClient CreateClient(Guid id)
+        {
+            return new SubscriptionClient(ConnectionString, Topic, Subscription,
+                ReceiveMode.ReceiveAndDelete);
+        }
+
+        
     }
 }

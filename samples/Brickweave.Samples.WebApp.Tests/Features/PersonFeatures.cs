@@ -78,6 +78,9 @@ namespace Brickweave.Samples.WebApp.Tests.Features
             "And a person exists with a first name of 'Adam' and last name of 'Gartee'"
                 .x(async () =>
                 {
+                    firstName = "Adam";
+                    lastName = "Gartee";
+
                     response = await client.PostAsync(
                         "/person/new", new
                         {

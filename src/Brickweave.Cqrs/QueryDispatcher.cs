@@ -43,7 +43,7 @@ namespace Brickweave.Cqrs
 
         private object GetQueryHandler(IQuery query, Type queryReturnType)
         {
-            foreach (var handlerType in GetPossibleHandlerTypes())
+            foreach (var handlerType in GetPossibleHandlerTypes(query, queryReturnType))
             {
                 var result = _serviceProvider.GetService(handlerType);
                 if (result != null)
@@ -51,15 +51,15 @@ namespace Brickweave.Cqrs
             }
 
             throw new QueryHandlerNotRegisteredException(query);
+        }
 
-            IEnumerable<Type> GetPossibleHandlerTypes()
+        private IEnumerable<Type> GetPossibleHandlerTypes(IQuery query, Type queryReturnType)
+        {
+            return new[]
             {
-                return new[]
-                {
                     typeof(IQueryHandler<,>).MakeGenericType(query.GetType(), queryReturnType),
                     typeof(ISecuredQueryHandler<,>).MakeGenericType(query.GetType(), queryReturnType)
                 };
-            }
         }
     }
 }

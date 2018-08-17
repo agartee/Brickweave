@@ -16,95 +16,95 @@ namespace Brickweave.Cqrs.Cli.Formatters
 
             if (helpInfo.Type == HelpInfoType.Category)
             {
-                WriteParentInfoToConsole();
-                WriteSubgroupInfoToConsole();
-                WriteSubcommandInfoToConsole();
+                WriteParentInfoToConsole(helpInfo, stringBuilder, windowWidth);
+                WriteSubgroupInfoToConsole(helpInfo, stringBuilder, windowWidth);
+                WriteSubcommandInfoToConsole(helpInfo, stringBuilder, windowWidth);
             }
             else
             {
-                WriteParentInfoToConsole();
-                WriteParameterInfoToConsole();
+                WriteParentInfoToConsole(helpInfo, stringBuilder, windowWidth);
+                WriteParameterInfoToConsole(helpInfo, stringBuilder, windowWidth);
             }
 
             return stringBuilder.ToString();
+        }
 
-            void WriteParentInfoToConsole()
+        private static void WriteParentInfoToConsole(HelpInfo helpInfo, StringBuilder stringBuilder, int windowWidth)
+        {
+            stringBuilder.AppendLine();
+            stringBuilder.AppendLine(helpInfo.Type == HelpInfoType.Category ? "Category:" : "Command:");
+            stringBuilder.AppendLine();
+
+            FormatAndWriteToConsole(helpInfo.Name, helpInfo.Description, stringBuilder, windowWidth);
+        }
+
+        private static void WriteSubgroupInfoToConsole(HelpInfo helpInfo, StringBuilder stringBuilder, int windowWidth)
+        {
+            var subgroups = helpInfo.Children
+                .Where(i => i.Type == HelpInfoType.Category)
+                .ToList();
+
+            if (!subgroups.Any())
+                return;
+
+            stringBuilder.AppendLine();
+            stringBuilder.AppendLine("Subcategories:");
+            stringBuilder.AppendLine();
+
+            foreach (var subgroup in subgroups)
+                FormatAndWriteToConsole(subgroup.Name, subgroup.Description, stringBuilder, windowWidth);
+        }
+
+        private static void WriteSubcommandInfoToConsole(HelpInfo helpInfo, StringBuilder stringBuilder, int windowWidth)
+        {
+            var commands = helpInfo.Children
+                .Where(i => i.Type == HelpInfoType.Executable)
+                .ToList();
+
+            if (!commands.Any())
+                return;
+
+            stringBuilder.AppendLine();
+            stringBuilder.AppendLine("Commands:");
+            stringBuilder.AppendLine();
+
+            foreach (var command in commands)
+                FormatAndWriteToConsole(command.Name, command.Description, stringBuilder, windowWidth);
+        }
+
+        private static void WriteParameterInfoToConsole(HelpInfo helpInfo, StringBuilder stringBuilder, int windowWidth)
+        {
+            var parameters = helpInfo.Children
+                .Where(i => i.Type == HelpInfoType.Parameter)
+                .ToList();
+
+            if (!parameters.Any())
+                return;
+
+            stringBuilder.AppendLine();
+            stringBuilder.AppendLine("Parameters:");
+            stringBuilder.AppendLine();
+
+            foreach (var parameter in parameters)
             {
-                stringBuilder.AppendLine();
-                stringBuilder.AppendLine(helpInfo.Type == HelpInfoType.Category ? "Category:" : "Command:");
-                stringBuilder.AppendLine();
-
-                FormatAndWriteToConsole(helpInfo.Name, helpInfo.Description);
+                FormatAndWriteToConsole($"--{parameter.Name}", parameter.Description, stringBuilder, windowWidth);
             }
+        }
 
-            void WriteSubgroupInfoToConsole()
-            {
-                var subgroups = helpInfo.Children
-                    .Where(i => i.Type == HelpInfoType.Category)
-                    .ToList();
+        private static void FormatAndWriteToConsole(string name, string description, StringBuilder stringBuilder, int windowWidth)
+        {
+            var descriptionWrapped = description.Wrap(windowWidth - TEXT_WRAP_LEFT_PADDING);
 
-                if (!subgroups.Any())
-                    return;
+            stringBuilder.AppendFormat(FORMAT, name, descriptionWrapped.Length > 0
+                ? descriptionWrapped[0]
+                : null);
+            stringBuilder.AppendLine();
 
-                stringBuilder.AppendLine();
-                stringBuilder.AppendLine("Subcategories:");
-                stringBuilder.AppendLine();
+            if (descriptionWrapped.Length <= 1)
+                return;
 
-                foreach (var subgroup in subgroups)
-                    FormatAndWriteToConsole(subgroup.Name, subgroup.Description);
-            }
-
-            void WriteSubcommandInfoToConsole()
-            {
-                var commands = helpInfo.Children
-                    .Where(i => i.Type == HelpInfoType.Executable)
-                    .ToList();
-
-                if (!commands.Any())
-                    return;
-
-                stringBuilder.AppendLine();
-                stringBuilder.AppendLine("Commands:");
-                stringBuilder.AppendLine();
-
-                foreach (var command in commands)
-                    FormatAndWriteToConsole(command.Name, command.Description);
-            }
-
-            void WriteParameterInfoToConsole()
-            {
-                var parameters = helpInfo.Children
-                    .Where(i => i.Type == HelpInfoType.Parameter)
-                    .ToList();
-
-                if (!parameters.Any())
-                    return;
-
-                stringBuilder.AppendLine();
-                stringBuilder.AppendLine("Parameters:");
-                stringBuilder.AppendLine();
-
-                foreach (var parameter in parameters)
-                {
-                    FormatAndWriteToConsole($"--{parameter.Name}", parameter.Description);
-                }
-            }
-
-            void FormatAndWriteToConsole(string name, string description)
-            {
-                var descriptionWrapped = description.Wrap(windowWidth - TEXT_WRAP_LEFT_PADDING);
-
-                stringBuilder.AppendFormat(FORMAT, name, descriptionWrapped.Length > 0
-                    ? descriptionWrapped[0]
-                    : null);
-                stringBuilder.AppendLine();
-
-                if (descriptionWrapped.Length <= 1)
-                    return;
-
-                for (var i = 1; i < descriptionWrapped.Length; i++)
-                    stringBuilder.AppendLine(new string(' ', TEXT_WRAP_LEFT_PADDING) + descriptionWrapped[i]);
-            }
+            for (var i = 1; i < descriptionWrapped.Length; i++)
+                stringBuilder.AppendLine(new string(' ', TEXT_WRAP_LEFT_PADDING) + descriptionWrapped[i]);
         }
     }
 }

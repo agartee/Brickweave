@@ -47,50 +47,37 @@ namespace Brickweave.Cqrs.Cli.Factories
             if(constructor == null)
                 throw new ConstructorNotFoundException(type, parameterNames.ToArray());
 
-            var constructorArgs = GetConstructorParameterValues(constructor).ToArray();
+            var constructorArgs = GetConstructorParameterValues(constructor, parameterValues).ToArray();
 
             return (IExecutable)constructor.Invoke(constructorArgs);
-            
-            IEnumerable<object> GetConstructorParameterValues(ConstructorInfo constructorInfo)
+        }
+
+        IEnumerable<object> GetConstructorParameterValues(ConstructorInfo constructorInfo,
+            IEnumerable<ExecutableParameterInfo> parameterValues)
+        {
+            return constructorInfo.GetParameters()
+                .Select(p => GetParameterValue(p, parameterValues))
+                .ToList();
+        }
+
+        object GetParameterValue(ParameterInfo constructorParam, IEnumerable<ExecutableParameterInfo> parameterValues)
+        {
+            var constructorArgValue = parameterValues
+                .SingleOrDefault(p => constructorParam.Name.Equals(p.Name, StringComparison.OrdinalIgnoreCase));
+
+            if (constructorParam.ParameterType.IsDefaultable())
             {
-                return constructorInfo.GetParameters()
-                    .Select(GetParameterValue)
-                    .ToList();
-
-                object GetParameterValue(ParameterInfo constructorParam)
-                {
-                    var constructorArgValue = parameterValues
-                        .SingleOrDefault(p => IsValueForParameter(p.Name));
-
-                    if (constructorParam.ParameterType.IsDefaultable())
-                    {
-                        if (string.IsNullOrWhiteSpace(constructorArgValue?.SingleValue))
-                            return constructorParam.DefaultValue != DBNull.Value ? constructorParam.DefaultValue : null;
-                    }
-
-                    var paramFactory = _parameterValueFactories.ToList()
-                        .FirstOrDefault(f => f.Qualifies(constructorParam.ParameterType));
-
-                    if (paramFactory == null)
-                        throw new NoQualifyingParameterValueFactoryException(constructorParam.ParameterType.Name);
-
-                    return paramFactory.Create(constructorParam.ParameterType, constructorArgValue);
-
-                    bool IsValueForParameter(string parameterName)
-                    {
-                        var result = type.GetProperties()
-                            .Any(propertyInfo => IsMatchBasedOnName());
-
-                        return result;
-
-                        bool IsMatchBasedOnName()
-                        {
-                            return parameterName.Equals(constructorParam.Name,
-                                StringComparison.OrdinalIgnoreCase);
-                        }
-                    }
-                }
+                if (string.IsNullOrWhiteSpace(constructorArgValue?.SingleValue))
+                    return constructorParam.DefaultValue != DBNull.Value ? constructorParam.DefaultValue : null;
             }
+
+            var paramFactory = _parameterValueFactories.ToList()
+                .FirstOrDefault(f => f.Qualifies(constructorParam.ParameterType));
+
+            if (paramFactory == null)
+                throw new NoQualifyingParameterValueFactoryException(constructorParam.ParameterType.Name);
+
+            return paramFactory.Create(constructorParam.ParameterType, constructorArgValue);
         }
     }
 }

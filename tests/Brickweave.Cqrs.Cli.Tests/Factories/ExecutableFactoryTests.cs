@@ -121,7 +121,7 @@ namespace Brickweave.Cqrs.Cli.Tests.Factories
         }
 
         [Fact]
-        public void Create_WhenObjectParameterIsNotProvided_ReturnsCommandWithNullObjectProperty()
+        public void Create_WhenParameterValueIsNotProvidedAndParameterIsNullable_ReturnsCommandWithNullPropertyValue()
         {
             var name = "bar1";
 

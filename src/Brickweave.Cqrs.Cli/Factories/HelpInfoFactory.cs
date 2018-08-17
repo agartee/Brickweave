@@ -19,15 +19,15 @@ namespace Brickweave.Cqrs.Cli.Factories
         public HelpInfo Create(string[] args)
         {
             var argsWithoutParams = args
-                .Take(GetFirstParamIndex())
+                .Take(GetFirstParamIndex(args))
                 .ToArray();
 
-            var categoryBySubjectCriteria = CreateSubjectCriteria();
+            var categoryBySubjectCriteria = CreateSubjectCriteria(argsWithoutParams);
             var categoryBySubject = _categoryHelpReader.GetHelpInfo(
                 categoryBySubjectCriteria);
 
             if (categoryBySubject != null)
-                return GetCategoryHelpInfoWithChildren();
+                return GetCategoryHelpInfoWithChildren(categoryBySubjectCriteria, categoryBySubject);
             
             var executablesBySubject = _executableHelpReader
                 .GetHelpInfo(categoryBySubjectCriteria)
@@ -44,45 +44,46 @@ namespace Brickweave.Cqrs.Cli.Factories
             }
 
             var executableBySubjectAndAction = _executableHelpReader
-                .GetHelpInfo(CreateSubjectAndActionCriteria())
+                .GetHelpInfo(CreateSubjectAndActionCriteria(argsWithoutParams))
                 .FirstOrDefault();
 
             return executableBySubjectAndAction;
+        }
 
-            int GetFirstParamIndex()
-            {
-                return args
-                    .Select((arg, index) => new { Value = arg, Index = index })
-                    .FirstOrDefault(arg => arg.Value.StartsWith("-"))?.Index 
-                    ?? args.Length;
-            }
+        private int GetFirstParamIndex(string[] args)
+        {
+            return args
+                .Select((arg, index) => new { Value = arg, Index = index })
+                .FirstOrDefault(arg => arg.Value.StartsWith("-"))?.Index
+                ?? args.Length;
+        }
 
-            HelpAdjacencyCriteria CreateSubjectCriteria()
-            {
-                var subject = string.Join(" ", argsWithoutParams);
+        private HelpAdjacencyCriteria CreateSubjectCriteria(string[] argsWithoutParams)
+        {
+            var subject = string.Join(" ", argsWithoutParams);
 
-                return !string.IsNullOrWhiteSpace(subject) 
-                    ? new HelpAdjacencyCriteria(subject)
-                    : HelpAdjacencyCriteria.Empty();
-            }
+            return !string.IsNullOrWhiteSpace(subject)
+                ? new HelpAdjacencyCriteria(subject)
+                : HelpAdjacencyCriteria.Empty();
+        }
 
-            HelpAdjacencyCriteria CreateSubjectAndActionCriteria()
-            {
-                var subject = string.Join(" ", argsWithoutParams.Take(argsWithoutParams.Length - 1));
-                var action = argsWithoutParams.Last();
+        private HelpAdjacencyCriteria CreateSubjectAndActionCriteria(string[] argsWithoutParams)
+        {
+            var subject = string.Join(" ", argsWithoutParams.Take(argsWithoutParams.Length - 1));
+            var action = argsWithoutParams.Last();
 
-                return new HelpAdjacencyCriteria(subject, action);
-            }
+            return new HelpAdjacencyCriteria(subject, action);
+        }
 
-            HelpInfo GetCategoryHelpInfoWithChildren()
-            {
-                var childExecutables = _executableHelpReader
-                    .GetHelpInfo(categoryBySubjectCriteria)
-                    .ToList();
+        private HelpInfo GetCategoryHelpInfoWithChildren(HelpAdjacencyCriteria categoryBySubjectCriteria,
+            HelpInfo categoryBySubject)
+        {
+            var childExecutables = _executableHelpReader
+                .GetHelpInfo(categoryBySubjectCriteria)
+                .ToList();
 
-                return categoryBySubject.WithChildren(
-                    categoryBySubject.Children.Union(childExecutables));
-            }
+            return categoryBySubject.WithChildren(
+                categoryBySubject.Children.Union(childExecutables));
         }
     }
 }

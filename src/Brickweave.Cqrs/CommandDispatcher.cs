@@ -53,7 +53,7 @@ namespace Brickweave.Cqrs
 
         private object GetCommandHandler(ICommand command, Type commandReturnType)
         {
-            foreach (var handlerType in GetPossibleHandlerTypes())
+            foreach (var handlerType in GetPossibleHandlerTypes(command, commandReturnType))
             {
                 var result = _serviceProvider.GetService(handlerType);
                 if (result != null)
@@ -61,21 +61,21 @@ namespace Brickweave.Cqrs
             }
 
             throw new CommandHandlerNotRegisteredException(command);
+        }
 
-            IEnumerable<Type> GetPossibleHandlerTypes()
-            {
-                return commandReturnType != null
-                    ? new[]
-                    {
+        private IEnumerable<Type> GetPossibleHandlerTypes(ICommand command, Type commandReturnType)
+        {
+            return commandReturnType != null
+                ? new[]
+                {
                         typeof(ICommandHandler<,>).MakeGenericType(command.GetType(), commandReturnType),
                         typeof(ISecuredCommandHandler<,>).MakeGenericType(command.GetType(), commandReturnType)
-                    }
-                    : new[]
-                    {
+                }
+                : new[]
+                {
                         typeof(ICommandHandler<>).MakeGenericType(command.GetType()),
                         typeof(ISecuredCommandHandler<>).MakeGenericType(command.GetType())
-                    };
-            }
+                };
         }
     }
 }

@@ -4,7 +4,7 @@ namespace Brickweave.Cqrs.Cli.Exceptions
 {
     public class CategoryHelpFileNotFoundExeption : Exception
     {
-        private const string MESSAGE = "Subject file not found.";
+        private const string MESSAGE = "Category help file not found.";
 
         public CategoryHelpFileNotFoundExeption() : base(MESSAGE)
         {

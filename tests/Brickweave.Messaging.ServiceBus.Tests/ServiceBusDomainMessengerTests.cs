@@ -21,7 +21,7 @@ namespace Brickweave.Messaging.ServiceBus.Tests
             _fixture = fixture;
         }
 
-        [Fact(Skip = "race condition issues with other concurrent test executions")]
+        [Fact]
         public async Task Send_SendsMessageToServiceBus()
         {
             var id = Guid.NewGuid();

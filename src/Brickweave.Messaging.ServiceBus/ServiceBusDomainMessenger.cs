@@ -57,7 +57,7 @@ namespace Brickweave.Messaging.ServiceBus
                 }
             }
 
-            if (!_messageFailureHandlers.Any())
+            if (exceptions.Any())
             {
                 throw new AggregateException("One or more errors occurred while sending domain messages.",
                     exceptions);

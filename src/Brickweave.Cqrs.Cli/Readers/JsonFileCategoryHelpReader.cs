@@ -31,7 +31,7 @@ namespace Brickweave.Cqrs.Cli.Readers
             var data = TryDeserialize(File.ReadAllText(_filePath));
 
             var categories = data
-                .Where(kvp => IsSubjectOrOneLevelDeeper(kvp.Key))
+                .Where(kvp => IsSubjectOrOneLevelDeeper(adjacencyCriteria, kvp.Key))
                 .Select(kvp => new
                 {
                     Name = GetName(kvp),
@@ -59,46 +59,46 @@ namespace Brickweave.Cqrs.Cli.Readers
                     .Select(o => new HelpInfo(o.Name, o.Subject, o.Description, o.Type))
                     .FirstOrDefault()?.WithChildren(children);
             }
+        }
 
-            Dictionary<string, string> TryDeserialize(string json)
-            {
-                try { return JsonConvert.DeserializeObject<Dictionary<string, string>>(json); }
-                catch { throw new CategoryHelpFileInvalidExeption(); }
-            }
+        private Dictionary<string, string> TryDeserialize(string json)
+        {
+            try { return JsonConvert.DeserializeObject<Dictionary<string, string>>(json); }
+            catch { throw new CategoryHelpFileInvalidExeption(); }
+        }
 
-            bool IsSubjectOrOneLevelDeeper(string key)
-            {
-                var keySplit = key.Split(' ');
-                var adjacencySplit = adjacencyCriteria.Subject
-                    .Split(new[] {' '}, StringSplitOptions.RemoveEmptyEntries);
+        private bool IsSubjectOrOneLevelDeeper(HelpAdjacencyCriteria adjacencyCriteria, string key)
+        {
+            var keySplit = key.Split(' ');
+            var adjacencySplit = adjacencyCriteria.Subject
+                .Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
 
-                if (adjacencyCriteria.Subject == null && keySplit.Length == 1)
-                    return true;
+            if (adjacencyCriteria.Subject == null && keySplit.Length == 1)
+                return true;
 
-                return key.StartsWith(adjacencyCriteria.Subject)
-                    && (keySplit.Length == adjacencySplit.Length || keySplit.Length == adjacencySplit.Length + 1);
-            }
+            return key.StartsWith(adjacencyCriteria.Subject)
+                && (keySplit.Length == adjacencySplit.Length || keySplit.Length == adjacencySplit.Length + 1);
+        }
 
-            string GetName(KeyValuePair<string, string> kvp)
-            {
-                var keySplit = kvp.Key.Split(' ');
+        private string GetName(KeyValuePair<string, string> kvp)
+        {
+            var keySplit = kvp.Key.Split(' ');
 
-                if (keySplit.Count() == 1)
-                    return kvp.Key;
+            if (keySplit.Count() == 1)
+                return kvp.Key;
 
-                return kvp.Key.Substring(kvp.Key.LastIndexOf(' ') + 1);
-            }
+            return kvp.Key.Substring(kvp.Key.LastIndexOf(' ') + 1);
+        }
 
-            string GetSubject(KeyValuePair<string, string> kvp)
-            {
-                var keySplit = kvp.Key.Split(' ');
-                int keyPartCount = keySplit.Count();
+        private string GetSubject(KeyValuePair<string, string> kvp)
+        {
+            var keySplit = kvp.Key.Split(' ');
+            int keyPartCount = keySplit.Count();
 
-                if (keyPartCount == 1)
-                    return kvp.Key;
+            if (keyPartCount == 1)
+                return kvp.Key;
 
-                return keySplit[keyPartCount - 2];
-            }
+            return keySplit[keyPartCount - 2];
         }
     }
 }

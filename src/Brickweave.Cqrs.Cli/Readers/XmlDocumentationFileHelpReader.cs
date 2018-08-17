@@ -57,68 +57,68 @@ namespace Brickweave.Cqrs.Cli.Readers
                 return results;
             }
             catch { throw new ExecutableHelpFileInvalidExeption(); }
+        }
 
-            bool IsConstructorWithDocumentation(XElement element)
-            {
-                return element.Attribute("name").Value.Contains("#ctor");
-            }
+        private bool IsConstructorWithDocumentation(XElement element)
+        {
+            return element.Attribute("name").Value.Contains("#ctor");
+        }
 
-            HelpInfo CreateHelpInfo(XElement constructorElement)
-            {
-                var typeName = GetTypeName(constructorElement);
+        private HelpInfo CreateHelpInfo(XElement constructorElement)
+        {
+            var typeName = GetTypeName(constructorElement);
 
-                var subjectName = GetSubjectName(typeName);
-                var actionName = GetActionName(typeName);
+            var subjectName = GetSubjectName(typeName);
+            var actionName = GetActionName(typeName);
 
-                return new HelpInfo(
-                    actionName,
-                    subjectName,
-                    constructorElement.Element("summary")?.Value.Trim(),
-                    HelpInfoType.Executable,
-                    constructorElement.Elements("param")
-                        .Select(p => new HelpInfo(
-                            $"{p.Attribute("name")?.Value}",
-                            $"{subjectName} {actionName}",
-                            p.Value,
-                            HelpInfoType.Parameter))
-                        .ToArray());
-            }
+            return new HelpInfo(
+                actionName,
+                subjectName,
+                constructorElement.Element("summary")?.Value.Trim(),
+                HelpInfoType.Executable,
+                constructorElement.Elements("param")
+                    .Select(p => new HelpInfo(
+                        $"{p.Attribute("name")?.Value}",
+                        $"{subjectName} {actionName}",
+                        p.Value,
+                        HelpInfoType.Parameter))
+                    .ToArray());
+        }
 
-            string GetSubjectName(string typeName)
-            {
-                var registered = _executableRegistrations
-                    .FirstOrDefault(r => r.Type.Name == typeName);
+        private string GetSubjectName(string typeName)
+        {
+            var registered = _executableRegistrations
+                .FirstOrDefault(r => r.Type.Name == typeName);
 
-                return registered != null
-                    ? registered.SubjectName
-                    : string.Join(" ", SplitTypeName(typeName).Skip(1));
-            }
+            return registered != null
+                ? registered.SubjectName
+                : string.Join(" ", SplitTypeName(typeName).Skip(1));
+        }
 
-            string GetActionName(string typeName)
-            {
-                var registered = _executableRegistrations
-                    .FirstOrDefault(r => r.Type.Name == typeName);
+        private string GetActionName(string typeName)
+        {
+            var registered = _executableRegistrations
+                .FirstOrDefault(r => r.Type.Name == typeName);
 
-                return registered != null
-                    ? registered.ActionName
-                    : SplitTypeName(typeName).First();
-            }
+            return registered != null
+                ? registered.ActionName
+                : SplitTypeName(typeName).First();
+        }
 
-            string GetTypeName(XElement constructorElement)
-            {
-                return constructorElement.Attribute("name").Value
-                    .Split(new[] {"#ctor"}, StringSplitOptions.RemoveEmptyEntries)
-                    .First().Split(new[] {"."}, StringSplitOptions.RemoveEmptyEntries)
-                    .Last();
-            }
+        private string GetTypeName(XElement constructorElement)
+        {
+            return constructorElement.Attribute("name").Value
+                .Split(new[] { "#ctor" }, StringSplitOptions.RemoveEmptyEntries)
+                .First().Split(new[] { "." }, StringSplitOptions.RemoveEmptyEntries)
+                .Last();
+        }
 
-            string[] SplitTypeName(string typeName)
-            {
-                return Regex.Replace(typeName, "((?<=[a-z])[A-Z]|[A-Z](?=[a-z]))", " $1")
-                    .Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)
-                    .Select(s => s.ToLower(CultureInfo.InvariantCulture))
-                    .ToArray();
-            }
+        private string[] SplitTypeName(string typeName)
+        {
+            return Regex.Replace(typeName, "((?<=[a-z])[A-Z]|[A-Z](?=[a-z]))", " $1")
+                .Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)
+                .Select(s => s.ToLower(CultureInfo.InvariantCulture))
+                .ToArray();
         }
     }
 }

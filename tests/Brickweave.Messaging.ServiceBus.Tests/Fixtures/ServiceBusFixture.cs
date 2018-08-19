@@ -17,22 +17,21 @@ namespace Brickweave.Messaging.ServiceBus.Tests.Fixtures
                 .AddUserSecrets<ServiceBusFixture>()
                 .AddEnvironmentVariables()
                 .Build();
-                        
-            Sender = new MessageSender(ConnectionString, Topic, RetryPolicy.Default);
         }
 
         private string ConnectionString => _config.GetConnectionString("serviceBus");
-        private string Topic => _config["serviceBusTopic"];
         private string Subscription => _config["serviceBusSubscription"];
+        public string Topic => _config["serviceBusTopic"];
 
-        public IMessageSender Sender { get; }
+        public IMessageSender CreateSender()
+        {
+            return new MessageSender(ConnectionString, Topic, RetryPolicy.Default);
+        }
 
         public ISubscriptionClient CreateClient(Guid id)
         {
             return new SubscriptionClient(ConnectionString, Topic, Subscription,
                 ReceiveMode.ReceiveAndDelete);
         }
-
-        
     }
 }

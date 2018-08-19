@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Brickweave.Messaging.Serialization;
+using Brickweave.Messaging.ServiceBus.Models;
 using Microsoft.Azure.ServiceBus;
 using Microsoft.Azure.ServiceBus.Core;
 using Microsoft.Extensions.DependencyInjection;
@@ -20,10 +21,22 @@ namespace Brickweave.Messaging.ServiceBus.DependencyInjection
             _services = services;
         }
 
-        public ServiceBusOptionsBuilder ConfigureMessageSender(
-            string connectionString, string topicOrQueue, RetryPolicy retryPolicy = null)
+        public ServiceBusOptionsBuilder AddMessageSenderRegistration(
+            string connectionString, string topicOrQueue, RetryPolicy retryPolicy = null, bool isDefault = false)
         {
-            _services.AddSingleton<IMessageSender>(s => new MessageSender(connectionString, topicOrQueue, retryPolicy ?? RetryPolicy.Default));
+            _services.AddSingleton(s => new MessageSenderRegistration(topicOrQueue, 
+                new MessageSender(connectionString, topicOrQueue, retryPolicy ?? RetryPolicy.Default)));
+
+            if(isDefault)
+                _services.AddSingleton(new DefaultTopicOrQueueRegistration(topicOrQueue));
+
+            return this;
+        }
+
+        public ServiceBusOptionsBuilder AddMessageTypeRegistration<TType>(string topicOrQueue) where TType : IDomainEvent
+        {
+            _services.AddSingleton<IMessageTypeRegistration>(s => new MessageTypeRegistration<TType>(topicOrQueue));
+
             return this;
         }
 

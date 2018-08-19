@@ -91,9 +91,9 @@ namespace Brickweave.Samples.WebApp
             services.AddEventStore(domainAssemblies);
 
             services.AddMessageBus()
-                .ConfigureMessageSender(
+                .AddMessageSenderRegistration(
                     Configuration.GetConnectionString("serviceBus"),
-                    Configuration["serviceBusTopic"])
+                    Configuration["serviceBusTopic"], isDefault: true)
                 .AddGlobalUserPropertyStrategy("Id")
                 .AddUserPropertyStrategy<PersonCreated>(@event =>
                     new Dictionary<string, object> { ["LastName"] = @event.LastName })

@@ -24,7 +24,7 @@ namespace Brickweave.Messaging.ServiceBus.Tests
             _fixture = fixture;
         }
 
-        [Fact]
+        [Fact(Skip = "never completes randomly. need to fix service bus integration testing")]
         public async Task Send_WhenMessageTypeNotRegistered_SendsMessageToServiceBusOnDefaultTopic()
         {
             var id = Guid.NewGuid();
@@ -62,7 +62,7 @@ namespace Brickweave.Messaging.ServiceBus.Tests
             domainEvent.Id.Should().Be(id);
         }
 
-        [Fact]
+        [Fact(Skip = "never completes randomly. need to fix service bus integration testing")]
         public async Task Send_WhenMessageTypeRegistered_SendsMessageToServiceBusOnRegisteredTopic()
         {
             var id = Guid.NewGuid();

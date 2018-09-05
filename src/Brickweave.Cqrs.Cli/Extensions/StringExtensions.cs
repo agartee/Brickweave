@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace Brickweave.Cqrs.Cli.Extensions
 {
@@ -13,27 +14,30 @@ namespace Brickweave.Cqrs.Cli.Extensions
             return char.ToUpper(s[0]) + s.Substring(1);
         }
 
-        public static string[] ParseCommandText(this string s)
+        public static string[] ParseCommandText(this string str)
         {
-            return s.Split('"')
-                .Select((element, index) => index % 2 == 0
-                    ? element.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)
-                    : new[] { element })
-                .SelectMany(element => element).ToArray();
+            return new Regex(@"[^\s""]+|""[^""\\]*(?:\\.[^""\\]*)*""")
+                .Matches(str).OfType<Match>()
+                .Select(m => m.Value.Trim(new[] { '"' }))
+                .ToArray();
         }
 
-        public static string[] Wrap(this string text, int max)
+        public static string[] Wrap(this string str, int max)
         {
             var charCount = 0;
-            var lines = text.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+            var lines = str.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
 
             return lines
                 .GroupBy(w => (charCount += (((charCount % max) + w.Length + 1 >= max)
-                                                ? max - (charCount % max)
-                                                : 0)
-                                            + w.Length + 1) / max)
+                    ? max - (charCount % max)
+                    : 0)+ w.Length + 1) / max)
                 .Select(g => string.Join(" ", g.ToArray()))
                 .ToArray();
+        }
+
+        private static string RemoveFirstAndLast(this string str)
+        {
+            return string.Join(string.Empty, str.Skip(1).Take(str.Length - 2));
         }
     }
 }

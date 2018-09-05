@@ -31,7 +31,7 @@ namespace Brickweave.Cqrs.Cli.Tests.Extensions
         [Fact]
         public void ParseCommandText_WithWordsWrappedInDoubleQuotes_ReturnsCorrectArray()
         {
-            var input = "\"adam gartee\" was here";
+            var input = @"""adam gartee"" was here";
 
             var result = input.ParseCommandText();
 
@@ -41,13 +41,26 @@ namespace Brickweave.Cqrs.Cli.Tests.Extensions
         }
 
         [Fact]
-        public void ParseCommandText_WithWordsWrappedInDoubleQuotesAndContainsComma_ReturnsCorrectArray()
+        public void ParseCommandText_WithWordsWrappedInMiddleOfText_ReturnsCorrectArray()
         {
-            var input = "\"gartee, adam\" was here";
+            var input = @"an ""adam gartee"" was here";
 
             var result = input.ParseCommandText();
 
-            result[0].Should().Be("gartee, adam");
+            result[0].Should().Be("an");
+            result[1].Should().Be("adam gartee");
+            result[2].Should().Be("was");
+            result[3].Should().Be("here");
+        }
+
+        [Fact]
+        public void ParseCommandText_WhenDoubleQuotesAreRequiredInOutput_ReturnsCorrectArray()
+        {
+            var input = "\"adam gartee\" was here";
+
+            var result = input.ParseCommandText();
+
+            result[0].Should().Be("adam gartee");
             result[1].Should().Be("was");
             result[2].Should().Be("here");
         }

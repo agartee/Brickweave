@@ -66,7 +66,7 @@ namespace Brickweave.EventStore.SqlServer
             return events.Any() ? _aggregateFactory.Create<TAggregate>(events) : null;
         }
 
-        protected async Task DeleteAsync(Guid streamId, Action onBeforeSaveChanges = null)
+        protected async Task DeleteAsync(Guid streamId, Func<Task> onBeforeSaveChanges = null)
         {
             var eventData = await _dbContext.Events
                 .Where(e => e.StreamId.Equals(streamId))
@@ -75,7 +75,7 @@ namespace Brickweave.EventStore.SqlServer
             _dbContext.Events.RemoveRange(eventData);
 
             if (onBeforeSaveChanges != null)
-                onBeforeSaveChanges.Invoke();
+                await onBeforeSaveChanges.Invoke();
 
             await _dbContext.SaveChangesAsync();
         }

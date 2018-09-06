@@ -80,7 +80,7 @@ namespace Brickweave.Cqrs.Cli.Tests.Factories
                 new[] { new BasicParameterValueFactory() },
                 new[] { typeof(CreateFoo) });
 
-            var exception = Assert.Throws<TypeNotFoundException>(() => factory.Create(new ExecutableInfo(
+            var exception = Assert.Throws<ExecutableNotFoundException>(() => factory.Create(new ExecutableInfo(
                 "CreateFooBar", Enumerable.Empty<ExecutableParameterInfo>())));
 
             exception.TypeShortName.Should().Be("CreateFooBar");

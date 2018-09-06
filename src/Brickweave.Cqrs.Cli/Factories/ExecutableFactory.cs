@@ -32,7 +32,7 @@ namespace Brickweave.Cqrs.Cli.Factories
                 .SingleOrDefault(t => t.Name == executableInfo.Name);
 
             if (executableType == null)
-                throw new TypeNotFoundException(executableInfo.Name);
+                throw new ExecutableNotFoundException(executableInfo.Name);
 
             return Create(executableType, executableInfo.Parameters.ToArray());
         }

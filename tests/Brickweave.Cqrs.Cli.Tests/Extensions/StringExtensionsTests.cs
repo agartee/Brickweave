@@ -17,52 +17,40 @@ namespace Brickweave.Cqrs.Cli.Tests.Extensions
         }
 
         [Fact]
-        public void ParseCommandText_WithSimpleWords_ReturnsCorrectArray()
+        public void ParseCommandText_WithSingleWords_ReturnsCorrectArray()
         {
-            var input = "adam was here";
+            var input = "foo list";
 
             var result = input.ParseCommandText();
 
-            result[0].Should().Be("adam");
-            result[1].Should().Be("was");
-            result[2].Should().Be("here");
+            result[0].Should().Be("foo");
+            result[1].Should().Be("list");
         }
 
         [Fact]
         public void ParseCommandText_WithWordsWrappedInDoubleQuotes_ReturnsCorrectArray()
         {
-            var input = @"""adam gartee"" was here";
+            var input = "foo list --name \"foo's name\"";
 
             var result = input.ParseCommandText();
 
-            result[0].Should().Be("adam gartee");
-            result[1].Should().Be("was");
-            result[2].Should().Be("here");
+            result[0].Should().Be("foo");
+            result[1].Should().Be("list");
+            result[2].Should().Be("--name");
+            result[3].Should().Be("foo's name");
         }
 
         [Fact]
-        public void ParseCommandText_WithWordsWrappedInMiddleOfText_ReturnsCorrectArray()
+        public void ParseCommandText_WithWordsWrappedInDoubleQuotesThatContainEscapedDoubleQuotes_ReturnsCorrectArray()
         {
-            var input = @"an ""adam gartee"" was here";
+            var input = "foo create --description \"this is a \\\"description\\\" with some escaped quotes\"";
 
             var result = input.ParseCommandText();
 
-            result[0].Should().Be("an");
-            result[1].Should().Be("adam gartee");
-            result[2].Should().Be("was");
-            result[3].Should().Be("here");
-        }
-
-        [Fact]
-        public void ParseCommandText_WhenDoubleQuotesAreRequiredInOutput_ReturnsCorrectArray()
-        {
-            var input = "\"adam gartee\" was here";
-
-            var result = input.ParseCommandText();
-
-            result[0].Should().Be("adam gartee");
-            result[1].Should().Be("was");
-            result[2].Should().Be("here");
+            result[0].Should().Be("foo");
+            result[1].Should().Be("create");
+            result[2].Should().Be("--description");
+            result[3].Should().Be("this is a \\\"description\\\" with some escaped quotes");
         }
 
         [Fact]

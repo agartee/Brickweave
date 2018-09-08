@@ -19,6 +19,7 @@ namespace Brickweave.Cqrs.Cli.Extensions
             return new Regex(@"[^\s""]+|""[^""\\]*(?:\\.[^""\\]*)*""")
                 .Matches(str).OfType<Match>()
                 .Select(m => m.Value.Trim(new[] { '"' }))
+                .Select(s => s.Replace("\\\"", "\""))
                 .ToArray();
         }
 

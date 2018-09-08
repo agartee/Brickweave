@@ -50,7 +50,7 @@ namespace Brickweave.Cqrs.Cli.Tests.Extensions
             result[0].Should().Be("foo");
             result[1].Should().Be("create");
             result[2].Should().Be("--description");
-            result[3].Should().Be("this is a \\\"description\\\" with some escaped quotes");
+            result[3].Should().Be("this is a \"description\" with some escaped quotes");
         }
 
         [Fact]

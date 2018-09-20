@@ -29,9 +29,11 @@ namespace Brickweave.Cqrs.Cli.Tests.Factories
             var result = factory.Create(new[] { "foo", "create", "--iscool", "--id", "12345" });
 
             result.Name.Should().Be("CreateFoo");
-            result.Parameters.Should().HaveCount(1);
+            result.Parameters.Should().HaveCount(2);
             result.Parameters.First(p => p.Name.Equals("iscool"))
                 .Values.First().Should().Be("true");
+            result.Parameters.First(p => p.Name.Equals("id"))
+                .Values.First().Should().Be("12345");
         }
 
         [Fact]

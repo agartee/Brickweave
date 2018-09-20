@@ -77,12 +77,18 @@ namespace Brickweave.Cqrs.Cli.Factories
 
                 var paramName = arg.Substring(2);
 
-                var paramValues = ArgHasParameterValue(args, i)
-                    ? GetArgParameterValues(args, i)
-                    : GetDefaultArgParameterValue();
+                string[] paramValues = null;
+                if(ArgHasParameterValue(args, i))
+                {
+                    paramValues = GetArgParameterValues(args, i);
+                    i++;
+                }
+                else
+                {
+                    paramValues = GetDefaultArgParameterValue();
+                }
 
                 parameters.Add(new ExecutableParameterInfo(paramName, paramValues));
-                i++;
             }
 
             return parameters;            

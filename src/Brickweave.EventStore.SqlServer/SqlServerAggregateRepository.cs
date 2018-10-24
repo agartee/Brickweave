@@ -43,7 +43,7 @@ namespace Brickweave.EventStore.SqlServer
             aggregate.ClearUncommittedEvents();
         }
 
-        protected async Task<bool> ExistsAsync(Guid streamId)
+        protected async Task<bool> EventsExistAsync(Guid streamId)
         {
             var aggregate = await _dbContext.Events
                 .FirstOrDefaultAsync(i => i.StreamId.Equals(streamId));
@@ -51,7 +51,7 @@ namespace Brickweave.EventStore.SqlServer
             return aggregate != null;
         }
 
-        protected async Task<TAggregate> TryFindAsync(Guid streamId)
+        protected async Task<TAggregate> GetFromEventsAsync(Guid streamId)
         {
             var eventData = await _dbContext.Events
                 .Where(e => e.StreamId.Equals(streamId))
@@ -66,7 +66,7 @@ namespace Brickweave.EventStore.SqlServer
             return events.Any() ? _aggregateFactory.Create<TAggregate>(events) : null;
         }
 
-        protected async Task DeleteAsync(Guid streamId, Func<Task> onBeforeSaveChanges = null)
+        protected async Task DeleteEventsAsync(Guid streamId, Func<Task> onBeforeSaveChanges = null)
         {
             var eventData = await _dbContext.Events
                 .Where(e => e.StreamId.Equals(streamId))

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LiteGuard;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -8,6 +9,9 @@ namespace Brickweave.EventStore
     {
         protected EventSourcedEntity(Queue<IEvent> eventQueue, IEventRouter eventRouter)
         {
+            Guard.AgainstNullArgument(nameof(eventQueue), eventQueue);
+            Guard.AgainstNullArgument(nameof(eventRouter), eventRouter);
+
             EventQueue = eventQueue;
             EventRouter = eventRouter;
         }

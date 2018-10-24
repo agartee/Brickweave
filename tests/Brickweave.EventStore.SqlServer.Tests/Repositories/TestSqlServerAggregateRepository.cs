@@ -21,12 +21,12 @@ namespace Brickweave.EventStore.SqlServer.Tests.Repositories
 
         public async Task<TestAggregate> GetTestAggregate(Guid testId)
         {
-            return await TryFindAsync(testId);
+            return await GetFromEventsAsync(testId);
         }
 
         public async Task DeleteTestAggregate(Guid testId)
         {
-            await DeleteAsync(testId);
+            await DeleteEventsAsync(testId);
         }
     }
 }

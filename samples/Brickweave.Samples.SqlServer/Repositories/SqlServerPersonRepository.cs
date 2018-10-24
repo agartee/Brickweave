@@ -33,7 +33,7 @@ namespace Brickweave.Samples.SqlServer.Repositories
 
         public async Task<Person> GetPersonAsync(PersonId id)
         {
-            return await TryFindAsync(id.Value);
+            return await GetFromEventsAsync(id.Value);
         }
 
         public async Task<PersonInfo> GetPersonInfoAsync(PersonId personId)

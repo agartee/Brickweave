@@ -6,9 +6,7 @@ using Brickweave.EventStore.Serialization;
 using Brickweave.EventStore.SqlServer;
 using Brickweave.Samples.Domain.Persons.Models;
 using Brickweave.Samples.Domain.Persons.Services;
-using Brickweave.Samples.SqlServer.Entities;
 using Brickweave.Samples.SqlServer.Extensions;
-using Brickweave.Samples.SqlServer.Serialization;
 using Microsoft.EntityFrameworkCore;
 
 namespace Brickweave.Samples.SqlServer.Repositories
@@ -18,17 +16,19 @@ namespace Brickweave.Samples.SqlServer.Repositories
     {
         private readonly SamplesDbContext _dbContext;
 
-        public SqlServerPersonRepository(SamplesDbContext dbContext, SamplesDbContext samplesContext, 
+        public SqlServerPersonRepository(SamplesDbContext dbContext, 
             IDocumentSerializer serializer, IAggregateFactory aggregateFactory) 
-            : base(dbContext, serializer, aggregateFactory)
+            : base(dbContext.Events, serializer, aggregateFactory)
         {
-            _dbContext = samplesContext;
+            _dbContext = dbContext;
         }
         
         public async Task SavePersonAsync(Person person)
         {
-            await SaveUncommittedEventsAsync(person, person.Id.Value,
-                async () => await AddSnapshotAsync(person));
+            AddUncommittedEvents(person, person.Id.Value);
+            await AddSnapshotAsync(person);
+
+            await _dbContext.SaveChangesAsync();
         }
 
         public async Task<Person> GetPersonAsync(PersonId id)

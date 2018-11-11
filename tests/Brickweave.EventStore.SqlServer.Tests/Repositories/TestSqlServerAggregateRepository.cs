@@ -8,15 +8,18 @@ namespace Brickweave.EventStore.SqlServer.Tests.Repositories
 {
     public class TestSqlServerAggregateRepository : SqlServerAggregateRepository<TestAggregate, EventStoreDbContext>
     {
+        private readonly EventStoreDbContext _dbContext;
+
         public TestSqlServerAggregateRepository(EventStoreDbContext dbContext, IDocumentSerializer serializer, 
-            IAggregateFactory aggregateFactory) : base(dbContext, serializer, aggregateFactory)
+            IAggregateFactory aggregateFactory) : base(dbContext.Events, serializer, aggregateFactory)
         {
-            
+            _dbContext = dbContext;
         }
 
         public async Task SaveTestAggregate(TestAggregate testAggregate)
         {
-            await SaveUncommittedEventsAsync(testAggregate, testAggregate.TestId);
+            AddUncommittedEvents(testAggregate, testAggregate.TestId);
+            await _dbContext.SaveChangesAsync();
         }
 
         public async Task<TestAggregate> GetTestAggregate(Guid testId)
@@ -26,7 +29,8 @@ namespace Brickweave.EventStore.SqlServer.Tests.Repositories
 
         public async Task DeleteTestAggregate(Guid testId)
         {
-            await DeleteEventsAsync(testId);
+            await RemoveEventsAsync(testId);
+            await _dbContext.SaveChangesAsync();
         }
     }
 }

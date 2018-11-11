@@ -12,20 +12,19 @@ namespace Brickweave.EventStore.SqlServer
         where TAggregate : EventSourcedAggregateRoot
         where TContext : DbContext, IEventStore
     {
-        private readonly TContext _dbContext;
+        private readonly DbSet<EventData> _events;
         private readonly IDocumentSerializer _serializer;
         private readonly IAggregateFactory _aggregateFactory;
 
-        protected SqlServerAggregateRepository(TContext dbContext, IDocumentSerializer serializer,
+        protected SqlServerAggregateRepository(DbSet<EventData> events, IDocumentSerializer serializer,
             IAggregateFactory aggregateFactory)
         {
-            _dbContext = dbContext;
+            _events = events;
             _aggregateFactory = aggregateFactory;
             _serializer = serializer;
         }
         
-        protected async Task SaveUncommittedEventsAsync(EventSourcedAggregateRoot aggregate, Guid streamId,
-            Func<Task> onBeforeSaveChanges = null)
+        protected void AddUncommittedEvents(EventSourcedAggregateRoot aggregate, Guid streamId)
         {
             var created = DateTime.UtcNow;
             
@@ -33,27 +32,14 @@ namespace Brickweave.EventStore.SqlServer
                 .Select((e, i) => CreateEventData(streamId, e, created, i))
                 .ToList();
 
-            uncommittedEvents.ForEach(e => _dbContext.Events.Add(e));
+            uncommittedEvents.ForEach(e => _events.Add(e));
             
-            if (onBeforeSaveChanges != null)
-                await onBeforeSaveChanges.Invoke();
-
-            await _dbContext.SaveChangesAsync();
-
             aggregate.ClearUncommittedEvents();
         }
-
-        protected async Task<bool> EventsExistAsync(Guid streamId)
-        {
-            var aggregate = await _dbContext.Events
-                .FirstOrDefaultAsync(i => i.StreamId.Equals(streamId));
-
-            return aggregate != null;
-        }
-
+        
         protected async Task<TAggregate> GetFromEventsAsync(Guid streamId)
         {
-            var eventData = await _dbContext.Events
+            var eventData = await _events
                 .Where(e => e.StreamId.Equals(streamId))
                 .OrderBy(e => e.Created)
                 .ThenBy(e => e.CommitSequence)
@@ -66,18 +52,13 @@ namespace Brickweave.EventStore.SqlServer
             return events.Any() ? _aggregateFactory.Create<TAggregate>(events) : null;
         }
 
-        protected async Task DeleteEventsAsync(Guid streamId, Func<Task> onBeforeSaveChanges = null)
+        protected async Task RemoveEventsAsync(Guid streamId, Func<Task> onBeforeSaveChanges = null)
         {
-            var eventData = await _dbContext.Events
+            var eventData = await _events
                 .Where(e => e.StreamId.Equals(streamId))
                 .ToListAsync();
 
-            _dbContext.Events.RemoveRange(eventData);
-
-            if (onBeforeSaveChanges != null)
-                await onBeforeSaveChanges.Invoke();
-
-            await _dbContext.SaveChangesAsync();
+            _events.RemoveRange(eventData);
         }
 
         private EventData CreateEventData(Guid streamId, IEvent @event, DateTime created, int commitSequence)

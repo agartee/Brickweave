@@ -18,10 +18,9 @@ namespace Brickweave.EventStore.SqlServer.DependencyInjection
                 .Where(t => typeof(IEvent).IsAssignableFrom(t))
                 .ToArray();
 
-            services
-                .AddScoped<IDocumentSerializer>(s => new JsonDocumentSerializer(shortHandTypes))
-                .AddScoped<IAggregateFactory, ReflectionConventionAggregateFactory>();
-
+            SystemDefaults.DocumentSerializer = new JsonDocumentSerializer(shortHandTypes);
+            SystemDefaults.AggregateFactory = new ReflectionConventionAggregateFactory();
+            
             _services = services;
         }
         
@@ -30,7 +29,19 @@ namespace Brickweave.EventStore.SqlServer.DependencyInjection
             _services.AddDbContext<EventStoreDbContext>(optionsAction);
             return this;
         }
-        
+
+        public EventStoreOptionsBuilder AddDocumentSerializer(Func<IServiceProvider, IDocumentSerializer> implementationFactory)
+        {
+            _services.AddScoped(implementationFactory);
+            return this;
+        }
+
+        public EventStoreOptionsBuilder AddAggregateFactory(Func<IServiceProvider, IAggregateFactory> implementationFactory)
+        {
+            _services.AddScoped(implementationFactory);
+            return this;
+        }
+
         public IServiceCollection Services()
         {
             return _services;

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Brickweave.EventStore.SqlServer.Entities;
 using Brickweave.EventStore.SqlServer.Extensions;
 using Brickweave.Samples.Domain.Persons.Models;
 using Brickweave.Samples.Domain.Persons.Services;
@@ -29,7 +30,7 @@ namespace Brickweave.Samples.SqlServer.Repositories
         public async Task<Person> GetPersonAsync(PersonId id)
         {
             return await _dbContext.Events
-                .CreateFromEventsAsync<Person>(id.Value);
+                .CreateFromEventsAsync<EventData, Person>(id.Value);
         }
 
         public async Task<PersonInfo> GetPersonInfoAsync(PersonId personId)

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Brickweave.EventStore.SqlServer.Entities;
 using Brickweave.EventStore.SqlServer.Extensions;
 using Brickweave.EventStore.SqlServer.Tests.Models;
 
@@ -22,7 +23,7 @@ namespace Brickweave.EventStore.SqlServer.Tests.Repositories
 
         public async Task<TestAggregate> GetTestAggregate(Guid testId)
         {
-            return await _dbContext.Events.CreateFromEventsAsync<TestAggregate>(testId);
+            return await _dbContext.Events.CreateFromEventsAsync<EventData, TestAggregate>(testId);
         }
 
         public async Task DeleteTestAggregate(Guid testId)

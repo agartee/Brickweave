@@ -10,8 +10,9 @@ namespace Brickweave.EventStore.SqlServer.Extensions
 {
     public static class DbSetExtensions
     {
-        public static void AddUncommittedEvents(this DbSet<EventData> eventDbSet, 
+        public static void AddUncommittedEvents<TEventData>(this DbSet<TEventData> eventDbSet, 
             EventSourcedAggregateRoot aggregate, Guid streamId, IDocumentSerializer serializer = null)
+            where TEventData : EventData, new()
         {
             if (serializer == null)
                 serializer = SystemDefaults.DocumentSerializer;
@@ -19,7 +20,7 @@ namespace Brickweave.EventStore.SqlServer.Extensions
             var created = DateTime.UtcNow;
 
             var uncommittedEvents = aggregate.GetUncommittedEvents()
-                .Select((e, i) => new EventData
+                .Select((e, i) => new TEventData
                 {
                     Id = Guid.NewGuid(),
                     StreamId = streamId,
@@ -34,8 +35,9 @@ namespace Brickweave.EventStore.SqlServer.Extensions
             aggregate.ClearUncommittedEvents();
         }
 
-        public static async Task<TAggregate> CreateFromEventsAsync<TAggregate>(this DbSet<EventData> eventDbSet, 
-            Guid streamId, IDocumentSerializer serializer = null, IAggregateFactory aggregateFactory = null) 
+        public static async Task<TAggregate> CreateFromEventsAsync<TEventData, TAggregate>(this DbSet<TEventData> eventDbSet, 
+            Guid streamId, IDocumentSerializer serializer = null, IAggregateFactory aggregateFactory = null)
+            where TEventData : EventData, new()
             where TAggregate : EventSourcedAggregateRoot
         {
             if (serializer == null)
@@ -57,7 +59,8 @@ namespace Brickweave.EventStore.SqlServer.Extensions
             return events.Any() ? aggregateFactory.Create<TAggregate>(events) : null;
         }
 
-        public static async Task RemoveEventsAsync(this DbSet<EventData> eventDbSet, Guid streamId)
+        public static async Task RemoveEventsAsync<TEventData>(this DbSet<TEventData> eventDbSet, Guid streamId)
+            where TEventData : EventData, new()
         {
             var eventData = await eventDbSet
                 .Where(e => e.StreamId.Equals(streamId))

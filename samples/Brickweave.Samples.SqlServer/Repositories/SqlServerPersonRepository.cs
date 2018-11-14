@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Brickweave.EventStore.SqlServer.Entities;
-using Brickweave.EventStore.SqlServer.Extensions;
+using Brickweave.EventStore.Factories;
+using Brickweave.EventStore.Serialization;
+using Brickweave.EventStore.SqlServer;
 using Brickweave.Samples.Domain.Persons.Models;
 using Brickweave.Samples.Domain.Persons.Services;
 using Brickweave.Samples.SqlServer.Extensions;
@@ -10,18 +11,19 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Brickweave.Samples.SqlServer.Repositories
 {
-    public class SqlServerPersonRepository : IPersonRepository, IPersonInfoRepository
+    public class SqlServerPersonRepository : AggregateRepository<Person>, IPersonRepository, IPersonInfoRepository
     {
         private readonly SamplesDbContext _dbContext;
         
-        public SqlServerPersonRepository(SamplesDbContext dbContext) 
+        public SqlServerPersonRepository(SamplesDbContext dbContext, IDocumentSerializer serializer,
+            IAggregateFactory aggregateFactory) : base(serializer, aggregateFactory)
         {
             _dbContext = dbContext;
         }
         
         public async Task SavePersonAsync(Person person)
         {
-            _dbContext.Events.AddUncommittedEvents(person, person.Id.Value);
+            AddUncommittedEvents(_dbContext.Events, person, person.Id.Value);
             await AddSnapshotAsync(person);
 
             await _dbContext.SaveChangesAsync();
@@ -31,8 +33,7 @@ namespace Brickweave.Samples.SqlServer.Repositories
 
         public async Task<Person> GetPersonAsync(PersonId id)
         {
-            return await _dbContext.Events
-                .CreateFromEventsAsync<EventData, Person>(id.Value);
+            return await CreateFromEventsAsync(_dbContext.Events, id.Value);
         }
 
         public async Task<PersonInfo> GetPersonInfoAsync(PersonId personId)

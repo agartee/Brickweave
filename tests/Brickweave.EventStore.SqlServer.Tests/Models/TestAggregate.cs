@@ -21,11 +21,11 @@ namespace Brickweave.EventStore.SqlServer.Tests.Models
             RaiseEvent(new TestAggregateCreated(testId));
         }
 
-        public Guid TestId { get; private set; }
+        public Guid Id { get; private set; }
 
         private void Apply(TestAggregateCreated @event)
         {
-            TestId = @event.TestId;
+            Id = @event.TestId;
         }
     }
 }

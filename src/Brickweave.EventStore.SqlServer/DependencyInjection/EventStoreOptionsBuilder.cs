@@ -17,28 +17,16 @@ namespace Brickweave.EventStore.SqlServer.DependencyInjection
             var shortHandTypes = domainAssemblies.SelectMany(a => a.ExportedTypes)
                 .Where(t => typeof(IEvent).IsAssignableFrom(t))
                 .ToArray();
-
-            SystemDefaults.DocumentSerializer = new JsonDocumentSerializer(shortHandTypes);
-            SystemDefaults.AggregateFactory = new ReflectionConventionAggregateFactory();
             
+            services.AddScoped<IDocumentSerializer>(s => new JsonDocumentSerializer(shortHandTypes));
+            services.AddScoped<IAggregateFactory>(s => new ReflectionConventionAggregateFactory());
+
             _services = services;
         }
         
         public EventStoreOptionsBuilder AddDbContext(Action<DbContextOptionsBuilder> optionsAction)
         {
             _services.AddDbContext<EventStoreDbContext>(optionsAction);
-            return this;
-        }
-
-        public EventStoreOptionsBuilder AddDocumentSerializer(Func<IServiceProvider, IDocumentSerializer> implementationFactory)
-        {
-            _services.AddScoped(implementationFactory);
-            return this;
-        }
-
-        public EventStoreOptionsBuilder AddAggregateFactory(Func<IServiceProvider, IAggregateFactory> implementationFactory)
-        {
-            _services.AddScoped(implementationFactory);
             return this;
         }
 

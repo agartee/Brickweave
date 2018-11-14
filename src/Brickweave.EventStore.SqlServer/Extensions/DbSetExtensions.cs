@@ -31,8 +31,6 @@ namespace Brickweave.EventStore.SqlServer.Extensions
                 .ToList();
 
             uncommittedEvents.ForEach(e => eventDbSet.Add(e));
-
-            aggregate.ClearUncommittedEvents();
         }
 
         public static async Task<TAggregate> CreateFromEventsAsync<TEventData, TAggregate>(this DbSet<TEventData> eventDbSet, 

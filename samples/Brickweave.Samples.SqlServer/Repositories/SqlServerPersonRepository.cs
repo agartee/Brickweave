@@ -25,6 +25,8 @@ namespace Brickweave.Samples.SqlServer.Repositories
             await AddSnapshotAsync(person);
 
             await _dbContext.SaveChangesAsync();
+
+            person.ClearUncommittedEvents();
         }
 
         public async Task<Person> GetPersonAsync(PersonId id)

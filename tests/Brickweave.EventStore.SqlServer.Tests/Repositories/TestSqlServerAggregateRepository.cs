@@ -19,6 +19,8 @@ namespace Brickweave.EventStore.SqlServer.Tests.Repositories
         {
             _dbContext.Events.AddUncommittedEvents(testAggregate, testAggregate.TestId);
             await _dbContext.SaveChangesAsync();
+
+            testAggregate.ClearUncommittedEvents();
         }
 
         public async Task<TestAggregate> GetTestAggregate(Guid testId)

@@ -55,5 +55,15 @@ namespace Brickweave.EventStore.SqlServer
 
             return events.Any() ? _aggregateFactory.Create<TAggregate>(events) : null;
         }
+
+        protected async Task DeleteEvents<TEventData>(DbSet<TEventData> eventDbSet, Guid streamId)
+            where TEventData : EventData, new()
+        {
+            var eventData = await eventDbSet
+                .Where(e => e.StreamId.Equals(streamId))
+                .ToListAsync();
+
+            eventDbSet.RemoveRange(eventData);
+        }
     }
 }

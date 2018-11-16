@@ -63,7 +63,7 @@ namespace Brickweave.Samples.WebApp
                 .AddJsonFormatters(settings =>
                 {
                     settings.Formatting = Formatting.Indented;
-                    settings.Converters.Add(new IdConverter());
+                    settings.Converters.Add(new ValueObjectConverter());
                 });
         }
 

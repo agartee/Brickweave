@@ -3,7 +3,7 @@ using Brickweave.Domain;
 
 namespace Brickweave.Samples.Domain.Persons.Models
 {
-    public class PersonId : Id<Guid>
+    public class PersonId : ValueObject<Guid>
     {
         public PersonId(Guid value) : base(value)
         {

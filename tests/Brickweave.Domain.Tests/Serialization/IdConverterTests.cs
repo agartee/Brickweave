@@ -14,17 +14,17 @@ namespace Brickweave.Domain.Tests.Serialization
         [Fact]
         public void CanConvert_WithValidType_ReturnsTrue()
         {
-            var converter = new IdConverter();
+            var converter = new ValueObjectConverter();
 
-            converter.CanConvert(typeof(Id<int>)).Should().BeTrue();
-            converter.CanConvert(typeof(Id<string>)).Should().BeTrue();
-            converter.CanConvert(typeof(Id<Guid>)).Should().BeTrue();
+            converter.CanConvert(typeof(ValueObject<int>)).Should().BeTrue();
+            converter.CanConvert(typeof(ValueObject<string>)).Should().BeTrue();
+            converter.CanConvert(typeof(ValueObject<Guid>)).Should().BeTrue();
         }
 
         [Fact]
         public void CanConvert_WithInvalidType_ReturnsFalse()
         {
-            var converter = new IdConverter();
+            var converter = new ValueObjectConverter();
             converter.CanConvert(typeof(int)).Should().BeFalse();
         }
 
@@ -38,7 +38,7 @@ namespace Brickweave.Domain.Tests.Serialization
                 Formatting = Formatting.None,
                 NullValueHandling = NullValueHandling.Ignore,
                 ContractResolver = new CamelCasePropertyNamesContractResolver(),
-                Converters = new List<JsonConverter> { new IdConverter() }
+                Converters = new List<JsonConverter> { new ValueObjectConverter() }
             });
 
             json.Should().Be("{\"id\":\"b2f282a9-d6d7-4929-bb18-9fcc57c2cbd9\"}");
@@ -47,7 +47,7 @@ namespace Brickweave.Domain.Tests.Serialization
         [Fact]
         public void ReadJson_Throws()
         {
-            var converter = new IdConverter();
+            var converter = new ValueObjectConverter();
 
             Assert.Throws<NotSupportedException>(() => converter.ReadJson(
                 Arg.Any<JsonReader>(),
@@ -56,7 +56,7 @@ namespace Brickweave.Domain.Tests.Serialization
                 Arg.Any<JsonSerializer>()));
         }
 
-        public class MyId : Id<Guid>
+        public class MyId : ValueObject<Guid>
         {
             public MyId(Guid value) : base(value)
             {

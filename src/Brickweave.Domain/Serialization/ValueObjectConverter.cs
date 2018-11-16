@@ -7,7 +7,7 @@ using Newtonsoft.Json.Linq;
 
 namespace Brickweave.Domain.Serialization
 {
-    public class IdConverter : JsonConverter
+    public class ValueObjectConverter : JsonConverter
     {
         private static readonly IEnumerable<Type> SupportedTypes = new List<Type>
         {
@@ -26,7 +26,7 @@ namespace Brickweave.Domain.Serialization
         public override bool CanConvert(Type objectType)
         {
             return SupportedTypes
-                .Any(t => typeof(Id<>).MakeGenericType(t).IsAssignableFrom(objectType.GetTypeInfo()));
+                .Any(t => typeof(ValueObject<>).MakeGenericType(t).IsAssignableFrom(objectType.GetTypeInfo()));
         }
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)

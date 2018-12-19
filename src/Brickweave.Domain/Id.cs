@@ -1,15 +1,15 @@
 ﻿namespace Brickweave.Domain
 {
-    public abstract class ValueObject<T>
+    public abstract class Id<T>
     {
-        protected ValueObject(T value)
+        protected Id(T value)
         {
             Value = value;
         }
 
         public T Value { get; }
 
-        private bool Equals(ValueObject<T> other)
+        private bool Equals(Id<T> other)
         {
             return Value.Equals(other.Value);
         }
@@ -19,7 +19,7 @@
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
             if (obj is T) return obj.Equals(Value);
-            return obj.GetType() == GetType() && Equals((ValueObject<T>)obj);
+            return obj.GetType() == GetType() && Equals((Id<T>)obj);
         }
 
         public override int GetHashCode()

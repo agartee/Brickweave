@@ -66,5 +66,21 @@ namespace Brickweave.Cqrs.Cli.Tests.Formatters
             // note: visual assertion: test console output does not match Windows console output exactly
             _output.WriteLine(result);
         }
+
+        [Fact]
+        public void Format_WithSimpleCommandHelpInfoIncludingWideTextAndParentheses_ReturnsFormattedString()
+        {
+            var helpInfo = new HelpInfoBuilder()
+                .WithName("create")
+                .WithSubject("person")
+                .WithDescription("someClass.SomeMethod(\"{D36DFCD7-CD35-40BC-81D6-263C614459A6}\", \"{D36DFCD7-CD35-40BC-81D6-263C614459A6}\")")
+                .WithType(HelpInfoType.Executable)
+                .Build();
+
+            var result = SimpleHelpFormatter.Format(helpInfo, 80);
+
+            // note: visual assertion: test console output does not match Windows console output exactly
+            _output.WriteLine(result);
+        }
     }
 }

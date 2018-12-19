@@ -26,7 +26,7 @@ namespace Brickweave.Domain.Tests
             id1.Should().NotBeSameAs(id2);
         }
 
-        private class TestId : ValueObject<Guid>
+        private class TestId : Id<Guid>
         {
             public TestId(Guid value) : base(value)
             {

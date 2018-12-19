@@ -16,9 +16,9 @@ namespace Brickweave.Domain.Tests.Serialization
         {
             var converter = new ValueObjectConverter();
 
-            converter.CanConvert(typeof(ValueObject<int>)).Should().BeTrue();
-            converter.CanConvert(typeof(ValueObject<string>)).Should().BeTrue();
-            converter.CanConvert(typeof(ValueObject<Guid>)).Should().BeTrue();
+            converter.CanConvert(typeof(Id<int>)).Should().BeTrue();
+            converter.CanConvert(typeof(Id<string>)).Should().BeTrue();
+            converter.CanConvert(typeof(Id<Guid>)).Should().BeTrue();
         }
 
         [Fact]
@@ -56,7 +56,7 @@ namespace Brickweave.Domain.Tests.Serialization
                 Arg.Any<JsonSerializer>()));
         }
 
-        public class MyId : ValueObject<Guid>
+        public class MyId : Id<Guid>
         {
             public MyId(Guid value) : base(value)
             {

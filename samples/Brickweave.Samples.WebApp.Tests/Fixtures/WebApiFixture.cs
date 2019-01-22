@@ -3,6 +3,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Brickweave.Samples.WebApp.Tests.Extensions;
+using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.Configuration;
@@ -21,7 +22,11 @@ namespace Brickweave.Samples.WebApp.Tests.Fixtures
                 .AddEnvironmentVariables()
                 .Build();
 
-            ApiServer = new TestServer(new WebHostBuilder()
+            ApiServer = new TestServer(WebHost
+                .CreateDefaultBuilder()
+                .UseConfiguration(_config)
+                .UseDefaultServiceProvider(options =>
+                    options.ValidateScopes = false)
                 .UseEnvironment("Development")
                 .UseStartup<Startup>());
         }

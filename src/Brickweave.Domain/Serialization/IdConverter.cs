@@ -7,7 +7,7 @@ using Newtonsoft.Json.Linq;
 
 namespace Brickweave.Domain.Serialization
 {
-    public class ValueObjectConverter : JsonConverter
+    public class IdConverter : JsonConverter
     {
         private static readonly IEnumerable<Type> SupportedTypes = new List<Type>
         {
@@ -39,7 +39,24 @@ namespace Brickweave.Domain.Serialization
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
-            throw new NotSupportedException();
+            var constructor = objectType.GetConstructors()
+                .Where(c => c.GetParameters().Length == 1)
+                .FirstOrDefault();
+
+            if (constructor == null)
+                throw new InvalidOperationException($"Unable to deserialize {objectType}. Cannot find suitable constructor.");
+
+            var currentType = reader.Value.GetType();
+            var targetType = constructor.GetParameters().First().ParameterType;
+
+            if(currentType == targetType)
+                return constructor.Invoke(new[] { reader.Value });
+
+            var isGuid = Guid.TryParse(reader.Value.ToString(), out Guid guid);
+            if(isGuid)
+                return constructor.Invoke(new object[] { guid });
+
+            return Convert.ChangeType(reader.Value, targetType);
         }
     }
 }

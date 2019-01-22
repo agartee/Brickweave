@@ -4,7 +4,6 @@ using Brickweave.Domain.Serialization;
 using FluentAssertions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
-using NSubstitute;
 using Xunit;
 
 namespace Brickweave.Domain.Tests.Serialization
@@ -14,7 +13,7 @@ namespace Brickweave.Domain.Tests.Serialization
         [Fact]
         public void CanConvert_WithValidType_ReturnsTrue()
         {
-            var converter = new ValueObjectConverter();
+            var converter = new IdConverter();
 
             converter.CanConvert(typeof(Id<int>)).Should().BeTrue();
             converter.CanConvert(typeof(Id<string>)).Should().BeTrue();
@@ -24,7 +23,7 @@ namespace Brickweave.Domain.Tests.Serialization
         [Fact]
         public void CanConvert_WithInvalidType_ReturnsFalse()
         {
-            var converter = new ValueObjectConverter();
+            var converter = new IdConverter();
             converter.CanConvert(typeof(int)).Should().BeFalse();
         }
 
@@ -38,7 +37,7 @@ namespace Brickweave.Domain.Tests.Serialization
                 Formatting = Formatting.None,
                 NullValueHandling = NullValueHandling.Ignore,
                 ContractResolver = new CamelCasePropertyNamesContractResolver(),
-                Converters = new List<JsonConverter> { new ValueObjectConverter() }
+                Converters = new List<JsonConverter> { new IdConverter() }
             });
 
             json.Should().Be("{\"id\":\"b2f282a9-d6d7-4929-bb18-9fcc57c2cbd9\"}");
@@ -47,13 +46,19 @@ namespace Brickweave.Domain.Tests.Serialization
         [Fact]
         public void ReadJson_Throws()
         {
-            var converter = new ValueObjectConverter();
+            var converter = new IdConverter();
 
-            Assert.Throws<NotSupportedException>(() => converter.ReadJson(
-                Arg.Any<JsonReader>(),
-                Arg.Any<Type>(),
-                Arg.Any<object>(),
-                Arg.Any<JsonSerializer>()));
+            var json = "{\"id\":\"b2f282a9-d6d7-4929-bb18-9fcc57c2cbd9\"}";
+
+            var result = JsonConvert.DeserializeObject<MyObject>(json, new JsonSerializerSettings
+            {
+                Formatting = Formatting.None,
+                NullValueHandling = NullValueHandling.Ignore,
+                ContractResolver = new CamelCasePropertyNamesContractResolver(),
+                Converters = new List<JsonConverter> { new IdConverter() }
+            });
+
+            result.Id.Should().Be(new MyId(new Guid("b2f282a9-d6d7-4929-bb18-9fcc57c2cbd9")));
         }
 
         public class MyId : Id<Guid>

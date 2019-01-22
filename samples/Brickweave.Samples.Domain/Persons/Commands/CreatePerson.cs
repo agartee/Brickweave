@@ -21,12 +21,6 @@ namespace Brickweave.Samples.Domain.Persons.Commands
             BirthDate = birthDate;
         }
 
-        public CreatePerson(PersonId id, Name name)
-        {
-            Id = id;
-            Name = name;
-        }
-
         public PersonId Id { get; }
         public Name Name { get; }
         public DateTime BirthDate { get; }

@@ -113,5 +113,53 @@ namespace Brickweave.Samples.WebApp.Tests.Features
                     result.SelectToken("name.lastName").Value<string>().Should().Be(lastName);
                 });
         }
+
+        [Scenario]
+        public void AddPersonPhone(Guid id, HttpClient client, HttpResponseMessage response)
+        {
+            "Given the client is authenticated"
+                .x(async () =>
+                {
+                    var token = await _fixture.GetAuthorizationToken();
+                    client = _fixture.CreateApiClient(token);
+                });
+
+            "And a person exists with the given ID"
+                .x(async () =>
+                {
+                    response = await client.PostAsync(
+                        "/person/new", new
+                        {
+                            firstName = "Adam",
+                            lastName = "Gartee"
+                        }.ToStringContent());
+
+                    var json = await response.Content.ReadAsStringAsync();
+                    id = new Guid(json.ToJObject().SelectToken("id").Value<string>());
+                });
+
+            $"When a phone is added to a person through the API"
+                .x(async () =>
+                {
+                    response = await client.PostAsync(
+                        $"/person/addPhone", new
+                        {
+                            id,
+                            phoneNumber = "555-1212"
+                        }.ToStringContent());
+                });
+
+            "Then the response status code is 200 (OK)"
+                .x(() => response.StatusCode.Should().Be(HttpStatusCode.OK));
+
+            "And the response payload is the existing person"
+                .x(async () =>
+                {
+                    var json = await response.Content.ReadAsStringAsync();
+                    var result = json.ToJObject();
+
+                    
+                });
+        }
     }
 }

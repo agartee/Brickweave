@@ -16,7 +16,7 @@ namespace Brickweave.Cqrs.Cli.Factories.ParameterValues
             try
             {
                 return targetType == typeof(object)
-                    ? parameter.SingleValue.InterpretType()
+                    ? parameter.SingleValue.AutoCorrectType()
                     : ChangeType(parameter.SingleValue, targetType);
             }
             catch (Exception ex)
@@ -26,19 +26,19 @@ namespace Brickweave.Cqrs.Cli.Factories.ParameterValues
             }
         }
         
-        private static object ChangeType(object value, Type conversion)
+        private static object ChangeType(object value, Type targetType)
         {
-            var t = conversion;
+            var type = targetType;
 
-            if (t.IsGenericType && t.GetGenericTypeDefinition().Equals(typeof(Nullable<>)))
+            if (type.IsGenericType && type.GetGenericTypeDefinition().Equals(typeof(Nullable<>)))
             {
                 if (value == null)
                     return null;
 
-                t = Nullable.GetUnderlyingType(t);
+                type = Nullable.GetUnderlyingType(type);
             }
 
-            return Convert.ChangeType(value, t);
+            return Convert.ChangeType(value, type);
         }
     }
 }

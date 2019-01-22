@@ -4,7 +4,7 @@ namespace Brickweave.Cqrs.Cli.Extensions
 {
     public static class ObjectExtensions
     {
-        public static object InterpretType(this object obj)
+        public static object AutoCorrectType(this object obj)
         {
             return obj
                 .ToLongIfLong()

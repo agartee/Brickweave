@@ -3,7 +3,7 @@ using Brickweave.Cqrs.Cli.Extensions;
 using FluentAssertions;
 using Xunit;
 
-namespace Brickweave.Cqrs.Cli.Tests.Extensions
+namespace Brickweave.Domain.Tests.Extensions
 {
     public class ObjectExtensionsTests
     {
@@ -24,7 +24,7 @@ namespace Brickweave.Cqrs.Cli.Tests.Extensions
             var value = "1";
 
             var result = value.AutoCorrectType();
-            
+
             result.Should().BeOfType<long>();
             result.Should().Be(1L);
         }

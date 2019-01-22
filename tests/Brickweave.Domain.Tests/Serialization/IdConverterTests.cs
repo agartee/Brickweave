@@ -4,7 +4,6 @@ using Brickweave.Domain.Serialization;
 using FluentAssertions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
-using NSubstitute;
 using Xunit;
 
 namespace Brickweave.Domain.Tests.Serialization
@@ -49,11 +48,17 @@ namespace Brickweave.Domain.Tests.Serialization
         {
             var converter = new IdConverter();
 
-            Assert.Throws<NotSupportedException>(() => converter.ReadJson(
-                Arg.Any<JsonReader>(),
-                Arg.Any<Type>(),
-                Arg.Any<object>(),
-                Arg.Any<JsonSerializer>()));
+            var json = "{\"id\":\"b2f282a9-d6d7-4929-bb18-9fcc57c2cbd9\"}";
+
+            var result = JsonConvert.DeserializeObject<MyObject>(json, new JsonSerializerSettings
+            {
+                Formatting = Formatting.None,
+                NullValueHandling = NullValueHandling.Ignore,
+                ContractResolver = new CamelCasePropertyNamesContractResolver(),
+                Converters = new List<JsonConverter> { new IdConverter() }
+            });
+
+            result.Id.Should().Be(new MyId(new Guid("b2f282a9-d6d7-4929-bb18-9fcc57c2cbd9")));
         }
 
         public class MyId : Id<Guid>

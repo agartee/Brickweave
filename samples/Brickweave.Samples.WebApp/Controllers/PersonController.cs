@@ -4,7 +4,6 @@ using Brickweave.Cqrs;
 using Brickweave.Samples.Domain.Persons.Commands;
 using Brickweave.Samples.Domain.Persons.Models;
 using Brickweave.Samples.Domain.Persons.Queries;
-using Brickweave.Samples.WebApp.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -29,10 +28,17 @@ namespace Brickweave.Samples.WebApp.Controllers
         }
 
         [HttpPost, Route("/person/new")]
-        public async Task<IActionResult> Create([FromBody] CreatePersonRequest request)
+        public async Task<IActionResult> Create([FromBody] CreatePerson command)
         {
-            var result = await _dispatcher.DispatchCommandAsync(new CreatePerson(
-                PersonId.NewId(), new Name(request.FirstName, request.LastName)));
+            var result = await _dispatcher.DispatchCommandAsync(command);
+
+            return Ok(result);
+        }
+
+        [HttpPost, Route("/person/addPhone")]
+        public async Task<IActionResult> AddPhone([FromBody] AddPersonPhone command)
+        {
+            var result = await _dispatcher.DispatchCommandAsync(command);
 
             return Ok(result);
         }

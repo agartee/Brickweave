@@ -2,9 +2,9 @@
 
 namespace Brickweave.Samples.Domain.Persons.Events
 {
-    public class NameChanged : IEvent
+    public class PersonNameChanged : IEvent
     {
-        public NameChanged(string firstName, string lastName)
+        public PersonNameChanged(string firstName, string lastName)
         {
             FirstName = firstName;
             LastName = lastName;

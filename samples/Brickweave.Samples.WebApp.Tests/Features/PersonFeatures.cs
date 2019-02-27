@@ -4,6 +4,7 @@ using System.Net.Http;
 using Brickweave.Samples.WebApp.Tests.Extensions;
 using Brickweave.Samples.WebApp.Tests.Fixtures;
 using FluentAssertions;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Xbehave;
 using Xunit;
@@ -115,7 +116,8 @@ namespace Brickweave.Samples.WebApp.Tests.Features
         }
 
         [Scenario]
-        public void AddPersonPhone(Guid id, HttpClient client, HttpResponseMessage response)
+        public void AddPersonPhone(Guid id, string firstName, string lastName, string phoneNumber,
+            HttpClient client, HttpResponseMessage response)
         {
             "Given the client is authenticated"
                 .x(async () =>
@@ -127,11 +129,14 @@ namespace Brickweave.Samples.WebApp.Tests.Features
             "And a person exists with the given ID"
                 .x(async () =>
                 {
+                    firstName = "Adam";
+                    lastName = "Gartee";
+
                     response = await client.PostAsync(
                         "/person/new", new
                         {
-                            firstName = "Adam",
-                            lastName = "Gartee"
+                            firstName,
+                            lastName
                         }.ToStringContent());
 
                     var json = await response.Content.ReadAsStringAsync();
@@ -141,11 +146,13 @@ namespace Brickweave.Samples.WebApp.Tests.Features
             $"When a phone is added to a person through the API"
                 .x(async () =>
                 {
+                    phoneNumber = "555-1212";
+
                     response = await client.PostAsync(
-                        $"/person/addPhone", new
+                        $"/person/addPhones", new
                         {
-                            id,
-                            phoneNumber = "555-1212"
+                            personId = id,
+                            phoneNumbers = new string[] { phoneNumber }
                         }.ToStringContent());
                 });
 
@@ -158,7 +165,10 @@ namespace Brickweave.Samples.WebApp.Tests.Features
                     var json = await response.Content.ReadAsStringAsync();
                     var result = json.ToJObject();
 
-                    
+                    result.SelectToken("id").Value<string>().Should().Be(id.ToString());
+                    result.SelectToken("name.firstName").Value<string>().Should().Be(firstName);
+                    result.SelectToken("name.lastName").Value<string>().Should().Be(lastName);
+                    result.SelectToken("phones[0].number").Value<string>().Should().Be(phoneNumber);
                 });
         }
     }

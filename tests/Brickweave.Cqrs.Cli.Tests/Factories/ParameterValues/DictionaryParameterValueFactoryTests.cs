@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.Linq;
 using Brickweave.Cqrs.Cli.Factories.ParameterValues;
 using Brickweave.Cqrs.Cli.Models;
@@ -46,6 +45,19 @@ namespace Brickweave.Cqrs.Cli.Tests.Factories.ParameterValues
 
             result.Should().BeOfType<Dictionary<string, string>>();
             result.As<Dictionary<string, string>>()["key"].Should().Be("value");
+        }
+
+        [Fact]
+        public void Create_WithSingleKeyValuePairWhereKeyContainsSpaces_ReturnsDictionary()
+        {
+            var factory = new DictionaryParameterValueFactory(
+                new KeyValuePairParameterValueFactory(new[] { new BasicParameterValueFactory() }));
+
+            var result = factory.Create(typeof(Dictionary<string, string>),
+                new ExecutableParameterInfo("attributes", "\"my key\"[=value]"));
+
+            result.Should().BeOfType<Dictionary<string, string>>();
+            result.As<Dictionary<string, string>>()["my key"].Should().Be("value");
         }
 
         [Fact]

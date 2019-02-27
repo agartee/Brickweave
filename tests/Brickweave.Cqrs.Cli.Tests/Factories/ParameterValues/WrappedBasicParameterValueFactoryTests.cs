@@ -2,6 +2,7 @@
 using Brickweave.Cqrs.Cli.Models;
 using Brickweave.Cqrs.Cli.Tests.Models;
 using FluentAssertions;
+using System.Collections.Generic;
 using Xunit;
 
 namespace Brickweave.Cqrs.Cli.Tests.Factories.ParameterValues
@@ -19,11 +20,22 @@ namespace Brickweave.Cqrs.Cli.Tests.Factories.ParameterValues
         }
 
         [Fact]
-        public void Qualifies_WhenTypeIsNotWrappedBasicType_ReturnsFalse()
+        public void Qualifies_WhenTypeIsBasicPrimitiveType_ReturnsFalse()
         {
             var factory = new WrappedBasicParameterValueFactory();
 
             var result = factory.Qualifies(typeof(string));
+
+            result.Should().BeFalse();
+        }
+
+
+        [Fact]
+        public void Qualifies_WhenTypeIsDictionary_ReturnsFalse()
+        {
+            var factory = new WrappedBasicParameterValueFactory();
+
+            var result = factory.Qualifies(typeof(Dictionary<string, object>));
 
             result.Should().BeFalse();
         }

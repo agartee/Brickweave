@@ -26,9 +26,11 @@ namespace Brickweave.Cqrs.Cli.Extensions
         public static string[] Wrap(this string str, int max)
         {
             var charCount = 0;
-            var lines = str.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+            var words = str
+                .Replace("\n", " ")
+                .Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
 
-            return lines
+            return words
                 .GroupBy(w => (charCount += (((charCount % max) + w.Length + 1 >= max)
                     ? max - (charCount % max)
                     : 0)+ w.Length + 1) / max)

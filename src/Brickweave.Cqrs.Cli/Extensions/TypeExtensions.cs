@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Brickweave.Cqrs.Cli.Extensions
 {
@@ -31,6 +32,12 @@ namespace Brickweave.Cqrs.Cli.Extensions
         public static bool IsDateTimeType(this Type type)
         {
             return type == typeof(DateTime) || type == typeof(DateTime?);
+        }
+
+        public static bool IsDictionary(this Type type)
+        {
+            return type.IsGenericType && type.GetGenericTypeDefinition() == typeof(IDictionary<,>)
+                || type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Dictionary<,>);
         }
     }
 }

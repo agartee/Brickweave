@@ -1,4 +1,5 @@
-﻿using Brickweave.Samples.Domain.Persons.Models;
+﻿using Brickweave.Samples.Domain.Persons.Extensions;
+using Brickweave.Samples.Domain.Persons.Models;
 using Brickweave.Samples.SqlServer.Entities;
 using Brickweave.Samples.SqlServer.Serialization;
 

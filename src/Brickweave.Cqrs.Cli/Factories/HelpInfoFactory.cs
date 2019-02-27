@@ -83,7 +83,9 @@ namespace Brickweave.Cqrs.Cli.Factories
                 .ToList();
 
             return categoryBySubject.WithChildren(
-                categoryBySubject.Children.Union(childExecutables));
+                categoryBySubject.Children
+                    .Union(childExecutables)
+                    .ToList());
         }
     }
 }

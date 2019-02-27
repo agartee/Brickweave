@@ -16,29 +16,29 @@ namespace Brickweave.Cqrs.Cli.Formatters
 
             if (helpInfo.Type == HelpInfoType.Category)
             {
-                WriteParentInfoToConsole(helpInfo, stringBuilder, windowWidth);
-                WriteSubgroupInfoToConsole(helpInfo, stringBuilder, windowWidth);
-                WriteSubcommandInfoToConsole(helpInfo, stringBuilder, windowWidth);
+                WriteParentInfo(helpInfo, stringBuilder, windowWidth);
+                WriteSubgroupInfo(helpInfo, stringBuilder, windowWidth);
+                WriteSubcommandInfo(helpInfo, stringBuilder, windowWidth);
             }
             else
             {
-                WriteParentInfoToConsole(helpInfo, stringBuilder, windowWidth);
-                WriteParameterInfoToConsole(helpInfo, stringBuilder, windowWidth);
+                WriteParentInfo(helpInfo, stringBuilder, windowWidth);
+                WriteParameterInfo(helpInfo, stringBuilder, windowWidth);
             }
 
             return stringBuilder.ToString();
         }
 
-        private static void WriteParentInfoToConsole(HelpInfo helpInfo, StringBuilder stringBuilder, int windowWidth)
+        private static void WriteParentInfo(HelpInfo helpInfo, StringBuilder stringBuilder, int windowWidth)
         {
             stringBuilder.AppendLine();
             stringBuilder.AppendLine(helpInfo.Type == HelpInfoType.Category ? "Category:" : "Command:");
             stringBuilder.AppendLine();
 
-            FormatAndWriteToConsole(helpInfo.Name, helpInfo.Description, stringBuilder, windowWidth);
+            FormatAndWrite(helpInfo.Name, helpInfo.Description, stringBuilder, windowWidth);
         }
 
-        private static void WriteSubgroupInfoToConsole(HelpInfo helpInfo, StringBuilder stringBuilder, int windowWidth)
+        private static void WriteSubgroupInfo(HelpInfo helpInfo, StringBuilder stringBuilder, int windowWidth)
         {
             var subgroups = helpInfo.Children
                 .Where(i => i.Type == HelpInfoType.Category)
@@ -52,10 +52,10 @@ namespace Brickweave.Cqrs.Cli.Formatters
             stringBuilder.AppendLine();
 
             foreach (var subgroup in subgroups)
-                FormatAndWriteToConsole(subgroup.Name, subgroup.Description, stringBuilder, windowWidth);
+                FormatAndWrite(subgroup.Name, subgroup.Description, stringBuilder, windowWidth);
         }
 
-        private static void WriteSubcommandInfoToConsole(HelpInfo helpInfo, StringBuilder stringBuilder, int windowWidth)
+        private static void WriteSubcommandInfo(HelpInfo helpInfo, StringBuilder stringBuilder, int windowWidth)
         {
             var commands = helpInfo.Children
                 .Where(i => i.Type == HelpInfoType.Executable)
@@ -69,10 +69,10 @@ namespace Brickweave.Cqrs.Cli.Formatters
             stringBuilder.AppendLine();
 
             foreach (var command in commands)
-                FormatAndWriteToConsole(command.Name, command.Description, stringBuilder, windowWidth);
+                FormatAndWrite(command.Name, command.Description, stringBuilder, windowWidth);
         }
 
-        private static void WriteParameterInfoToConsole(HelpInfo helpInfo, StringBuilder stringBuilder, int windowWidth)
+        private static void WriteParameterInfo(HelpInfo helpInfo, StringBuilder stringBuilder, int windowWidth)
         {
             var parameters = helpInfo.Children
                 .Where(i => i.Type == HelpInfoType.Parameter)
@@ -87,11 +87,11 @@ namespace Brickweave.Cqrs.Cli.Formatters
 
             foreach (var parameter in parameters)
             {
-                FormatAndWriteToConsole($"--{parameter.Name}", parameter.Description, stringBuilder, windowWidth);
+                FormatAndWrite($"--{parameter.Name}", parameter.Description, stringBuilder, windowWidth);
             }
         }
 
-        private static void FormatAndWriteToConsole(string name, string description, StringBuilder stringBuilder, int windowWidth)
+        private static void FormatAndWrite(string name, string description, StringBuilder stringBuilder, int windowWidth)
         {
             var descriptionWrapped = description.Wrap(windowWidth - TEXT_WRAP_LEFT_PADDING);
 

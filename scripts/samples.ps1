@@ -1,5 +1,8 @@
+[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+
 $scriptsDir = (get-item $PSScriptRoot).FullName
-$configFile = ($MyInvocation.MyCommand.Name) + ".config"
+$configName = ($MyInvocation.MyCommand.Name) + ".config"
+$configFile = Join-Path -Path $scriptsDir -ChildPath $configName
 
 function CreateConfig {
     param(
@@ -26,7 +29,7 @@ function CreateConfig {
         client_secret = $clientSecret | ConvertFrom-SecureString
     } | ConvertTo-Json
 
-    New-Item -path . -name $configFile -type "file" -value $contents | Out-Null
+    New-Item -path $configFile -type "file" -value $contents | Out-Null
 }
 
 function Login {
@@ -64,13 +67,36 @@ if (!(Test-Path $configFile)) {
 
 $script:config = Get-Content -Raw -Path $configFile | ConvertFrom-Json
 
-if($global:token -eq $null) {
+if($null -eq $global:token) {
     Login
 }
 
 $headers = @{ Authorization = "Bearer $global:token" }
-$body = $args | ForEach-Object -Process { if($_.ToString().Contains(" ")) { return "`"$_`"" } else { $_ }  }
 
-$result = Invoke-WebRequest -Uri $script:config.apiEndpoint -Method Post -Body $body -Headers $headers -ContentType "text/plain" `
+try {
+    $body = $args | ForEach-Object -Process { `
+        if($_.ToString().Contains(" ") -or $_.ToString().Contains("\")) { `
+            return "`"$_`"" `
+        } `
+        else { `
+            $_ `
+        }`
+    }
+
+    $result = Invoke-WebRequest -Uri $script:config.apiEndpoint -Method Post -Body $body -Headers $headers -ContentType "text/plain" `
+}
+catch [System.Net.WebException] {
+    $result = $_.Exception.Response.GetResponseStream()
+    $reader = New-Object System.IO.StreamReader($result)
+    $reader.BaseStream.Position = 0
+    $reader.DiscardBufferedData()
+    $responseBody = $reader.ReadToEnd();
+    
+    $host.UI.WriteErrorLine("Error executing command: $body")
+    $host.UI.WriteErrorLine($responseBody)
+}
+catch {
+    $host.UI.WriteErrorLine("Error executing command: $args")
+}
 
 return $result.Content

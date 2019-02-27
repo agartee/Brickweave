@@ -10,10 +10,13 @@ namespace Brickweave.Cqrs.Cli.Factories.ParameterValues
     {
         public bool Qualifies(Type targetType)
         {
-            return !targetType.IsBasicType() 
+            var result = !targetType.IsBasicType() 
                    && !targetType.IsGuidType() 
                    && !targetType.IsDateTimeType() 
+                   && !targetType.IsDictionary()
                    && GetWrappedBasicType(targetType) != null;
+
+            return result;
         }
 
         public object Create(Type targetType, ExecutableParameterInfo parameter)

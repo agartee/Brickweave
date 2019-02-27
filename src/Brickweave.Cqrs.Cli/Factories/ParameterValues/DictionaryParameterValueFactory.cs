@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Brickweave.Cqrs.Cli.Extensions;
 using Brickweave.Cqrs.Cli.Models;
 
 namespace Brickweave.Cqrs.Cli.Factories.ParameterValues
@@ -16,8 +17,7 @@ namespace Brickweave.Cqrs.Cli.Factories.ParameterValues
 
         public bool Qualifies(Type targetType)
         {
-            return targetType.IsGenericType && targetType.GetGenericTypeDefinition() == typeof(IDictionary<,>)
-                || targetType.IsGenericType && targetType.GetGenericTypeDefinition() == typeof(Dictionary<,>);
+            return targetType.IsDictionary();
         }
 
         public object Create(Type targetType, ExecutableParameterInfo parameter)

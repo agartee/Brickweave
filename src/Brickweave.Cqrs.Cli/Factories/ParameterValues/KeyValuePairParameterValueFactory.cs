@@ -48,7 +48,7 @@ namespace Brickweave.Cqrs.Cli.Factories.ParameterValues
             return Activator.CreateInstance(typeof(KeyValuePair<,>)
                 .MakeGenericType(keyType, valueType), new object[]
                 {
-                    keyParamFactory.Create(keyType, new ExecutableParameterInfo(string.Empty, args[0])),
+                    keyParamFactory.Create(keyType, new ExecutableParameterInfo(string.Empty, args[0].TrimStart('"').TrimEnd('"'))),
                     valueParamFactory.Create(valueType, new ExecutableParameterInfo(string.Empty, args[1]))
                 });
         }

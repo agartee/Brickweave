@@ -1,19 +1,18 @@
 ﻿using System;
 using Brickweave.EventStore;
-using Brickweave.Messaging;
 
 namespace Brickweave.Samples.Domain.Persons.Events
 {
-    public class PersonCreated : IEvent, IDomainEvent
+    public class PersonCreated : IEvent
     {
-        public PersonCreated(Guid id, string firstName, string lastName)
+        public PersonCreated(Guid personId, string firstName, string lastName)
         {
-            Id = id;
+            PersonId = personId;
             FirstName = firstName;
             LastName = lastName;
         }
 
-        public Guid Id { get; }
+        public Guid PersonId { get; }
         public string FirstName { get; }
         public string LastName { get; }
     }

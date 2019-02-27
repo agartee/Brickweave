@@ -7,7 +7,7 @@ namespace Brickweave.Samples.Domain.Persons.Commands
     public class CreatePerson : ICommand<PersonInfo>
     {
         /// <summary>
-        /// Create a new person
+        /// Create a new person.
         /// </summary>
         /// <param name="firstName">Person's first name</param>
         /// <param name="lastName">Person's last name</param>

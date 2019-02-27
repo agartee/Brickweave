@@ -1,4 +1,6 @@
 ﻿using System;
+using System.IO;
+using System.Text;
 using System.Threading.Tasks;
 using Brickweave.Cqrs;
 using Brickweave.Samples.Domain.Persons.Commands;
@@ -9,7 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Brickweave.Samples.WebApp.Controllers
 {
-    [Authorize]
+    //[Authorize]
     public class PersonController : Controller
     {
         private readonly IDispatcher _dispatcher;
@@ -35,8 +37,8 @@ namespace Brickweave.Samples.WebApp.Controllers
             return Ok(result);
         }
 
-        [HttpPost, Route("/person/addPhone")]
-        public async Task<IActionResult> AddPhone([FromBody] AddPersonPhone command)
+        [HttpPost, Route("/person/addPhones")]
+        public async Task<IActionResult> AddPhone([FromBody] AddPersonPhones command)
         {
             var result = await _dispatcher.DispatchCommandAsync(command);
 

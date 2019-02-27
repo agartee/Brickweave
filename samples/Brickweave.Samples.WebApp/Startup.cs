@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
@@ -7,15 +6,13 @@ using Brickweave.Cqrs.Cli.DependencyInjection;
 using Brickweave.Cqrs.DependencyInjection;
 using Brickweave.Domain.Serialization;
 using Brickweave.EventStore.SqlServer.DependencyInjection;
-using Brickweave.Messaging.ServiceBus.DependencyInjection;
-using Brickweave.Messaging.SqlServer;
 using Brickweave.Samples.Domain.Persons.Commands;
-using Brickweave.Samples.Domain.Persons.Events;
 using Brickweave.Samples.Domain.Persons.Queries;
 using Brickweave.Samples.Domain.Persons.Services;
 using Brickweave.Samples.SqlServer;
 using Brickweave.Samples.SqlServer.Repositories;
 using Brickweave.Samples.WebApp.Formatters;
+using Brickweave.Samples.WebApp.Middleware;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -24,6 +21,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 namespace Brickweave.Samples.WebApp
 {
@@ -53,6 +51,14 @@ namespace Brickweave.Samples.WebApp
                 .AddAuthorization()
                 .AddJsonFormatters(settings =>
                 {
+                    settings.TypeNameHandling = TypeNameHandling.None;
+                    settings.ContractResolver = new DefaultContractResolver
+                    {
+                        NamingStrategy = new CamelCaseNamingStrategy
+                        {
+                            ProcessDictionaryKeys = true
+                        }
+                    };
                     settings.Formatting = Formatting.Indented;
                     settings.Converters.Add(new IdConverter());
                 });
@@ -81,21 +87,13 @@ namespace Brickweave.Samples.WebApp
 
             services.AddEventStore(domainAssemblies);
 
-            services.AddMessageBus()
-                .AddMessageSenderRegistration(
-                    Configuration.GetConnectionString("serviceBus"),
-                    Configuration["serviceBusTopic"], isDefault: true)
-                .AddGlobalUserPropertyStrategy("Id")
-                .AddUserPropertyStrategy<PersonCreated>(@event =>
-                    new Dictionary<string, object> { ["LastName"] = @event.LastName })
-                .AddUtf8Encoding()
-                .AddMessageFailureHandler<SqlServerMessageFailureWriter<SamplesDbContext>>();
-
             services.AddCli(domainAssemblies)
                 .AddDateParsingCulture(new CultureInfo("en-US"))
                 .AddCategoryHelpFile("cli-categories.json")
                 .OverrideQueryName<ListPersons>("list", "person")
-                .OverrideCommandName<AddPersonPhone>("add", "person", "phones");
+                .OverrideCommandName<AddPersonPhones>("add", "person", "phones")
+                .OverrideCommandName<AddSinglePersonAttribute>("add-single", "person", "attributes")
+                .OverrideCommandName<AddMultiplePersonAttributes>("add-multiple", "person", "attributes");
         }
 
         private void ConfigureCustomServices(IServiceCollection services)
@@ -113,6 +111,7 @@ namespace Brickweave.Samples.WebApp
         {
             app.UseAuthentication();
             app.UseMvc();
+            app.UseExceptionHandlingMiddleware();
 
             app.ApplicationServices.GetService<SamplesDbContext>().Database.Migrate();
         }

@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Brickweave.EventStore.SqlServer
 {
-    public class EventStoreDbContext : DbContext, IEventStore
+    public class EventStoreDbContext : DbContext
     {
         public const string SCHEMA_NAME = "EventStore";
 

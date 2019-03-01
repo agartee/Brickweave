@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Brickweave.Samples.SqlServer
 {
-    public class SamplesDbContext : DbContext, IEventStore, IMessageStore
+    public class SamplesDbContext : DbContext, IMessageStore
     {
         public SamplesDbContext(DbContextOptions options) : base(options)
         {

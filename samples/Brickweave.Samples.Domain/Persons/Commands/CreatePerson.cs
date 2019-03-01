@@ -12,8 +12,6 @@ namespace Brickweave.Samples.Domain.Persons.Commands
         /// <param name="firstName">Person's first name</param>
         /// <param name="lastName">Person's last name</param>
         /// <param name="birthDate">Person's birth date</param>
-        /// <subject>person</subject>
-        /// <action>create</action>
         public CreatePerson(string firstName, string lastName, DateTime birthDate)
         {
             Id = PersonId.NewId();

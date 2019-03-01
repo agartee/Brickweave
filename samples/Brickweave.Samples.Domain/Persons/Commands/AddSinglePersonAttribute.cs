@@ -11,7 +11,6 @@ namespace Brickweave.Samples.Domain.Persons.Commands
         /// <param name="personId"></param>
         /// <param name="key"></param>
         /// <param name="value"></param>
-
         public AddSinglePersonAttribute(PersonId personId, string key, object value)
         {
             PersonId = personId;

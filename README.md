@@ -272,6 +272,8 @@ Create this file and reference its location when wiring-up the services.
 ```
 Commands and Queries will by default be auto-discovered via text-case matching and by assuming the last "word" in your class definition is the "action" name. For example, the `CreatePerson` command translates to `person create` from the command line. This command/query text can be overridden via the `AddCli` services extension (see below). These overrides are handy when multiple commands should be organized into a single subject or category (e.g. `person`).
 
+Command and Query parameters are passed with double-dashes (e.g. `--firstname "Adam"`) and the parameter names are not case-sensitive.
+
 ### Wiring-up the services (ASP.NET Core)
 
 ```csharp
@@ -352,6 +354,62 @@ public class CreatePerson : ICommand<PersonInfo>
 ### Sample Help Command Line Output
 
 ![Sample Output](https://github.com/agartee/brickweave/raw/master/assets/cli_help.png)
+
+### Advanced Command Text Samples
+
+The `CliDispatcher` supports the following parameter value definitions.
+
+#### Single Value
+A single parameter value sush as `int`, `Guid`, `DateTime`, etc. These values can be wrapped in double-quotes if they contain spaces.
+
+```powershell
+person create --firstName "Adam"
+```
+
+#### List Values
+Multiple values can be added as a collection by separating values with a space from the command line and defining the command/query parameter as an `IEnumerable<T>`, `IList<T>` or `List<T>`.
+
+```powershell
+person phones add --personid 00112233-4455-6677-8899-aabbccddeeff --phones "555-1111" "555-2222"
+```
+
+#### Dictionary Value
+Multiple values in the form of key/value pairs are defined by wrapping the value in square braces with a preceding equals sign. Dictionary key values can also be wrapped in double-quotes to allow for spaces.
+
+```powershell
+person phones add --personid 00112233-4455-6677-8899-aabbccddeeff --attributes Height[=pretty tall] "Favorite Color"[=Orange]
+```
+
+#### Primitive-Wrapped Object Values
+If a command/query contains a value-object that contains a single primitive-type or Guid constructor, it can be interpreted. This is useful when utilizing `Brickweave.Domain` `Id<T>` objects.
+
+```powershell
+person get --personid 00112233-4455-6677-8899-aabbccddeeff
+```
+
+```csharp
+public class PersonId : Id<Guid>
+{
+    public PersonId(Guid value) : base(value)
+    {
+    }
+
+    public static PersonId NewId()
+    {
+        return new PersonId(Guid.NewGuid());
+    }
+}
+
+public class GetPerson : IQuery<PersonInfo>
+{
+    public GetPerson(PersonId id) // Id object param
+    {
+        Id = id;
+    }
+
+    public PersonId Id { get; }
+}
+```
 
 ## Running the Project from Source
 

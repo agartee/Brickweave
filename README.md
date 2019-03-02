@@ -323,7 +323,7 @@ public class CliController : Controller
 
 The CLI Help services utilize class summary descriptions. In order to utilize this feature, configure the project(s) containing commands and queries to generate an `XML documentation file`. It is also recommended to suppress warning [1591](https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/compiler-messages/cs1591) in Visual Studio. 
 
-[image here]
+![XML Doc](https://github.com/agartee/brickweave/raw/master/assets/doc_xml.png)
 
 ### Sample Class Documentation (Command and Queries, not Handlers)
 
@@ -351,7 +351,7 @@ public class CreatePerson : ICommand<PersonInfo>
 
 ### Sample Help Command Line Output
 
-[image here]
+![Sample Output](https://github.com/agartee/brickweave/raw/master/assets/cli_help.png)
 
 ## Running the Project from Source
 

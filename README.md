@@ -351,9 +351,9 @@ public class CreatePerson : ICommand<PersonInfo>
 }
 ```
 
-### Sample Help Command Line Output
+### Sample Command Line Output
 
-![Sample Output](https://github.com/agartee/brickweave/raw/master/assets/cli_help.png)
+![Sample Output](https://github.com/agartee/brickweave/raw/master/assets/cli_outputs.png)
 
 ### Advanced Command Text Samples
 

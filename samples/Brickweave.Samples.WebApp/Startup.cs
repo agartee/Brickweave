@@ -11,6 +11,7 @@ using Brickweave.Samples.Domain.Persons.Queries;
 using Brickweave.Samples.Domain.Persons.Services;
 using Brickweave.Samples.SqlServer;
 using Brickweave.Samples.SqlServer.Repositories;
+using Brickweave.Samples.SqlServer.Serialization;
 using Brickweave.Samples.WebApp.Formatters;
 using Brickweave.Samples.WebApp.Middleware;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -85,7 +86,8 @@ namespace Brickweave.Samples.WebApp
             
             services.AddCqrs(domainAssemblies);
 
-            services.AddEventStore(domainAssemblies);
+            services.AddEventStore(domainAssemblies)
+                .AddJsonConverter(new IdConverter());
 
             services.AddCli(domainAssemblies)
                 .AddDateParsingCulture(new CultureInfo("en-US"))

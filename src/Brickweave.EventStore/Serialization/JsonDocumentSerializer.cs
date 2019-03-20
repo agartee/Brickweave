@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using NodaTime;
@@ -10,10 +11,18 @@ namespace Brickweave.EventStore.Serialization
     public class JsonDocumentSerializer : IDocumentSerializer
     {
         private readonly IEnumerable<Type> _shorthandTypes;
-        
+        private readonly IEnumerable<JsonConverter> _converters;
+
         public JsonDocumentSerializer(params Type[] shorthandTypes)
         {
             _shorthandTypes = shorthandTypes;
+            _converters = Enumerable.Empty<JsonConverter>();
+        }
+
+        public JsonDocumentSerializer(IEnumerable<Type> shorthandTypes, params JsonConverter[] converters)
+        {
+            _shorthandTypes = shorthandTypes;
+            _converters = converters;
         }
 
         private JsonSerializerSettings DefaultSettings =>
@@ -24,7 +33,9 @@ namespace Brickweave.EventStore.Serialization
                 TypeNameHandling = TypeNameHandling.Objects,
                 NullValueHandling = NullValueHandling.Ignore,
                 ContractResolver = new CamelCasePropertyNamesContractResolver()
-            }.ConfigureForNodaTime(DateTimeZoneProviders.Tzdb);
+            }
+            .ConfigureForNodaTime(DateTimeZoneProviders.Tzdb)
+            .AddJsonConverters(_converters.ToArray());
 
         T IDocumentSerializer.DeserializeObject<T>(string json)
         {

@@ -27,7 +27,7 @@ namespace Brickweave.Samples.Domain.Persons.Models
 
         public Person(PersonId id, Name name) : this()
         {
-            RaiseEvent(new PersonCreated(id.Value, name.FirstName, name.LastName));
+            RaiseEvent(new PersonCreated(id, name.FirstName, name.LastName));
         }
 
         public Person(IEnumerable<IEvent> events) : this()
@@ -49,12 +49,12 @@ namespace Brickweave.Samples.Domain.Persons.Models
 
         public void AddPhone(PhoneId id, string number)
         {
-            RaiseEvent(new PersonPhoneAdded(id.Value, number));
+            RaiseEvent(new PersonPhoneAdded(id, number));
         }
 
         public void RemovePhone(PhoneId id)
         {
-            RaiseEvent(new PersonPhoneRemoved(id.Value));
+            RaiseEvent(new PersonPhoneRemoved(id));
         }
 
         public void AddAttribute(string name, object value)
@@ -82,7 +82,7 @@ namespace Brickweave.Samples.Domain.Persons.Models
 
         private void Apply(PersonCreated @event)
         {
-            Id = new PersonId(@event.PersonId);
+            Id = @event.PersonId;
             Name = new Name(@event.FirstName, @event.LastName);
         }
 
@@ -93,12 +93,12 @@ namespace Brickweave.Samples.Domain.Persons.Models
 
         private void Apply(PersonPhoneAdded @event)
         {
-            _phones.Add(new Phone(new PhoneId(@event.PhoneId), @event.Number, EventQueue, EventRouter));
+            _phones.Add(new Phone(@event.PhoneId, @event.Number, EventQueue, EventRouter));
         }
 
         private void Apply(PersonPhoneRemoved @event)
         {
-            _phones.RemoveAll(p => p.Id.Equals(new PhoneId(@event.PhoneId)));
+            _phones.RemoveAll(p => p.Id.Equals(@event.PhoneId));
         }
 
         private void Apply(PersonAttributeAdded @event)

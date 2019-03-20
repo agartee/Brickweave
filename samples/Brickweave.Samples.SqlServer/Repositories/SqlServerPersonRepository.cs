@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Brickweave.EventStore.Factories;
 using Brickweave.EventStore.Serialization;
 using Brickweave.EventStore.SqlServer;
+using Brickweave.Samples.Domain.Persons.Extensions;
 using Brickweave.Samples.Domain.Persons.Models;
 using Brickweave.Samples.Domain.Persons.Services;
 using Brickweave.Samples.SqlServer.Extensions;

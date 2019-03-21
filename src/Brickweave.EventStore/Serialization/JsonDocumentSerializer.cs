@@ -32,7 +32,13 @@ namespace Brickweave.EventStore.Serialization
                 Formatting = Formatting.None,
                 TypeNameHandling = TypeNameHandling.Objects,
                 NullValueHandling = NullValueHandling.Ignore,
-                ContractResolver = new CamelCasePropertyNamesContractResolver()
+                ContractResolver = new CamelCasePropertyNamesContractResolver
+                {
+                    NamingStrategy = new CamelCaseNamingStrategy
+                    {
+                        ProcessDictionaryKeys = true
+                    }
+                }
             }
             .ConfigureForNodaTime(DateTimeZoneProviders.Tzdb)
             .AddJsonConverters(_converters.ToArray());

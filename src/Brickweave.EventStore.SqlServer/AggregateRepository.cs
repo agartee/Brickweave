@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Brickweave.EventStore.Factories;
@@ -17,6 +18,22 @@ namespace Brickweave.EventStore.SqlServer
         {
             _serializer = serializer;
             _aggregateFactory = aggregateFactory;
+        }
+
+        protected async Task<LinkedList<IEvent>> GetEvents<TEventData>(DbSet<TEventData> eventDbSet, Guid streamId)
+            where TEventData : EventData, new()
+        {
+            var eventData = await eventDbSet
+                .Where(e => e.StreamId.Equals(streamId))
+                .OrderBy(e => e.Created)
+                .ThenBy(e => e.CommitSequence)
+                .ToListAsync();
+
+            var events = eventData
+                .Select(d => _serializer.DeserializeObject<IEvent>(d.Json))
+                .ToList();
+
+            return new LinkedList<IEvent>(events);
         }
 
         protected void AddUncommittedEvents<TEventData>(DbSet<TEventData> eventDbSet, 
@@ -43,15 +60,7 @@ namespace Brickweave.EventStore.SqlServer
             Guid streamId)
             where TEventData : EventData, new()
         {
-            var eventData = await eventDbSet
-                .Where(e => e.StreamId.Equals(streamId))
-                .OrderBy(e => e.Created)
-                .ThenBy(e => e.CommitSequence)
-                .ToListAsync();
-
-            var events = eventData
-                .Select(d => _serializer.DeserializeObject<IEvent>(d.Json))
-                .ToList();
+            var events = await GetEvents(eventDbSet, streamId);
 
             return events.Any() ? _aggregateFactory.Create<TAggregate>(events) : null;
         }

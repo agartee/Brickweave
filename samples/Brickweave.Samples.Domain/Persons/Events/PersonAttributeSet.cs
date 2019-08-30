@@ -3,9 +3,9 @@ using Brickweave.Samples.Domain.Persons.Extensions;
 
 namespace Brickweave.Samples.Domain.Persons.Events
 {
-    public class PersonAttributeAdded : IEvent
+    public class PersonAttributeSet : IEvent
     {
-        public PersonAttributeAdded(string name, object value)
+        public PersonAttributeSet(string name, object value)
         {
             Name = name;
             Value = value.CorrectType();

@@ -17,7 +17,7 @@ namespace Brickweave.Samples.Domain.Persons.Commands
 
         public async Task<PersonInfo> HandleAsync(CreatePerson command)
         {
-            var person = new Person(command.Id, command.Name);
+            var person = new Person(PersonId.NewId(), command.Name, command.BirthDate);
 
             await _personRepository.SavePersonAsync(person);
             

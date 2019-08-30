@@ -11,7 +11,6 @@ using Brickweave.Samples.Domain.Persons.Queries;
 using Brickweave.Samples.Domain.Persons.Services;
 using Brickweave.Samples.SqlServer;
 using Brickweave.Samples.SqlServer.Repositories;
-using Brickweave.Samples.SqlServer.Serialization;
 using Brickweave.Samples.WebApp.Formatters;
 using Brickweave.Samples.WebApp.Middleware;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -106,7 +105,8 @@ namespace Brickweave.Samples.WebApp
 
             services
                 .AddScoped<IPersonRepository, SqlServerPersonRepository>()
-                .AddScoped<IPersonInfoRepository, SqlServerPersonRepository>();
+                .AddScoped<IPersonInfoRepository, SqlServerPersonRepository>()
+                .AddScoped<IPersonEventStreamRepository, SqlServerPersonRepository>();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)

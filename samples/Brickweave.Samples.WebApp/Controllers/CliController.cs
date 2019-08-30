@@ -2,11 +2,12 @@
 using Brickweave.Cqrs.Cli;
 using Brickweave.Cqrs.Cli.Formatters;
 using Brickweave.Cqrs.Cli.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Brickweave.Samples.WebApp.Controllers
 {
-    //[Authorize]
+    [Authorize]
     public class CliController : Controller
     {
         private readonly ICliDispatcher _cliDispatcher;

@@ -89,7 +89,7 @@ namespace Brickweave.Samples.Domain.Tests.Persons.Models
             person.GetUncommittedEvents().Should().HaveCount(1);
 
             var @event = person.GetUncommittedEvents().First()
-                .As<PersonAttributeAdded>();
+                .As<PersonAttributeSet>();
 
             @event.Name.Should().Be(key);
             @event.Value.Should().Be(value);

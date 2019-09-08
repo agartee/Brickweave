@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Brickweave.EventStore;
@@ -33,17 +34,19 @@ namespace Brickweave.Samples.SqlServer.Repositories
             person.ClearUncommittedEvents();
         }
 
-        public async Task<Person> GetPersonAsync(PersonId id)
+        public async Task<Person> GetPersonAsync(PersonId id, DateTime? pointInTime = null)
         {
-            return await CreateFromEventsAsync(_dbContext.Events, id.Value);
+            return await CreateFromEventsAsync(_dbContext.Events, id.Value, pointInTime);
         }
 
-        public async Task<PersonInfo> GetPersonInfoAsync(PersonId personId)
+        public async Task<PersonInfo> GetPersonInfoAsync(PersonId personId, DateTime? pointInTime = null)
         {
-            var data = await _dbContext.Persons
-                .FirstOrDefaultAsync(p => p.Id == personId.Value);
+            if (pointInTime != null)
+                return (await GetPersonAsync(personId, pointInTime)).ToInfo();
 
-            return data?.ToInfo();
+            return (await _dbContext.Persons
+                .FirstOrDefaultAsync(p => p.Id == personId.Value))?
+                .ToInfo();
         }
 
         public async Task<IEnumerable<PersonInfo>> ListPeopleAsync()

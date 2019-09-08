@@ -94,7 +94,9 @@ namespace Brickweave.Samples.WebApp
                 .OverrideQueryName<ListPersons>("list", "person")
                 .OverrideCommandName<AddPersonPhones>("add", "person", "phones")
                 .OverrideCommandName<AddSinglePersonAttribute>("add-single", "person", "attributes")
-                .OverrideCommandName<AddMultiplePersonAttributes>("add-multiple", "person", "attributes");
+                .OverrideCommandName<AddMultiplePersonAttributes>("add-multiple", "person", "attributes")
+                .OverrideCommandName<RemoveSinglePersonAttribute>("remove", "person", "attributes")
+                .OverrideQueryName<ExportPeople>("export-all", "person");
         }
 
         private void ConfigureCustomServices(IServiceCollection services)

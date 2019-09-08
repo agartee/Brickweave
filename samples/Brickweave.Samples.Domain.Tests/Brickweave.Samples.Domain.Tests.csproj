@@ -21,10 +21,4 @@
     <ProjectReference Include="..\Brickweave.Samples.Domain\Brickweave.Samples.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Persons\Commands\" />
-    <Folder Include="Persons\Extensions\" />
-    <Folder Include="Persons\Queries\" />
-  </ItemGroup>
-
 </Project>

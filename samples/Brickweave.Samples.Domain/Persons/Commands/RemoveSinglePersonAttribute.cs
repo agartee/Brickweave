@@ -3,23 +3,20 @@ using Brickweave.Samples.Domain.Persons.Models;
 
 namespace Brickweave.Samples.Domain.Persons.Commands
 {
-    public class AddSinglePersonAttribute : ICommand<PersonInfo>
+    public class RemoveSinglePersonAttribute : ICommand<PersonInfo>
     {
         /// <summary>
-        /// Add an attribute to an existing person.
+        /// Remove an attribute from an existing person.
         /// </summary>
         /// <param name="personId"></param>
         /// <param name="key"></param>
-        /// <param name="value"></param>
-        public AddSinglePersonAttribute(PersonId personId, string key, object value)
+        public RemoveSinglePersonAttribute(PersonId personId, string key)
         {
             PersonId = personId;
             Key = key;
-            Value = value;
         }
 
         public PersonId PersonId { get; }
         public string Key { get; }
-        public object Value { get; }
     }
 }

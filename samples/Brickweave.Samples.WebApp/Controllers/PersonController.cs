@@ -1,12 +1,9 @@
 ﻿using System;
-using System.IO;
-using System.Text;
 using System.Threading.Tasks;
 using Brickweave.Cqrs;
 using Brickweave.Samples.Domain.Persons.Commands;
 using Brickweave.Samples.Domain.Persons.Models;
 using Brickweave.Samples.Domain.Persons.Queries;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Brickweave.Samples.WebApp.Controllers

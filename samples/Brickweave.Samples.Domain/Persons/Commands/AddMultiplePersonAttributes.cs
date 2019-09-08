@@ -7,7 +7,7 @@ namespace Brickweave.Samples.Domain.Persons.Commands
     public class AddMultiplePersonAttributes : ICommand<PersonInfo>
     {
         /// <summary>
-        /// Adds attributes to an existing person. Supports multi-value attributes (same key, multiple values).
+        /// Add attributes to an existing person. Supports multi-value attributes (same key, multiple values).
         /// </summary>
         /// <param name="personId"></param>
         /// <param name="attributes"></param>

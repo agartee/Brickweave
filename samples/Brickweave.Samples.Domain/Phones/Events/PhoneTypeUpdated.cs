@@ -4,17 +4,17 @@ using Brickweave.Samples.Domain.Phones.Models;
 
 namespace Brickweave.Samples.Domain.Phones.Events
 {
-    public class PhoneUpdated : IChildEvent
+    public class PhoneTypeUpdated : IChildEvent
     {
-        public PhoneUpdated(Guid phoneId, string number)
+        public PhoneTypeUpdated(Guid phoneId, PhoneType phoneType)
         {
             PhoneId = phoneId;
-            Number = number;
+            PhoneType = phoneType;
         }
 
         public Guid PhoneId { get; }
-        public string Number { get; }
+        public PhoneType PhoneType { get; }
 
-        public object GetEntityId() => new PhoneId(PhoneId);
+        public object GetEntityId() => PhoneId;
     }
 }

@@ -6,11 +6,11 @@ namespace Brickweave.Samples.Domain.Persons.Commands
     public class AddSinglePersonAttribute : ICommand<PersonInfo>
     {
         /// <summary>
-        /// Add an attribute to an existing person.
+        /// Add an attribute to an existing person. Duplicate key/values are not allowed.
         /// </summary>
-        /// <param name="personId"></param>
-        /// <param name="key"></param>
-        /// <param name="value"></param>
+        /// <param name="personId">Existing person's ID</param>
+        /// <param name="key">New or existing attribute key</param>
+        /// <param name="value">New attribute value</param>
         public AddSinglePersonAttribute(PersonId personId, string key, object value)
         {
             PersonId = personId;

@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Text;
 using Brickweave.Cqrs.Cli.Extensions;
 using Brickweave.Cqrs.Cli.Models;
@@ -19,11 +20,13 @@ namespace Brickweave.Cqrs.Cli.Formatters
                 WriteParentInfo(helpInfo, stringBuilder, windowWidth);
                 WriteSubgroupInfo(helpInfo, stringBuilder, windowWidth);
                 WriteSubcommandInfo(helpInfo, stringBuilder, windowWidth);
+                WriteParameterFormatNotes(stringBuilder, windowWidth);
             }
             else
             {
                 WriteParentInfo(helpInfo, stringBuilder, windowWidth);
                 WriteParameterInfo(helpInfo, stringBuilder, windowWidth);
+                WriteParameterFormatNotes(stringBuilder, windowWidth);
             }
 
             return stringBuilder.ToString();
@@ -35,7 +38,7 @@ namespace Brickweave.Cqrs.Cli.Formatters
             stringBuilder.AppendLine(helpInfo.Type == HelpInfoType.Category ? "Category:" : "Command:");
             stringBuilder.AppendLine();
 
-            FormatAndWrite(helpInfo.Name, helpInfo.Description, stringBuilder, windowWidth);
+            FormatAndWrite(stringBuilder, windowWidth, helpInfo.Name, helpInfo.Description);
         }
 
         private static void WriteSubgroupInfo(HelpInfo helpInfo, StringBuilder stringBuilder, int windowWidth)
@@ -52,7 +55,7 @@ namespace Brickweave.Cqrs.Cli.Formatters
             stringBuilder.AppendLine();
 
             foreach (var subgroup in subgroups)
-                FormatAndWrite(subgroup.Name, subgroup.Description, stringBuilder, windowWidth);
+                FormatAndWrite(stringBuilder, windowWidth, subgroup.Name, subgroup.Description);
         }
 
         private static void WriteSubcommandInfo(HelpInfo helpInfo, StringBuilder stringBuilder, int windowWidth)
@@ -69,7 +72,7 @@ namespace Brickweave.Cqrs.Cli.Formatters
             stringBuilder.AppendLine();
 
             foreach (var command in commands)
-                FormatAndWrite(command.Name, command.Description, stringBuilder, windowWidth);
+                FormatAndWrite(stringBuilder, windowWidth, command.Name, command.Description);
         }
 
         private static void WriteParameterInfo(HelpInfo helpInfo, StringBuilder stringBuilder, int windowWidth)
@@ -87,23 +90,68 @@ namespace Brickweave.Cqrs.Cli.Formatters
 
             foreach (var parameter in parameters)
             {
-                FormatAndWrite($"--{parameter.Name}", parameter.Description, stringBuilder, windowWidth);
+                FormatAndWrite(stringBuilder, windowWidth, $"--{parameter.Name}", parameter.Description);
             }
         }
 
-        private static void FormatAndWrite(string name, string description, StringBuilder stringBuilder, int windowWidth)
+        private static void WriteParameterFormatNotes(StringBuilder stringBuilder, int windowWidth)
         {
-            var descriptionWrapped = description.Wrap(windowWidth - TEXT_WRAP_LEFT_PADDING);
+            stringBuilder.AppendLine();
+            stringBuilder.AppendLine("Parameter Format:");
+            stringBuilder.AppendLine();
 
-            stringBuilder.AppendFormat(FORMAT, name, descriptionWrapped.Length > 0
+            FormatAndWrite(stringBuilder, windowWidth, 
+                "Basic",
+                "Parameter name followed by a space and the parameter value. Parameter values that include spaces must be wrapped in double-quotes.",
+                new[] {
+                    "--param value",
+                    "--param \"value with spaces\""
+                });
+
+            FormatAndWrite(stringBuilder, windowWidth, 
+                "Date/Time", 
+                "Follows the same rules as basic parameters and values. Date format parsing is determined by the API configuration.");
+
+            FormatAndWrite(stringBuilder, windowWidth, 
+                "List",
+                "Multiple parameter values can be passed by separating values with a space. Parameter values that include spaces must be wrapped in double-quotes.",
+                new[] {
+                    "--param value1 value2 value3",
+                    "--param \"first value with spaces\" \"second value with spaces\"",
+                    "--param \"first value with spaces\" secondValueNoSpaces"
+                });
+
+            FormatAndWrite(stringBuilder, windowWidth, 
+                "Key/Value Pair",
+                "Keys and Values follow the same rules as basic and list parameters. Values are prefixed with an equals and wrapped in square braces.",
+                new[] {
+                    "--param key[=value]",
+                    "--param key[=value1] key[=value2]",
+                    "--param key[=\"value with spaces\"]",
+                    "--param \"key with spaces\"[=value]",
+                    "--param \"key with spaces\"[=\"value with spaces\"]"
+                });
+        }
+
+        private static void FormatAndWrite(StringBuilder stringBuilder, int windowWidth, string name, string description, params string[] examples)
+        {
+            var descriptionWrapped = description.Wrap(windowWidth - TEXT_WRAP_LEFT_PADDING).ToList();
+
+            if(examples.Any())
+            {
+                descriptionWrapped.Add("Examples:");
+                descriptionWrapped.AddRange(examples.Select(e => $"  {e}"));
+            }
+
+            stringBuilder.AppendFormat(FORMAT, name, descriptionWrapped.Count > 0
                 ? descriptionWrapped[0]
                 : null);
             stringBuilder.AppendLine();
 
-            if (descriptionWrapped.Length <= 1)
+            if (descriptionWrapped.Count <= 1)
                 return;
 
-            for (var i = 1; i < descriptionWrapped.Length; i++)
+            for (var i = 1; i < descriptionWrapped.Count; i++)
                 stringBuilder.AppendLine(new string(' ', TEXT_WRAP_LEFT_PADDING) + descriptionWrapped[i]);
         }
     }

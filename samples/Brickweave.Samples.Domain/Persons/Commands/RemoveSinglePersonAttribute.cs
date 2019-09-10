@@ -8,8 +8,8 @@ namespace Brickweave.Samples.Domain.Persons.Commands
         /// <summary>
         /// Remove an attribute from an existing person.
         /// </summary>
-        /// <param name="personId"></param>
-        /// <param name="key"></param>
+        /// <param name="personId">Existing person's ID</param>
+        /// <param name="key">Existing attribute key</param>
         public RemoveSinglePersonAttribute(PersonId personId, string key)
         {
             PersonId = personId;

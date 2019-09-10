@@ -9,8 +9,8 @@ namespace Brickweave.Samples.Domain.Persons.Commands
         /// <summary>
         /// Remove a phone number from an existing person.
         /// </summary>
-        /// <param name="personId">person id</param>
-        /// <param name="phoneId">phone id</param>
+        /// <param name="personId">Existing person's ID</param>
+        /// <param name="phoneId">Existing phone's ID</param>
         public RemovePersonPhone(PersonId personId, PhoneId phoneId)
         {
             Id = personId;

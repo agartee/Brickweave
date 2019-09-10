@@ -12,7 +12,7 @@ namespace Brickweave.Samples.Domain.Persons.Extensions
                 person.Id,
                 person.Name,
                 person.BirthDate,
-                person.Phones.Select(p => new PhoneInfo(p.Id, p.Number)).ToArray(),
+                person.Phones.Select(p => new PhoneInfo(p.Id, p.PhoneType, p.Number)).ToArray(),
                 person.Attributes);
         }
     }

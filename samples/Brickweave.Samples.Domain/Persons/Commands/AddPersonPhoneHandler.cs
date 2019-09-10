@@ -7,21 +7,20 @@ using Brickweave.Samples.Domain.Phones.Models;
 
 namespace Brickweave.Samples.Domain.Persons.Commands
 {
-    public class AddPersonPhonesHandler : ICommandHandler<AddPersonPhones, PersonInfo>
+    public class AddPersonPhoneHandler : ICommandHandler<AddPersonPhone, PersonInfo>
     {
         private readonly IPersonRepository _personRepository;
 
-        public AddPersonPhonesHandler(IPersonRepository personRepository)
+        public AddPersonPhoneHandler(IPersonRepository personRepository)
         {
             _personRepository = personRepository;
         }
 
-        public async Task<PersonInfo> HandleAsync(AddPersonPhones command)
+        public async Task<PersonInfo> HandleAsync(AddPersonPhone command)
         {
             var person = await _personRepository.GetPersonAsync(command.Id);
 
-            foreach(var number in command.PhoneNumbers)
-                person.AddPhone(PhoneId.NewId(), number);
+            person.AddPhone(PhoneId.NewId(), command.PhoneType, command.Number);
 
             await _personRepository.SavePersonAsync(person);
 

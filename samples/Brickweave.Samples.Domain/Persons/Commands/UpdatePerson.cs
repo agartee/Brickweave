@@ -9,10 +9,10 @@ namespace Brickweave.Samples.Domain.Persons.Commands
         /// <summary>
         /// Update an existing person.
         /// </summary>
-        /// <param name="personId">Person's ID</param>
-        /// <param name="firstName">Person's first name</param>
-        /// <param name="lastName">Person's last name</param>
-        /// <param name="birthDate">Person's birth date</param>
+        /// <param name="personId">Existing person's ID</param>
+        /// <param name="firstName">New first name. Unspecified values will result in no change.</param>
+        /// <param name="lastName">New last name. Unspecified values will result in no change.</param>
+        /// <param name="birthDate">New birth date. Unspecified values will result in no change.</param>
         public UpdatePerson(PersonId personId, string firstName, string lastName, DateTime? birthDate)
         {
             PersonId = personId;

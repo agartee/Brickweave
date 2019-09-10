@@ -40,9 +40,10 @@ namespace Brickweave.Samples.Domain.Tests.Persons.Models
             person.ClearUncommittedEvents();
 
             var id = PhoneId.NewId();
+            var type = PhoneType.Home;
             var number = "(555) 555-1111";
 
-            person.AddPhone(id, number);
+            person.AddPhone(id, type, number);
 
             person.GetUncommittedEvents().Should().HaveCount(1);
 
@@ -57,7 +58,7 @@ namespace Brickweave.Samples.Domain.Tests.Persons.Models
         public void RemovePhone_RemovesPhoneFromCollectionAndAddsEvents()
         {
             var person = new Person(PersonId.NewId(), new Name("Adam", "Gartee"));
-            person.AddPhone(PhoneId.NewId(), "(555) 555-1111");
+            person.AddPhone(PhoneId.NewId(), PhoneType.Home, "(555) 555-1111");
             person.ClearUncommittedEvents();
 
             var phone = person.Phones.First();

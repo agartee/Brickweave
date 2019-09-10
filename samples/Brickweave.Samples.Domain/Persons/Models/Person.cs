@@ -76,9 +76,9 @@ namespace Brickweave.Samples.Domain.Persons.Models
             RaiseEvent(new PersonNameChanged(name.FirstName, name.LastName));
         }
 
-        public void AddPhone(PhoneId id, string number)
+        public void AddPhone(PhoneId id, PhoneType phoneType, string number)
         {
-            RaiseEvent(new PersonPhoneAdded(id, number));
+            RaiseEvent(new PersonPhoneAdded(id, phoneType, number));
         }
 
         public void RemovePhone(PhoneId id)
@@ -90,6 +90,9 @@ namespace Brickweave.Samples.Domain.Persons.Models
         {
             Guard.AgainstNullArgument(nameof(name), name);
             Guard.AgainstNullArgument(nameof(value), value);
+
+            if (_attributes.ContainsKey(name) && _attributes[name].Contains(value))
+                throw new InvalidOperationException("duplicate attributes are not allowed.");
 
             RaiseEvent(new PersonAttributeSet(name, value));
         }
@@ -141,7 +144,7 @@ namespace Brickweave.Samples.Domain.Persons.Models
 
         private void Apply(PersonPhoneAdded @event)
         {
-            _phones.Add(new Phone(@event.PhoneId, @event.Number, EventQueue, EventRouter));
+            _phones.Add(new Phone(@event.PhoneId, @event.PhoneType, @event.Number, EventQueue, EventRouter));
         }
 
         private void Apply(PersonPhoneRemoved @event)

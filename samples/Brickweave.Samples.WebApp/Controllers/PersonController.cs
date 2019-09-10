@@ -35,7 +35,7 @@ namespace Brickweave.Samples.WebApp.Controllers
         }
 
         [HttpPost, Route("/person/addPhones")]
-        public async Task<IActionResult> AddPhone([FromBody] AddPersonPhones command)
+        public async Task<IActionResult> AddPhone([FromBody] AddPersonPhone command)
         {
             var result = await _dispatcher.DispatchCommandAsync(command);
 

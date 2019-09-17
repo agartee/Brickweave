@@ -3,25 +3,23 @@ using Brickweave.Cqrs;
 using Brickweave.Samples.Domain.Persons.Extensions;
 using Brickweave.Samples.Domain.Persons.Models;
 using Brickweave.Samples.Domain.Persons.Services;
-using Brickweave.Samples.Domain.Phones.Models;
 
 namespace Brickweave.Samples.Domain.Persons.Commands
 {
-    public class AddPersonPhonesHandler : ICommandHandler<AddPersonPhones, PersonInfo>
+    public class RemoveSinglePersonAttributeHandler : ICommandHandler<RemoveSinglePersonAttribute, PersonInfo>
     {
         private readonly IPersonRepository _personRepository;
 
-        public AddPersonPhonesHandler(IPersonRepository personRepository)
+        public RemoveSinglePersonAttributeHandler(IPersonRepository personRepository)
         {
             _personRepository = personRepository;
         }
 
-        public async Task<PersonInfo> HandleAsync(AddPersonPhones command)
+        public async Task<PersonInfo> HandleAsync(RemoveSinglePersonAttribute command)
         {
-            var person = await _personRepository.GetPersonAsync(command.Id);
+            var person = await _personRepository.GetPersonAsync(command.PersonId);
 
-            foreach(var number in command.PhoneNumbers)
-                person.AddPhone(PhoneId.NewId(), number);
+            person.RemoveAttribute(command.Key);
 
             await _personRepository.SavePersonAsync(person);
 

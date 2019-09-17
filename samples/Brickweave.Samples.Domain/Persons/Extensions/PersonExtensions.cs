@@ -11,7 +11,8 @@ namespace Brickweave.Samples.Domain.Persons.Extensions
             return new PersonInfo(
                 person.Id,
                 person.Name,
-                person.Phones.Select(p => new PhoneInfo(p.Id, p.Number)).ToArray(),
+                person.BirthDate,
+                person.Phones.Select(p => new PhoneInfo(p.Id, p.PhoneType, p.Number)).ToArray(),
                 person.Attributes);
         }
     }

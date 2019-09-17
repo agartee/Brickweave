@@ -10,6 +10,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\src\Brickweave.Cqrs\Brickweave.Cqrs.csproj" />
     <ProjectReference Include="..\..\src\Brickweave.Domain\Brickweave.Domain.csproj" />
     <ProjectReference Include="..\..\src\Brickweave.EventStore.SqlServer\Brickweave.EventStore.SqlServer.csproj" />

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using Brickweave.EventStore;
@@ -19,15 +20,18 @@ namespace Brickweave.Samples.Domain.Persons.Models
         {
             Register<PersonCreated>(Apply);
             Register<PersonNameChanged>(Apply);
+            Register<PersonFirstNameUpdated>(Apply);
+            Register<PersonLastNameUpdated>(Apply);
+            Register<PersonBirthDateUpdated>(Apply);
             Register<PersonPhoneAdded>(Apply);
             Register<PersonPhoneRemoved>(Apply);
-            Register<PersonAttributeAdded>(Apply);
+            Register<PersonAttributeSet>(Apply);
             Register<PersonAttributeRemoved>(Apply);
         }
 
-        public Person(PersonId id, Name name) : this()
+        public Person(PersonId id, Name name, DateTime? birthDate = null) : this()
         {
-            RaiseEvent(new PersonCreated(id, name.FirstName, name.LastName));
+            RaiseEvent(new PersonCreated(id, name.FirstName, name.LastName, birthDate));
         }
 
         public Person(IEnumerable<IEvent> events) : this()
@@ -37,19 +41,44 @@ namespace Brickweave.Samples.Domain.Persons.Models
 
         public PersonId Id { get; private set; }
         public Name Name { get; private set; }
+        public DateTime? BirthDate { get; private set; }
 
         public IEnumerable<Phone> Phones => _phones.ToArray();
         public IReadOnlyDictionary<string, IEnumerable<object>> Attributes =>
             _attributes.ToImmutableDictionary(kvp => kvp.Key, kvp => (IEnumerable<object>)kvp.Value);
+
+        public static Person CreateFromEvents(IEnumerable<IEvent> events)
+        {
+            var person = new Person();
+
+            events.ToList().ForEach(e => person.RaiseEvent(e));
+
+            return person;
+        }
+
+        public void SetFirstName(string firstName)
+        {
+            RaiseEvent(new PersonFirstNameUpdated(firstName));
+        }
+
+        public void SetLastName(string lastName)
+        {
+            RaiseEvent(new PersonLastNameUpdated(lastName));
+        }
+
+        public void SetBirthDate(DateTime birthDate)
+        {
+            RaiseEvent(new PersonBirthDateUpdated(birthDate));
+        }
 
         public void ChangeName(Name name)
         {
             RaiseEvent(new PersonNameChanged(name.FirstName, name.LastName));
         }
 
-        public void AddPhone(PhoneId id, string number)
+        public void AddPhone(PhoneId id, PhoneType phoneType, string number)
         {
-            RaiseEvent(new PersonPhoneAdded(id, number));
+            RaiseEvent(new PersonPhoneAdded(id, phoneType, number));
         }
 
         public void RemovePhone(PhoneId id)
@@ -62,12 +91,18 @@ namespace Brickweave.Samples.Domain.Persons.Models
             Guard.AgainstNullArgument(nameof(name), name);
             Guard.AgainstNullArgument(nameof(value), value);
 
-            RaiseEvent(new PersonAttributeAdded(name, value));
+            if (_attributes.ContainsKey(name) && _attributes[name].Contains(value))
+                throw new InvalidOperationException("duplicate attributes are not allowed.");
+
+            RaiseEvent(new PersonAttributeSet(name, value));
         }
 
         public void RemoveAttribute(string name)
         {
             Guard.AgainstNullArgument(nameof(name), name);
+
+            if (!_attributes.ContainsKey(name))
+                return;
 
             RaiseEvent(new PersonAttributeRemoved(name, PersonAttributeRemoved.ALL_VALUES));
         }
@@ -84,6 +119,7 @@ namespace Brickweave.Samples.Domain.Persons.Models
         {
             Id = @event.PersonId;
             Name = new Name(@event.FirstName, @event.LastName);
+            BirthDate = @event.BirthDate;
         }
 
         private void Apply(PersonNameChanged @event)
@@ -91,9 +127,24 @@ namespace Brickweave.Samples.Domain.Persons.Models
             Name = new Name(@event.FirstName, @event.LastName);
         }
 
+        private void Apply(PersonFirstNameUpdated @event)
+        {
+            Name = new Name(@event.FirstName, Name.LastName);
+        }
+
+        private void Apply(PersonLastNameUpdated @event)
+        {
+            Name = new Name(Name.FirstName, @event.LastName);
+        }
+
+        private void Apply(PersonBirthDateUpdated @event)
+        {
+            BirthDate = @event.BirthDate;
+        }
+
         private void Apply(PersonPhoneAdded @event)
         {
-            _phones.Add(new Phone(@event.PhoneId, @event.Number, EventQueue, EventRouter));
+            _phones.Add(new Phone(@event.PhoneId, @event.PhoneType, @event.Number, EventQueue, EventRouter));
         }
 
         private void Apply(PersonPhoneRemoved @event)
@@ -101,7 +152,7 @@ namespace Brickweave.Samples.Domain.Persons.Models
             _phones.RemoveAll(p => p.Id.Equals(@event.PhoneId));
         }
 
-        private void Apply(PersonAttributeAdded @event)
+        private void Apply(PersonAttributeSet @event)
         {
             if (_attributes.ContainsKey(@event.Name))
                 _attributes[@event.Name].Add(@event.Value);
@@ -111,8 +162,9 @@ namespace Brickweave.Samples.Domain.Persons.Models
 
         private void Apply(PersonAttributeRemoved @event)
         {
-            if (!_attributes.ContainsKey(@event.Name))
-                return;
+            // Note that we should not check of the attribute exists in this handler
+            // method. That check belongs in the public method before determining 
+            // whether to raise the event in the first place.
 
             if (@event.Value.Equals(PersonAttributeRemoved.ALL_VALUES))
                 _attributes.Remove(@event.Name);

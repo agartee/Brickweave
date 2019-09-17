@@ -14,11 +14,12 @@ namespace Brickweave.Samples.Domain.Tests.Phones.Models
         public void UpdatePhone_UpdatesPhoneInCollectionAndAddsEvents()
         {
             var id = PhoneId.NewId();
+            var type = PhoneType.Home;
             var number = "(555) 555-1111";
             var eventQueue = new Queue<IEvent>();
             var eventRouter = new RegistrationEventRouter();
 
-            var phone = new Phone(id, number, eventQueue, eventRouter);
+            var phone = new Phone(id, type, number, eventQueue, eventRouter);
 
             var newNumber = "(555) 555-2222";
             phone.UpdateNumber(newNumber);
@@ -26,7 +27,7 @@ namespace Brickweave.Samples.Domain.Tests.Phones.Models
             eventQueue.Should().HaveCount(1);
 
             var @event = eventQueue
-                .First().As<PhoneUpdated>();
+                .First().As<PhoneNumberUpdated>();
 
             @event.PhoneId.Should().Be(phone.Id.Value);
             @event.Number.Should().Be(newNumber);

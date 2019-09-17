@@ -16,7 +16,7 @@ namespace Brickweave.Samples.Domain.Persons.Queries
 
         public async Task<PersonInfo> HandleAsync(GetPerson query)
         {
-            return await _personInfoRepository.GetPersonInfoAsync(query.Id);
+            return await _personInfoRepository.GetPersonInfoAsync(query.PersonId, query.PointInTime);
         }
     }
 }

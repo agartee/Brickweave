@@ -11,7 +11,6 @@ using Brickweave.Samples.Domain.Persons.Queries;
 using Brickweave.Samples.Domain.Persons.Services;
 using Brickweave.Samples.SqlServer;
 using Brickweave.Samples.SqlServer.Repositories;
-using Brickweave.Samples.SqlServer.Serialization;
 using Brickweave.Samples.WebApp.Formatters;
 using Brickweave.Samples.WebApp.Middleware;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -22,6 +21,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
 
 namespace Brickweave.Samples.WebApp
@@ -53,6 +53,7 @@ namespace Brickweave.Samples.WebApp
                 .AddJsonFormatters(settings =>
                 {
                     settings.TypeNameHandling = TypeNameHandling.None;
+
                     settings.ContractResolver = new DefaultContractResolver
                     {
                         NamingStrategy = new CamelCaseNamingStrategy
@@ -60,8 +61,11 @@ namespace Brickweave.Samples.WebApp
                             ProcessDictionaryKeys = true
                         }
                     };
+
                     settings.Formatting = Formatting.Indented;
+
                     settings.Converters.Add(new IdConverter());
+                    settings.Converters.Add(new StringEnumConverter());
                 });
         }
 
@@ -92,10 +96,14 @@ namespace Brickweave.Samples.WebApp
             services.AddCli(domainAssemblies)
                 .AddDateParsingCulture(new CultureInfo("en-US"))
                 .AddCategoryHelpFile("cli-categories.json")
-                .OverrideQueryName<ListPersons>("list", "person")
-                .OverrideCommandName<AddPersonPhones>("add", "person", "phones")
+                .OverrideCommandName<AddPersonPhone>("add", "person", "phones")
+                .OverrideCommandName<RemovePersonPhone>("remove", "person", "phones")
+                .OverrideCommandName<UpdatePersonPhone>("update", "person", "phones")
                 .OverrideCommandName<AddSinglePersonAttribute>("add-single", "person", "attributes")
-                .OverrideCommandName<AddMultiplePersonAttributes>("add-multiple", "person", "attributes");
+                .OverrideCommandName<AddMultiplePersonAttributes>("add-multiple", "person", "attributes")
+                .OverrideCommandName<RemoveSinglePersonAttribute>("remove", "person", "attributes")
+                .OverrideQueryName<ListPeople>("list", "person")
+                .OverrideQueryName<ExportPeople>("export-all", "person");
         }
 
         private void ConfigureCustomServices(IServiceCollection services)
@@ -106,7 +114,8 @@ namespace Brickweave.Samples.WebApp
 
             services
                 .AddScoped<IPersonRepository, SqlServerPersonRepository>()
-                .AddScoped<IPersonInfoRepository, SqlServerPersonRepository>();
+                .AddScoped<IPersonInfoRepository, SqlServerPersonRepository>()
+                .AddScoped<IPersonEventStreamRepository, SqlServerPersonRepository>();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)

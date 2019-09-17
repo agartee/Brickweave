@@ -12,15 +12,13 @@ namespace Brickweave.Samples.Domain.Persons.Commands
         /// <param name="firstName">Person's first name</param>
         /// <param name="lastName">Person's last name</param>
         /// <param name="birthDate">Person's birth date</param>
-        public CreatePerson(string firstName, string lastName, DateTime birthDate)
+        public CreatePerson(string firstName, string lastName, DateTime? birthDate)
         {
-            Id = PersonId.NewId();
             Name = new Name(firstName, lastName);
             BirthDate = birthDate;
         }
 
-        public PersonId Id { get; }
         public Name Name { get; }
-        public DateTime BirthDate { get; }
+        public DateTime? BirthDate { get; }
     }
 }

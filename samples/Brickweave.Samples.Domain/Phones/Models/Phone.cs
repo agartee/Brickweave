@@ -6,24 +6,41 @@ namespace Brickweave.Samples.Domain.Phones.Models
 {
     public class Phone : EventSourcedEntity
     {
-        public Phone(PhoneId id, string number, Queue<IEvent> eventQueue, IEventRouter router)
+        Phone(PhoneId id, Queue<IEvent> eventQueue, IEventRouter router)
             : base(eventQueue, router)
         {
-            Id = id;
-            Number = number;
+            Register<PhoneTypeUpdated>(Apply, id);
+            Register<PhoneNumberUpdated>(Apply, id);
+        }
 
-            Register<PhoneUpdated>(Apply, id);
+        public Phone(PhoneId id, PhoneType phoneType, string number, Queue<IEvent> eventQueue, IEventRouter router)
+            : this(id, eventQueue, router)
+        {
+            Id = id;
+            PhoneType = phoneType;
+            Number = number;
         }
         
         public PhoneId Id { get; private set; }
+        public PhoneType PhoneType { get; private set; }
         public string Number { get; private set; }
+
+        public void UpdateType(PhoneType phoneType)
+        {
+            RaiseEvent(new PhoneTypeUpdated(Id.Value, phoneType));
+        }
 
         public void UpdateNumber(string number)
         {
-            RaiseEvent(new PhoneUpdated(Id.Value, number));
+            RaiseEvent(new PhoneNumberUpdated(Id.Value, number));
         }
 
-        private void Apply(PhoneUpdated @event)
+        private void Apply(PhoneTypeUpdated @event)
+        {
+            PhoneType = @event.PhoneType;
+        }
+
+        private void Apply(PhoneNumberUpdated @event)
         {
             Number = @event.Number;
         }

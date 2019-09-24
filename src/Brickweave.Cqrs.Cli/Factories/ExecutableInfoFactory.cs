@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Brickweave.Cqrs.Cli.Extensions;
 using Brickweave.Cqrs.Cli.Models;
@@ -8,7 +9,7 @@ namespace Brickweave.Cqrs.Cli.Factories
     public class ExecutableInfoFactory : IExecutableInfoFactory
     {
         private readonly IEnumerable<IExecutableRegistration> _executableRegistrations;
-
+        
         public ExecutableInfoFactory(params IExecutableRegistration[] executableRegistrations)
         {
             _executableRegistrations = executableRegistrations;

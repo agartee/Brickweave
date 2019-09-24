@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Net.Http.Headers;
 
 namespace Brickweave.Samples.WebApp.Middleware
 {
@@ -25,22 +26,35 @@ namespace Brickweave.Samples.WebApp.Middleware
             }
             catch (InvalidOperationException ex)
             {
+                httpContext.Response.OnStarting(ClearCacheHeaders, httpContext.Response);
                 httpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
                 httpContext.Response.ContentType = MediaTypeNames.Text.Plain;
-
                 await httpContext.Response.WriteAsync(ex.Message);
             }
             catch (TargetInvocationException ex)
             {
+                httpContext.Response.OnStarting(ClearCacheHeaders, httpContext.Response);
                 httpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
                 httpContext.Response.ContentType = MediaTypeNames.Text.Plain;
-
                 await httpContext.Response.WriteAsync(ex.InnerException?.Message);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                httpContext.Response.OnStarting(ClearCacheHeaders, httpContext.Response);
+                httpContext.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                httpContext.Response.ContentType = MediaTypeNames.Text.Plain;
+                await httpContext.Response.WriteAsync(ex.Message);
             }
+        }
+
+        private Task ClearCacheHeaders(object state)
+        {
+            var response = (HttpResponse)state;
+            response.Headers[HeaderNames.CacheControl] = "no-cache";
+            response.Headers[HeaderNames.Pragma] = "no-cache";
+            response.Headers[HeaderNames.Expires] = "-1";
+            response.Headers.Remove(HeaderNames.ETag);
+            return Task.CompletedTask;
         }
     }
 

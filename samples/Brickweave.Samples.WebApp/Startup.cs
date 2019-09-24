@@ -120,10 +120,11 @@ namespace Brickweave.Samples.WebApp
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
-            app.UseAuthentication();
-            app.UseMvc();
             app.UseExceptionHandlingMiddleware();
 
+            app.UseAuthentication();
+            app.UseMvc();
+            
             app.ApplicationServices.GetService<SamplesDbContext>().Database.Migrate();
         }
 

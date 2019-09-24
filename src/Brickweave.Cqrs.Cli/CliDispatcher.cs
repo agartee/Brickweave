@@ -31,8 +31,7 @@ namespace Brickweave.Cqrs.Cli
                 return _helpInfoFactory.Create(args);
 
             var executableInfo = _executableInfoFactory.Create(args);
-            var executable = _executableFactory.Create(
-                executableInfo);
+            var executable = _executableFactory.Create(executableInfo);
 
             var result = executable is ICommand
                 ? await _commandDispatcher.ExecuteAsync((ICommand)executable)

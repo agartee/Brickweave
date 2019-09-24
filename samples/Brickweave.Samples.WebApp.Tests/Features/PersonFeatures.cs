@@ -116,7 +116,7 @@ namespace Brickweave.Samples.WebApp.Tests.Features
         }
 
         [Scenario]
-        public void AddPersonPhone(Guid id, string firstName, string lastName, string phoneNumber,
+        public void AddPersonPhone(Guid id, string firstName, string lastName, string phoneType, string phoneNumber,
             HttpClient client, HttpResponseMessage response)
         {
             "Given the client is authenticated"
@@ -147,12 +147,14 @@ namespace Brickweave.Samples.WebApp.Tests.Features
                 .x(async () =>
                 {
                     phoneNumber = "555-1212";
+                    phoneType = "home";
 
                     response = await client.PostAsync(
-                        $"/person/addPhones", new
+                        $"/person/addPhone", new
                         {
                             personId = id,
-                            phoneNumbers = new string[] { phoneNumber }
+                            type = phoneType,
+                            number = phoneNumber
                         }.ToStringContent());
                 });
 

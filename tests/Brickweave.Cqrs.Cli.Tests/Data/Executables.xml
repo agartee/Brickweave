@@ -32,5 +32,13 @@
           </summary>
         </member>
 
+        <member name="T:Brickweave.Cqrs.Cli.Tests.Models.DeleteBaz">
+        </member>
+        <member name="M:Brickweave.Cqrs.Cli.Tests.Models.DeleteBaz.#ctor">
+          <summary>
+            Deletes Foo
+          </summary>
+        </member>
+
     </members>
 </doc>

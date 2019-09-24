@@ -140,5 +140,15 @@ namespace Brickweave.Samples.Domain.Tests.Persons.Models
             @event.Name.Should().Be(key);
             @event.Value.Should().Be(value);
         }
+
+        [Fact]
+        public void Delete_FlagsPersonAsNotActive()
+        {
+            var person = new Person(PersonId.NewId(), new Name("Adam", "Gartee"));
+
+            person.Delete();
+
+            person.IsActive.Should().BeFalse();
+        }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using Brickweave.Cqrs.Cli.Factories;
+using Brickweave.Cqrs.Cli.Models;
 using Brickweave.Cqrs.Cli.Tests.Models;
 using FluentAssertions;
 using Xunit;

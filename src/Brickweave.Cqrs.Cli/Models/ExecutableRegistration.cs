@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 
-namespace Brickweave.Cqrs.Cli.Factories
+namespace Brickweave.Cqrs.Cli.Models
 {
     public class ExecutableRegistration<T> : IExecutableRegistration where T : class, IExecutable 
     {
@@ -11,16 +11,9 @@ namespace Brickweave.Cqrs.Cli.Factories
             ActionName = actionName;
             SubjectName = string.Join(" ", subjectNameParts.Select(p => p.Trim().ToLower()));
         }
-
+        
         public Type Type { get; }
         public string ActionName { get; }
         public string SubjectName { get; }
-    }
-
-    public interface IExecutableRegistration
-    {
-        Type Type { get; }
-        string ActionName { get; }
-        string SubjectName { get; }
     }
 }

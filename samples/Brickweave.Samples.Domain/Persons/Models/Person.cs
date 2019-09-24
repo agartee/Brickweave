@@ -27,6 +27,7 @@ namespace Brickweave.Samples.Domain.Persons.Models
             Register<PersonPhoneRemoved>(Apply);
             Register<PersonAttributeSet>(Apply);
             Register<PersonAttributeRemoved>(Apply);
+            Register<PersonDeleted>(Apply);
         }
 
         public Person(PersonId id, Name name, DateTime? birthDate = null) : this()
@@ -46,6 +47,8 @@ namespace Brickweave.Samples.Domain.Persons.Models
         public IEnumerable<Phone> Phones => _phones.ToArray();
         public IReadOnlyDictionary<string, IEnumerable<object>> Attributes =>
             _attributes.ToImmutableDictionary(kvp => kvp.Key, kvp => (IEnumerable<object>)kvp.Value);
+
+        public bool IsActive { get; private set; }
 
         public static Person CreateFromEvents(IEnumerable<IEvent> events)
         {
@@ -115,11 +118,17 @@ namespace Brickweave.Samples.Domain.Persons.Models
             RaiseEvent(new PersonAttributeRemoved(attributeName, value));
         }
 
+        public void Delete()
+        {
+            RaiseEvent(new PersonDeleted());
+        }
+
         private void Apply(PersonCreated @event)
         {
             Id = @event.PersonId;
             Name = new Name(@event.FirstName, @event.LastName);
             BirthDate = @event.BirthDate;
+            IsActive = true;
         }
 
         private void Apply(PersonNameChanged @event)
@@ -175,6 +184,11 @@ namespace Brickweave.Samples.Domain.Persons.Models
                 if(!_attributes[@event.Name].Any())
                     _attributes.Remove(@event.Name);
             }
+        }
+
+        private void Apply(PersonDeleted @event)
+        {
+            IsActive = false;
         }
     }
 }

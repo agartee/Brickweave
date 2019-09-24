@@ -84,6 +84,7 @@ namespace Brickweave.Cqrs.Cli.Tests.Readers
                 {
                     new ExecutableRegistration<ListFoos>("list", "foo")
                 },
+                Enumerable.Empty<Type>(),
                 "Data\\Executables.xml");
 
             var results = reader.GetHelpInfo(new HelpAdjacencyCriteria("foo", "list"))
@@ -133,6 +134,23 @@ namespace Brickweave.Cqrs.Cli.Tests.Readers
 
             Assert.Throws<ExecutableHelpFileNotFoundExeption>(() => 
             reader.GetHelpInfo(HelpAdjacencyCriteria.Empty()));
+        }
+
+        [Fact]
+        public void GetHelpInfo_WhenContainsExcludedCommand_ReturnsHelpWithoutExcludedCommand()
+        {
+            var reader = new XmlDocumentationFileHelpReader(
+                Enumerable.Empty<IExecutableRegistration>(),
+                new List<Type>
+                {
+                    typeof(DeleteBaz)
+                },
+                "Data\\Executables.xml");
+
+            var results = reader.GetHelpInfo(new HelpAdjacencyCriteria("baz"))
+                .ToArray();
+
+            results.Should().HaveCount(0);
         }
     }
 }

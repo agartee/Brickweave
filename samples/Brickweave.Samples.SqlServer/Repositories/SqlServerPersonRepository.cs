@@ -27,7 +27,11 @@ namespace Brickweave.Samples.SqlServer.Repositories
         public async Task SavePersonAsync(Person person)
         {
             AddUncommittedEvents(_dbContext.Events, person, person.Id.Value);
-            await AddSnapshotAsync(person);
+
+            if (person.IsActive)
+                await AddSnapshotAsync(person);
+            else
+                await RemoveSnapshotAsync(person);
 
             await _dbContext.SaveChangesAsync();
 
@@ -67,6 +71,15 @@ namespace Brickweave.Samples.SqlServer.Repositories
                 _dbContext.Persons.Update(person.ToSnapshot());
             else
                 _dbContext.Persons.Add(person.ToSnapshot());
+        }
+
+        private async Task RemoveSnapshotAsync(Person person)
+        {
+            var snapshot = await _dbContext.Persons
+                .FirstOrDefaultAsync(p => p.Id == person.Id.Value);
+
+            if (snapshot != null)
+                _dbContext.Remove(snapshot);
         }
 
         private async Task<bool> PersonExistsAsync(Person person)

@@ -63,7 +63,7 @@ namespace Brickweave.Samples.WebApp.Tests.Features
         }
 
         [Scenario]
-        public void AddPhoneNumbers(string personId, string phoneNumber1, string phoneNumber2,
+        public void AddPhoneNumber(string personId, string phoneType, string phoneNumber,
             HttpClient client, HttpResponseMessage response)
         {
             "Given the client is authenticated"
@@ -92,11 +92,11 @@ namespace Brickweave.Samples.WebApp.Tests.Features
             "when phone numbers are added to the person"
                 .x(async () =>
                 {
-                    phoneNumber1 = "(555) 555-1111";
-                    phoneNumber2 = "(555) 555-2222";
+                    phoneNumber = "(555) 555-1111";
+                    phoneType = "home";
 
                     response = await client.PostAsync(
-                        "/cli/run", new StringContent($"person phones add --personid {personId} --phoneNumbers \"{phoneNumber1}\" \"{phoneNumber2}\""));
+                        "/cli/run", new StringContent($"person phones add --personid {personId} --type {phoneType} --number \"{phoneNumber}\""));
                 });
 
             "Then the response status code is 200 (OK)"
@@ -109,8 +109,7 @@ namespace Brickweave.Samples.WebApp.Tests.Features
                     var result = json.ToJObject();
 
                     result.SelectToken("id").Value<string>().Should().NotBeNullOrEmpty();
-                    result.SelectToken($"phones.[0].number").Value<string>().Should().Be(phoneNumber1);
-                    result.SelectToken($"phones.[1].number").Value<string>().Should().Be(phoneNumber2);
+                    result.SelectToken($"phones.[0].number").Value<string>().Should().Be(phoneNumber);
                 });
         }
 

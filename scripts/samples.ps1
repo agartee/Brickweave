@@ -223,7 +223,7 @@ function DisplayHttpExceptionMessage {
     $reader.DiscardBufferedData()
     $responseBody = $reader.ReadToEnd();
     
-    $host.UI.WriteErrorLine("Error executing command: $body")
+    $host.UI.WriteErrorLine("Error executing command: $args")
     $host.UI.WriteErrorLine($responseBody)
 }
 
@@ -274,7 +274,7 @@ catch [System.Net.WebException] {
     }
 }
 catch {
-    DisplayHttpExceptionMessage($_.Exception, $args)
+    DisplayGenericExceptionMessage($_.Exception)
 }
 
 return $result.Content

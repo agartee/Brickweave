@@ -1,10 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using Brickweave.Cqrs.Cli.Factories;
 using Brickweave.Cqrs.Cli.Factories.ParameterValues;
+using Brickweave.Cqrs.Cli.Models;
 using Brickweave.Cqrs.Cli.Readers;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -14,6 +16,7 @@ namespace Brickweave.Cqrs.Cli.DependencyInjection
     {
         private readonly IServiceCollection _services;
         private readonly IList<IExecutableRegistration> _executableRegistrations = new List<IExecutableRegistration>();
+        private readonly IList<Type> _excludedExecutableTypes = new List<Type>();
 
         private CultureInfo _culture;
 
@@ -61,9 +64,9 @@ namespace Brickweave.Cqrs.Cli.DependencyInjection
                 .AddScoped<IParameterValueFactory>(s => new ListParameterValueFactory(s.GetServices<ISingleParameterValueFactory>()))
                 .AddScoped<IExecutableFactory>(provider => new ExecutableFactory(
                     provider.GetServices<IParameterValueFactory>(),
-                    executables))
+                    executables.Where(t => !_excludedExecutableTypes.Contains(t))))
                 .AddScoped<IExecutableHelpReader>(s => new XmlDocumentationFileHelpReader(
-                    _executableRegistrations,
+                    _executableRegistrations, _excludedExecutableTypes,
                     domainAssemblies.Select(a => Path.Combine(Path.GetDirectoryName(a.Location), $"{a.GetName().Name}.xml")).ToArray()))
                 .AddScoped<IHelpInfoFactory, HelpInfoFactory>();
 
@@ -85,6 +88,24 @@ namespace Brickweave.Cqrs.Cli.DependencyInjection
         public CliOptionsBuilder OverrideExecutableName<T>(string actionName, params string[] subjectNameParts) where T : class, IExecutable
         {
             _executableRegistrations.Add(new ExecutableRegistration<T>(actionName, subjectNameParts));
+            return this;
+        }
+
+        public CliOptionsBuilder ExcludeCommand<T>() where T : class, ICommand
+        {
+            _excludedExecutableTypes.Add(typeof(T));
+            return this;
+        }
+
+        public CliOptionsBuilder ExcludeQuery<T>() where T : class, IQuery
+        {
+            _excludedExecutableTypes.Add(typeof(T));
+            return this;
+        }
+        
+        public CliOptionsBuilder ExcludeExecutable<T>() where T : class, IExecutable
+        {
+            _excludedExecutableTypes.Add(typeof(T));
             return this;
         }
 

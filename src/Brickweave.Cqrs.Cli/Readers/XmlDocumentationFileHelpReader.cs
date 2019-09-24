@@ -6,7 +6,6 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
 using Brickweave.Cqrs.Cli.Exceptions;
-using Brickweave.Cqrs.Cli.Factories;
 using Brickweave.Cqrs.Cli.Models;
 using LiteGuard;
 
@@ -16,15 +15,18 @@ namespace Brickweave.Cqrs.Cli.Readers
     {
         private readonly string[] _filePaths;
         private readonly IEnumerable<IExecutableRegistration> _executableRegistrations;
-
+        private readonly IEnumerable<Type> _excludedExecutableTypes = new List<Type>();
+        
         public XmlDocumentationFileHelpReader(params string[] filePaths) 
-            : this(Enumerable.Empty<IExecutableRegistration>(), filePaths)
+            : this(Enumerable.Empty<IExecutableRegistration>(), Enumerable.Empty<Type>(), filePaths)
         {
         }
 
-        public XmlDocumentationFileHelpReader(IEnumerable<IExecutableRegistration> executableRegistrations, params string[] filePaths)
+        public XmlDocumentationFileHelpReader(IEnumerable<IExecutableRegistration> executableRegistrations,
+            IEnumerable<Type> excludedExecutableTypes, params string[] filePaths)
         {
             _executableRegistrations = executableRegistrations;
+            _excludedExecutableTypes = excludedExecutableTypes;
             _filePaths = filePaths;
         }
         
@@ -48,9 +50,10 @@ namespace Brickweave.Cqrs.Cli.Readers
 
                 var results = document.Root.Element("members").Elements("member")
                     .Where(IsConstructorWithDocumentation)
+                    .Where(IsNotInExcludedTypes)
                     .Select(CreateHelpInfo)
                     .Where(h => adjacencyCriteria.Subject == h.Subject)
-                    .Where(h => string.IsNullOrWhiteSpace(adjacencyCriteria.Action) 
+                    .Where(h => string.IsNullOrWhiteSpace(adjacencyCriteria.Action)
                         || adjacencyCriteria.Action == h.Name)
                     .ToArray();
 
@@ -62,6 +65,15 @@ namespace Brickweave.Cqrs.Cli.Readers
         private bool IsConstructorWithDocumentation(XElement element)
         {
             return element.Attribute("name").Value.Contains("#ctor");
+        }
+
+        private bool IsNotInExcludedTypes(XElement element)
+        {
+            var typeName = GetTypeFullName(element);
+
+            return !_excludedExecutableTypes
+                .Select(t => t.FullName)
+                .Any(n => typeName == n);
         }
 
         private HelpInfo CreateHelpInfo(XElement constructorElement)
@@ -103,6 +115,15 @@ namespace Brickweave.Cqrs.Cli.Readers
             return registered != null
                 ? registered.ActionName
                 : SplitTypeName(typeName).First();
+        }
+
+        private string GetTypeFullName(XElement constructorElement)
+        {
+            var name = constructorElement.Attribute("name").Value;
+            var start = name.IndexOf("M:") + "M:".Length;
+            var end = name.Substring(start).IndexOf(".#ctor");
+
+            return name.Substring(start, end);
         }
 
         private string GetTypeName(XElement constructorElement)

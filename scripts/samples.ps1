@@ -217,14 +217,19 @@ function DisplayHttpExceptionMessage {
         [System.Net.WebException]$exception
     )
 
-    $result = $exception.Response.GetResponseStream()
-    $reader = New-Object System.IO.StreamReader($result)
-    $reader.BaseStream.Position = 0
-    $reader.DiscardBufferedData()
-    $responseBody = $reader.ReadToEnd();
-    
     $host.UI.WriteErrorLine("Error executing command: $args")
-    $host.UI.WriteErrorLine($responseBody)
+
+    if($null -eq $exception.Response) {
+        $host.UI.WriteErrorLine("Unable to contact server.");
+    }
+    else {
+        $result = $exception.Response.GetResponseStream()
+        $reader = New-Object System.IO.StreamReader($result)
+        $reader.BaseStream.Position = 0
+        $reader.DiscardBufferedData()
+        $responseBody = $reader.ReadToEnd();
+        $host.UI.WriteErrorLine($responseBody)
+    }
 }
 
 # *****************************************************************************
@@ -233,14 +238,11 @@ function DisplayHttpExceptionMessage {
 function DisplayGenericExceptionMessage {
     param(
         [Parameter(Mandatory)]
-        [System.Net.Exception]$exception,
-        [Parameter(Mandatory,ValueFromPipeline)]
-        [object[]]$args
+        [System.Net.Exception]$exception
     )
-    Process {
-        $host.UI.WriteErrorLine("Error executing command: $args")
-        $host.UI.WriteErrorLine($exception)
-    }
+    
+    $host.UI.WriteErrorLine("Error executing command: $args")
+    $host.UI.WriteErrorLine($exception)
 }
 
 # *****************************************************************************

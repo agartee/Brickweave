@@ -8,7 +8,6 @@ using Brickweave.Messaging.ServiceBus.Models;
 using Brickweave.Messaging.ServiceBus.Tests.Fixtures;
 using Brickweave.Messaging.ServiceBus.Tests.Models;
 using FluentAssertions;
-using Microsoft.Azure.ServiceBus;
 using Xunit;
 
 namespace Brickweave.Messaging.ServiceBus.Tests
@@ -18,84 +17,92 @@ namespace Brickweave.Messaging.ServiceBus.Tests
     public class ServiceBusDomainMessengerTests : IClassFixture<ServiceBusFixture>
     {
         private readonly ServiceBusFixture _fixture;
+        private readonly IMessageSerializer _serializer;
+        private readonly IMessageEncoder _encoder;
 
         public ServiceBusDomainMessengerTests(ServiceBusFixture fixture)
         {
             _fixture = fixture;
+            _serializer = new JsonMessageSerializer();
+            _encoder = new Utf8Encoder();
         }
 
-        [Fact(Skip = "never completes randomly. need to fix service bus integration testing")]
-        public async Task Send_WhenMessageTypeNotRegistered_SendsMessageToServiceBusOnDefaultTopic()
+        [Fact]
+        public async Task Send_WhenMessageTypeNotRegistered_SendsMessageToServiceBusOnDefaultTopicOrQueue()
         {
             var id = Guid.NewGuid();
-            var serializer = new JsonMessageSerializer();
-            var encoder = new Utf8Encoder();
-            var messenger = new ServiceBusDomainMessenger(serializer, encoder,
-                new [] { new GlobalUserPropertyStrategy("Id") }, 
-                new [] { new MessageSenderRegistration(_fixture.Topic, _fixture.CreateSender()) },
+
+            var messenger = new ServiceBusDomainMessenger(_serializer, _encoder,
+                new[] {
+                    new GlobalUserPropertyStrategy("Id")
+                },
+                new[] {
+                    new MessageSenderRegistration(_fixture.Queue, _fixture.CreateQueueSender())
+                },
                 new IMessageTypeRegistration[] { },
                 Enumerable.Empty<IMessageFailureHandler>(),
-                new DefaultTopicOrQueueRegistration(_fixture.Topic));
-    
-            var client = _fixture.CreateClient(id);
+                new DefaultTopicOrQueueRegistration(_fixture.Queue));
+
+            var client = _fixture.CreateQueueClient();
 
             TestDomainEvent domainEvent = null;
             client.RegisterMessageHandler((msg, token) =>
             {
                 var json = Encoding.UTF8.GetString(msg.Body);
-                domainEvent = serializer.DeserializeObject<TestDomainEvent>(json);
-                
+                domainEvent = _serializer.DeserializeObject<TestDomainEvent>(json);
+
                 return Task.CompletedTask;
-            }, new MessageHandlerOptions(args => Task.CompletedTask)
-            {
-                MaxConcurrentCalls = 1,
-                AutoComplete = false
-            });
+            }, _fixture.CreateMessageHandlerOptions());
 
             await messenger.SendAsync(new TestDomainEvent(id));
 
             while (domainEvent?.Id != id)
             {
-                Thread.Sleep(2000);
+                Thread.Sleep(1000);
             }
+
+            await client.CloseAsync();
 
             domainEvent.Id.Should().Be(id);
         }
 
-        [Fact(Skip = "never completes randomly. need to fix service bus integration testing")]
-        public async Task Send_WhenMessageTypeRegistered_SendsMessageToServiceBusOnRegisteredTopic()
+        [Fact]
+        public async Task Send_WhenMessageTypeRegistered_SendsMessageToServiceBusOnRegisteredTopicOrQueue()
         {
             var id = Guid.NewGuid();
-            var serializer = new JsonMessageSerializer();
-            var encoder = new Utf8Encoder();
-            var messenger = new ServiceBusDomainMessenger(serializer, encoder,
-                new[] { new GlobalUserPropertyStrategy("Id") },
-                new[] { new MessageSenderRegistration(_fixture.Topic, _fixture.CreateSender()) },
-                new IMessageTypeRegistration[] { new MessageTypeRegistration<TestDomainEvent>(_fixture.Topic) },
+
+            var messenger = new ServiceBusDomainMessenger(_serializer, _encoder,
+                new[] {
+                    new GlobalUserPropertyStrategy("Id")
+                },
+                new[] {
+                    new MessageSenderRegistration(_fixture.Queue, _fixture.CreateQueueSender())
+                },
+                new IMessageTypeRegistration[] {
+                    new MessageTypeRegistration<TestDomainEvent>(_fixture.Queue)
+                },
                 Enumerable.Empty<IMessageFailureHandler>(),
                 new DefaultTopicOrQueueRegistration("notused"));
 
-            var client = _fixture.CreateClient(id);
+            var client = _fixture.CreateQueueClient();
 
             TestDomainEvent domainEvent = null;
             client.RegisterMessageHandler((msg, token) =>
             {
                 var json = Encoding.UTF8.GetString(msg.Body);
-                domainEvent = serializer.DeserializeObject<TestDomainEvent>(json);
+                domainEvent = _serializer.DeserializeObject<TestDomainEvent>(json);
 
                 return Task.CompletedTask;
-            }, new MessageHandlerOptions(args => Task.CompletedTask)
-            {
-                MaxConcurrentCalls = 1,
-                AutoComplete = false
-            });
+            }, _fixture.CreateMessageHandlerOptions());
 
             await messenger.SendAsync(new TestDomainEvent(id));
 
             while (domainEvent?.Id != id)
             {
-                Thread.Sleep(2000);
+                Thread.Sleep(1000);
             }
+
+            await client.CloseAsync();
 
             domainEvent.Id.Should().Be(id);
         }

@@ -1,10 +1,11 @@
 ﻿using System;
 using Brickweave.EventStore;
+using Brickweave.Messaging;
 using Brickweave.Samples.Domain.Persons.Models;
 
 namespace Brickweave.Samples.Domain.Persons.Events
 {
-    public class PersonCreated : IEvent
+    public class PersonCreated : IEvent, IDomainEvent
     {
         public PersonCreated(PersonId personId, string firstName, string lastName, DateTime? birthDate = null)
         {

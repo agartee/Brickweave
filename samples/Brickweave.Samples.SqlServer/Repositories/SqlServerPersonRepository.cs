@@ -33,6 +33,8 @@ namespace Brickweave.Samples.SqlServer.Repositories
             else
                 await RemoveSnapshotAsync(person);
 
+            
+
             await _dbContext.SaveChangesAsync();
 
             person.ClearUncommittedEvents();

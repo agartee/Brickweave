@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
@@ -17,6 +17,7 @@
     <ProjectReference Include="..\..\src\Brickweave.Cqrs\Brickweave.Cqrs.csproj" />
     <ProjectReference Include="..\..\src\Brickweave.Domain\Brickweave.Domain.csproj" />
     <ProjectReference Include="..\..\src\Brickweave.EventStore.SqlServer\Brickweave.EventStore.SqlServer.csproj" />
+    <ProjectReference Include="..\..\src\Brickweave.Messaging\Brickweave.Messaging.csproj" />
   </ItemGroup>
 
 </Project>

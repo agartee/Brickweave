@@ -1,7 +1,7 @@
 ﻿using Brickweave.EventStore.SqlServer.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace Brickweave.EventStore.SqlServer
+namespace Brickweave.EventStore.SqlServer.Tests.Data
 {
     public class EventStoreDbContext : DbContext
     {

@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Brickweave.EventStore.Factories;
 using Brickweave.EventStore.Serialization;
+using Brickweave.EventStore.SqlServer.Tests.Data;
 using Brickweave.EventStore.SqlServer.Tests.Models;
 
 namespace Brickweave.EventStore.SqlServer.Tests.Repositories

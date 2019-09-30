@@ -1,10 +1,9 @@
-﻿using System;
-using Brickweave.Messaging.SqlServer;
-using Brickweave.Messaging.SqlServer.Entities;
+﻿using Brickweave.Messaging.SqlServer.Entities;
+using Brickweave.Messaging.SqlServer.Tests.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
-namespace Brickweave.EventStore.SqlServer.Tests.Fixtures
+namespace Brickweave.Messaging.SqlServer.Tests.Fixtures
 {
     public class SqlServerFixture
     {
@@ -17,18 +16,18 @@ namespace Brickweave.EventStore.SqlServer.Tests.Fixtures
 
             var connectionString = config.GetConnectionString("brickweave_tests");
 
-            DbContext = new MessagingDbContext(
-                new DbContextOptionsBuilder<MessagingDbContext>().UseSqlServer(connectionString).Options);
+            DbContext = new MessageStoreDbContext(
+                new DbContextOptionsBuilder<MessageStoreDbContext>().UseSqlServer(connectionString).Options);
 
             DbContext.Database.EnsureDeleted();
             DbContext.Database.EnsureCreated();
         }
 
-        public MessagingDbContext DbContext { get; }
+        public MessageStoreDbContext DbContext { get; }
 
         public void ClearDatabase()
         {
-            var sql = $"DELETE FROM [{MessagingDbContext.SCHEMA_NAME}].[{MessageFailureData.TABLE_NAME}]";
+            var sql = $"DELETE FROM [{MessageStoreDbContext.SCHEMA_NAME}].[{MessageData.TABLE_NAME}]";
             DbContext.Database.ExecuteSqlCommand(sql);
         }
     }

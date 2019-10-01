@@ -44,12 +44,12 @@ namespace Brickweave.Messaging.ServiceBus
             await SendAsync(new List<IDomainEvent> { @event });
         }
 
-        public async Task SendAsync(params IDomainEvent[] events)
+        public async Task SendAsync(IEnumerable<IDomainEvent> events)
         {
-            await SendAsync(events.ToList());
+            await SendAsync(events.ToArray());
         }
 
-        public async Task SendAsync(IEnumerable<IDomainEvent> events)
+        public async Task SendAsync(params IDomainEvent[] events)
         {
             var exceptions = new List<Exception>();
 
@@ -60,7 +60,7 @@ namespace Brickweave.Messaging.ServiceBus
                     await GetSender(domainEvent.GetType())
                         .SendAsync(BuildBrokeredMessage(domainEvent));
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     exceptions.Add(ex);
 

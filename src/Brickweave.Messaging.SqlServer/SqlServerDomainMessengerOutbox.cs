@@ -6,7 +6,7 @@ using Brickweave.Messaging.Serialization;
 using Brickweave.Messaging.SqlServer.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace Brickweave.Messaging.SqlServer.Extensions
+namespace Brickweave.Messaging.SqlServer
 {
     public class SqlServerDomainMessengerOutbox<TDbContext, TMessageData> : IDomainMessengerOutbox 
         where TDbContext : DbContext 
@@ -29,12 +29,12 @@ namespace Brickweave.Messaging.SqlServer.Extensions
             await EnqueueAsync(new List<IDomainEvent> { @event });
         }
 
-        public async Task EnqueueAsync(params IDomainEvent[] events)
+        public async Task EnqueueAsync(IEnumerable<IDomainEvent> events)
         {
-            await EnqueueAsync(events.ToList());
+            await EnqueueAsync(events.ToArray());
         }
 
-        public async Task EnqueueAsync(IEnumerable<IDomainEvent> events)
+        public async Task EnqueueAsync(params IDomainEvent[] events)
         {
             var data = events.Select((e, i) => new TMessageData
             {

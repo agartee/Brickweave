@@ -12,7 +12,10 @@
 
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
-    <PackageReference Include="NodaTime.Serialization.JsonNet" Version="2.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Brickweave.Domain\Brickweave.Domain.csproj" />
   </ItemGroup>
 
 </Project>

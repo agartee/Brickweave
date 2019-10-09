@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Brickweave.EventStore.Factories;
-using Brickweave.EventStore.Serialization;
 using Brickweave.EventStore.SqlServer.Tests.Data;
 using Brickweave.EventStore.SqlServer.Tests.Models;
+using Brickweave.Serialization;
 
 namespace Brickweave.EventStore.SqlServer.Tests.Repositories
 {

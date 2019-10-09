@@ -16,6 +16,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Brickweave.Messaging\Brickweave.Messaging.csproj" />
+    <ProjectReference Include="..\Brickweave.Serialization\Brickweave.Serialization.csproj" />
   </ItemGroup>
 
 </Project>

@@ -3,10 +3,10 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Brickweave.Messaging.Serialization;
 using Brickweave.Messaging.ServiceBus.Models;
 using Brickweave.Messaging.ServiceBus.Tests.Fixtures;
 using Brickweave.Messaging.ServiceBus.Tests.Models;
+using Brickweave.Serialization;
 using FluentAssertions;
 using Xunit;
 
@@ -17,13 +17,13 @@ namespace Brickweave.Messaging.ServiceBus.Tests
     public class ServiceBusDomainMessengerTests : IClassFixture<ServiceBusFixture>
     {
         private readonly ServiceBusFixture _fixture;
-        private readonly IMessageSerializer _serializer;
+        private readonly IDocumentSerializer _serializer;
         private readonly IMessageEncoder _encoder;
 
         public ServiceBusDomainMessengerTests(ServiceBusFixture fixture)
         {
             _fixture = fixture;
-            _serializer = new JsonMessageSerializer();
+            _serializer = new JsonDocumentSerializer();
             _encoder = new Utf8Encoder();
         }
 

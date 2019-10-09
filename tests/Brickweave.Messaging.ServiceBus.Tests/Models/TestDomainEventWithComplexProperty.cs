@@ -1,4 +1,6 @@
-﻿namespace Brickweave.Messaging.ServiceBus.Tests.Models
+﻿using Brickweave.Domain;
+
+namespace Brickweave.Messaging.ServiceBus.Tests.Models
 {
     public class TestDomainEventWithComplexProperty : IDomainEvent
     {

@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Brickweave.Serialization.Extensions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using NodaTime;
 using NodaTime.Serialization.JsonNet;
 
-namespace Brickweave.EventStore.Serialization
+namespace Brickweave.Serialization
 {
     public class JsonDocumentSerializer : IDocumentSerializer
     {

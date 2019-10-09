@@ -9,8 +9,9 @@ namespace Brickweave.Messaging.SqlServer.Entities
         public const string TABLE_NAME = "MessageOutbox";
 
         public Guid Id { get; set; }
-        public string Message { get; set; }
+        public string Json { get; set; }
         public DateTime Created { get; set; }
         public int CommitSequence { get; set; }
+        public bool IsSending { get; set; }
     }
 }

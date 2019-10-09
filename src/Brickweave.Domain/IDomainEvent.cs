@@ -1,4 +1,4 @@
-﻿namespace Brickweave.Messaging
+﻿namespace Brickweave.Domain
 {
     public interface IDomainEvent
     {

@@ -4,7 +4,6 @@ using System.Net.Http;
 using Brickweave.Samples.WebApp.Tests.Extensions;
 using Brickweave.Samples.WebApp.Tests.Fixtures;
 using FluentAssertions;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Xbehave;
 using Xunit;

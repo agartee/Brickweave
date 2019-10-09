@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using Brickweave.Domain;
 using Brickweave.Samples.Domain.Persons.Events;
 using Brickweave.Samples.Domain.Persons.Models;
 using Brickweave.Samples.Domain.Phones.Events;
@@ -31,6 +32,12 @@ namespace Brickweave.Samples.Domain.Tests.Persons.Models
             @event.PersonId.Should().Be(id.Value);
             @event.FirstName.Should().Be(firstName);
             @event.LastName.Should().Be(lastName);
+
+            var domainEvents = person.GetDomainEvents();
+
+            domainEvents.Should().HaveCount(1);
+
+            domainEvents.First().Should().BeOfType(typeof(PersonCreated));
         }
 
         [Fact]

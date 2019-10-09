@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using Brickweave.Messaging.Serialization;
+using Brickweave.Domain;
 using Brickweave.Messaging.ServiceBus.Models;
 using Microsoft.Azure.ServiceBus;
 using Microsoft.Azure.ServiceBus.Core;
@@ -15,8 +15,7 @@ namespace Brickweave.Messaging.ServiceBus.DependencyInjection
         public ServiceBusOptionsBuilder(IServiceCollection services)
         {
             services
-                .AddScoped<IDomainMessenger, ServiceBusDomainMessenger>()
-                .AddScoped<IMessageSerializer, JsonMessageSerializer>();
+                .AddScoped<IDomainMessenger, ServiceBusDomainMessenger>();
 
             _services = services;
         }

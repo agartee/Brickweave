@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Brickweave.Cqrs;
 using Brickweave.EventStore;
-using Brickweave.EventStore.Serialization;
+using Brickweave.Serialization;
 using Brickweave.Samples.Domain.Persons.Services;
 
 namespace Brickweave.Samples.Domain.Persons.Queries

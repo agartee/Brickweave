@@ -2,10 +2,12 @@
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
+using Brickweave.Samples.SqlServer;
 using Brickweave.Samples.WebApp.Tests.Extensions;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json.Linq;
 
@@ -21,6 +23,9 @@ namespace Brickweave.Samples.WebApp.Tests.Fixtures
                 .AddUserSecrets<WebApiFixture>()
                 .AddEnvironmentVariables()
                 .Build();
+
+            var dbContext = CreateDbContext();
+            dbContext.Database.EnsureDeleted();
 
             ApiServer = new TestServer(WebHost
                 .CreateDefaultBuilder()
@@ -65,6 +70,12 @@ namespace Brickweave.Samples.WebApp.Tests.Fixtures
         public void Dispose()
         {
             ApiServer.Dispose();
+        }
+
+        public SamplesDbContext CreateDbContext()
+        {
+            return new SamplesDbContext(new DbContextOptionsBuilder<SamplesDbContext>()
+                .UseSqlServer(_config.GetConnectionString("brickweave_samples")).Options);
         }
     }
 }

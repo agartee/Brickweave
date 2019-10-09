@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <VersionPrefix>0.10.0</VersionPrefix>
+    <VersionPrefix>0.11.0</VersionPrefix>
     <Authors>Adam Gartee</Authors>
     <Company>Adam Gartee</Company>
     <Description>Lightweight package to support common Event Sourcing patterns</Description>
@@ -13,7 +13,14 @@
   <ItemGroup>
     <PackageReference Include="LiteGuard" Version="2.2.0" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
-    <PackageReference Include="NodaTime.Serialization.JsonNet" Version="2.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Brickweave.Domain\Brickweave.Domain.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Serialization\" />
   </ItemGroup>
 
 </Project>

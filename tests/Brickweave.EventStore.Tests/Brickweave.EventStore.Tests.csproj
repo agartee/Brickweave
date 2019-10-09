@@ -20,4 +20,8 @@
     <ProjectReference Include="..\..\src\Brickweave.EventStore\Brickweave.EventStore.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Serialization\" />
+  </ItemGroup>
+
 </Project>

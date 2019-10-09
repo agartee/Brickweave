@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Brickweave.Domain;
 
 namespace Brickweave.Messaging.ServiceBus
 {

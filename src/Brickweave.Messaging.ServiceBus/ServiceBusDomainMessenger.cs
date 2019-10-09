@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Brickweave.Messaging.Serialization;
+using Brickweave.Domain;
 using Brickweave.Messaging.ServiceBus.Exceptions;
 using Brickweave.Messaging.ServiceBus.Extensions;
 using Brickweave.Messaging.ServiceBus.Models;
+using Brickweave.Serialization;
 using Microsoft.Azure.ServiceBus;
 using Microsoft.Azure.ServiceBus.Core;
 
@@ -13,7 +14,7 @@ namespace Brickweave.Messaging.ServiceBus
 {
     public class ServiceBusDomainMessenger : IDomainMessenger
     {
-        private readonly IMessageSerializer _serializer;
+        private readonly IDocumentSerializer _serializer;
         private readonly IMessageEncoder _encoder;
 
         private readonly IEnumerable<IUserPropertyStrategy> _userPropertyStrategies;
@@ -23,7 +24,7 @@ namespace Brickweave.Messaging.ServiceBus
 
         private readonly DefaultTopicOrQueueRegistration _defaultTopicOrQueueRegistration;
 
-        public ServiceBusDomainMessenger(IMessageSerializer serializer, IMessageEncoder encoder,
+        public ServiceBusDomainMessenger(IDocumentSerializer serializer, IMessageEncoder encoder,
             IEnumerable<IUserPropertyStrategy> userPropertyStrategies,
             IEnumerable<MessageSenderRegistration> messageSenderRegistrations,
             IEnumerable<IMessageTypeRegistration> messageTypeRegistrations,

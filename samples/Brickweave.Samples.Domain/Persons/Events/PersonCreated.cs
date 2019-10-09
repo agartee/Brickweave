@@ -1,6 +1,6 @@
 ﻿using System;
+using Brickweave.Domain;
 using Brickweave.EventStore;
-using Brickweave.Messaging;
 using Brickweave.Samples.Domain.Persons.Models;
 
 namespace Brickweave.Samples.Domain.Persons.Events

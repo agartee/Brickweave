@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json.Serialization;
 
-namespace Brickweave.EventStore.Serialization
+namespace Brickweave.Serialization
 {
     public class ShortNameBinder : ISerializationBinder
     {

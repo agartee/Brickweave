@@ -16,7 +16,7 @@ namespace Brickweave.Samples.WebApp.Data
                 .AddUserSecrets<Startup>()
                 .Build();
 
-            var migrationsAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
+            var migrationsAssembly = typeof(SamplesDbContext).GetTypeInfo().Assembly.GetName().Name;
 
             var options = new DbContextOptionsBuilder<SamplesDbContext>()
                 .UseSqlServer(configuration.GetConnectionString("brickweave_samples"),

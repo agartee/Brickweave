@@ -1,38 +1,62 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 using Brickweave.Domain;
+using Brickweave.Messaging.Models;
 using Brickweave.Messaging.SqlServer.Entities;
 using Brickweave.Serialization;
 using Microsoft.EntityFrameworkCore;
 
 namespace Brickweave.Messaging.SqlServer
 {
-    public class SqlServerMessageOutboxReader : IMessageOutboxReader
+    public class SqlServerMessageOutboxReader<TDbContext, TMessageData> : IMessageOutboxReader
+        where TDbContext : DbContext
+        where TMessageData : MessageData, new()
     {
+        private readonly TDbContext _dbContext;
+        private readonly DbSet<TMessageData> _dbSet;
         private readonly IDocumentSerializer _serializer;
 
-        public SqlServerMessageOutboxReader(IDocumentSerializer serializer)
+        public SqlServerMessageOutboxReader(TDbContext dbContext, Func<TDbContext, DbSet<TMessageData>> getDbSet, 
+            IDocumentSerializer serializer)
         {
+            _dbContext = dbContext;
+            _dbSet = getDbSet.Invoke(dbContext);
             _serializer = serializer;
         }
 
-        public async Task<IEnumerable<IDomainEvent>> GetNextBatch<TMessageData>(DbSet<TMessageData> dbSet, int batchSize)
-             where TMessageData : MessageData, new()
+        public async Task<IEnumerable<DomainMessageInfo>> GetNextBatch(int batchSize)
         {
             var maxCountParam = new SqlParameter(
                 "@maxCount", batchSize);
 
             var sql = CreateDequeueCommand(maxCountParam);
 
-            var data = await dbSet
+            var data = await _dbSet
                 .FromSql(sql, maxCountParam)
                 .ToListAsync();
 
             return data
-                .Select(m => _serializer.DeserializeObject<IDomainEvent>(m.Json))
+                .Select(m => new DomainMessageInfo(
+                    new DomainMessageId(m.Id),
+                    _serializer.DeserializeObject<IDomainEvent>(m.Json),
+                    m.Created,
+                    m.CommitSequence
+                    ))
                 .ToList();
+        }
+
+        public async Task Delete(DomainMessageId domainMessageId)
+        {
+            var data = await _dbSet
+                .Where(m => m.Id == domainMessageId.Value)
+                .SingleOrDefaultAsync();
+
+            _dbSet.Remove(data);
+
+            await _dbContext.SaveChangesAsync();
         }
 
         private static string CreateDequeueCommand(SqlParameter maxCountParam)

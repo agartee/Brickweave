@@ -143,7 +143,12 @@ namespace Brickweave.Samples.WebApp
                 .AddScoped<IPersonRepository, SqlServerPersonRepository>()
                 .AddScoped<IPersonInfoRepository, SqlServerPersonRepository>()
                 .AddScoped<IPersonEventStreamRepository, SqlServerPersonRepository>()
-                .AddScoped<IMessageOutboxReader, SqlServerMessageOutboxReader>();
+                // todo: cleanup or add config builder
+                .AddScoped<IMessageOutboxReader>(s => 
+                    new SqlServerMessageOutboxReader<SamplesDbContext, MessageData>(
+                        s.GetService<SamplesDbContext>(), 
+                        dbContext => dbContext.MessageOutbox,
+                        s.GetService<IDocumentSerializer>()));
 
             services.AddHostedService<MessagingHostedService>();
         }

@@ -9,26 +9,26 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Brickweave.Messaging.SqlServer
 {
-    public class SqlServerMessageOutboxReader<TMessageData> : IMessageOutboxReader
-        where TMessageData : MessageData, new()
+    public class SqlServerMessageOutboxReader : IMessageOutboxReader
     {
-        private readonly DbSet<TMessageData> _dbSet;
         private readonly IDocumentSerializer _serializer;
 
-        public SqlServerMessageOutboxReader(DbSet<TMessageData> dbSet, IDocumentSerializer serializer)
+        public SqlServerMessageOutboxReader(IDocumentSerializer serializer)
         {
-            _dbSet = dbSet;
             _serializer = serializer;
         }
 
-        public async Task<IEnumerable<IDomainEvent>> GetNextBatch(int maxCount)
+        public async Task<IEnumerable<IDomainEvent>> GetNextBatch<TMessageData>(DbSet<TMessageData> dbSet, int batchSize)
+             where TMessageData : MessageData, new()
         {
             var maxCountParam = new SqlParameter(
-                "@maxCount", maxCount);
+                "@maxCount", batchSize);
 
             var sql = CreateDequeueCommand(maxCountParam);
 
-            var data = _dbSet.FromSql(sql, maxCountParam);
+            var data = await dbSet
+                .FromSql(sql, maxCountParam)
+                .ToListAsync();
 
             return data
                 .Select(m => _serializer.DeserializeObject<IDomainEvent>(m.Json))
@@ -52,7 +52,8 @@ namespace Brickweave.Messaging.SqlServer
 	            INSERT INTO @results ([Id], [Json], [Created], [CommitSequence], [IsSending])
 	            SELECT TOP ({0}) [Id], [Json], [Created], [CommitSequence], [IsSending]
 	            FROM [MessageOutbox] WITH (ROWLOCK, READPAST)
-	            where [isSending] = 0
+	            WHERE [isSending] = 0
+                ORDER BY [Created], [CommitSequence]
 
 	            UPDATE [MessageOutbox]
 	            SET [IsSending] = 1

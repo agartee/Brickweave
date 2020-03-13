@@ -4,12 +4,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using Brickweave.EventStore;
 using Brickweave.EventStore.Factories;
-using Brickweave.EventStore.Serialization;
 using Brickweave.EventStore.SqlServer;
+using Brickweave.Messaging.SqlServer.Extensions;
 using Brickweave.Samples.Domain.Persons.Extensions;
 using Brickweave.Samples.Domain.Persons.Models;
 using Brickweave.Samples.Domain.Persons.Services;
 using Brickweave.Samples.SqlServer.Extensions;
+using Brickweave.Serialization;
 using Microsoft.EntityFrameworkCore;
 
 namespace Brickweave.Samples.SqlServer.Repositories
@@ -17,11 +18,13 @@ namespace Brickweave.Samples.SqlServer.Repositories
     public class SqlServerPersonRepository : AggregateRepository<Person>, IPersonRepository, IPersonInfoRepository, IPersonEventStreamRepository
     {
         private readonly SamplesDbContext _dbContext;
-        
+        private readonly IDocumentSerializer _serializer;
+
         public SqlServerPersonRepository(SamplesDbContext dbContext, IDocumentSerializer serializer,
             IAggregateFactory aggregateFactory) : base(serializer, aggregateFactory)
         {
             _dbContext = dbContext;
+            _serializer = serializer;
         }
         
         public async Task SavePersonAsync(Person person)
@@ -32,6 +35,9 @@ namespace Brickweave.Samples.SqlServer.Repositories
                 await AddSnapshotAsync(person);
             else
                 await RemoveSnapshotAsync(person);
+
+            person.GetDomainEvents().Enqueue(
+                _dbContext.MessageOutbox, _serializer);
 
             await _dbContext.SaveChangesAsync();
 

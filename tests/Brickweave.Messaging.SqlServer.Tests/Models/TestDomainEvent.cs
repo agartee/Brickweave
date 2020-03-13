@@ -1,4 +1,5 @@
 ﻿using System;
+using Brickweave.Domain;
 
 namespace Brickweave.Messaging.SqlServer.Tests.Models
 {

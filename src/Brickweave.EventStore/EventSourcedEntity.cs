@@ -1,13 +1,15 @@
-﻿using LiteGuard;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Brickweave.Domain;
+using LiteGuard;
 
 namespace Brickweave.EventStore
 {
-    public abstract class EventSourcedEntity
+    public abstract class EventSourcedEntity : DomainModel
     {
-        protected EventSourcedEntity(Queue<IEvent> eventQueue, IEventRouter eventRouter)
+        protected EventSourcedEntity(Queue<IEvent> eventQueue, Queue<IDomainEvent> domainEventQueue, IEventRouter eventRouter)
+            : base(domainEventQueue)
         {
             Guard.AgainstNullArgument(nameof(eventQueue), eventQueue);
             Guard.AgainstNullArgument(nameof(eventRouter), eventRouter);
@@ -16,8 +18,8 @@ namespace Brickweave.EventStore
             EventRouter = eventRouter;
         }
 
-        protected IEventRouter EventRouter { get; }
         protected Queue<IEvent> EventQueue { get; }
+        protected IEventRouter EventRouter { get; }
 
         protected void Register<THandler>(Action<THandler> route, object id = null)
         {
@@ -28,6 +30,9 @@ namespace Brickweave.EventStore
         {
             ApplyEvent(@event);
             EventQueue.Enqueue(@event);
+
+            if(@event is IDomainEvent domainEvent)
+                RaiseEvent(domainEvent);
         }
 
         protected void ApplyEvent(IEvent @event)

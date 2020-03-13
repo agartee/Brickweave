@@ -2,10 +2,10 @@
 using System.Threading.Tasks;
 using Brickweave.Cqrs;
 using Brickweave.EventStore;
-using Brickweave.EventStore.Serialization;
 using Brickweave.Samples.Domain.Persons.Extensions;
 using Brickweave.Samples.Domain.Persons.Models;
 using Brickweave.Samples.Domain.Persons.Services;
+using Brickweave.Serialization;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Brickweave.EventStore.Factories;
-using Brickweave.EventStore.Serialization;
+using Brickweave.Serialization;
 using Brickweave.EventStore.SqlServer.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,14 +11,15 @@ namespace Brickweave.EventStore.SqlServer
 {
     public abstract class AggregateRepository<TAggregate> where TAggregate : EventSourcedAggregateRoot
     {
-        private readonly IDocumentSerializer _serializer;
         private readonly IAggregateFactory _aggregateFactory;
+        private readonly IDocumentSerializer _documentSerializer;
 
         protected AggregateRepository(IDocumentSerializer serializer, IAggregateFactory aggregateFactory)
         {
-            _serializer = serializer;
+            _documentSerializer = serializer;
             _aggregateFactory = aggregateFactory;
         }
+
 
         protected async Task<LinkedList<IEvent>> GetEvents<TEventData>(DbSet<TEventData> eventDbSet, 
             Guid streamId, DateTime? pointInTime = null)
@@ -32,7 +33,7 @@ namespace Brickweave.EventStore.SqlServer
                 .ToListAsync();
 
             var events = eventData
-                .Select(d => _serializer.DeserializeObject<IEvent>(d.Json))
+                .Select(d => _documentSerializer.DeserializeObject<IEvent>(d.Json))
                 .ToList();
 
             return new LinkedList<IEvent>(events);
@@ -49,7 +50,7 @@ namespace Brickweave.EventStore.SqlServer
                 {
                     Id = Guid.NewGuid(),
                     StreamId = streamId,
-                    Json = _serializer.SerializeObject(e),
+                    Json = _documentSerializer.SerializeObject(e),
                     Created = created,
                     CommitSequence = i
                 })

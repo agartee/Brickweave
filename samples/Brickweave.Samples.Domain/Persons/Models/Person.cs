@@ -153,7 +153,8 @@ namespace Brickweave.Samples.Domain.Persons.Models
 
         private void Apply(PersonPhoneAdded @event)
         {
-            _phones.Add(new Phone(@event.PhoneId, @event.PhoneType, @event.Number, EventQueue, EventRouter));
+            _phones.Add(new Phone(@event.PhoneId, @event.PhoneType, @event.Number, 
+                EventQueue, DomainEventQueue, EventRouter));
         }
 
         private void Apply(PersonPhoneRemoved @event)

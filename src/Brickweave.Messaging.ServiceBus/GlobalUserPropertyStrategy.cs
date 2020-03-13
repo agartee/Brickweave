@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Brickweave.Domain;
 using Brickweave.Messaging.ServiceBus.Extensions;
 
 namespace Brickweave.Messaging.ServiceBus

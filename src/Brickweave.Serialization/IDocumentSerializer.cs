@@ -1,4 +1,4 @@
-﻿namespace Brickweave.EventStore.Serialization
+﻿namespace Brickweave.Serialization
 {
     public interface IDocumentSerializer
     {

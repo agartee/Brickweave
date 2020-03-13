@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <VersionPrefix>0.18.0</VersionPrefix>
+    <VersionPrefix>0.19.0</VersionPrefix>
     <Authors>Adam Gartee</Authors>
     <Company>Adam Gartee</Company>
     <Description>Lightweight package to support common Event Sourcing patterns using Microsoft SQL Server</Description>
@@ -12,11 +12,12 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="2.2.2" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="2.2.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.0.0" />
   </ItemGroup>
   
   <ItemGroup>
     <ProjectReference Include="..\Brickweave.EventStore\Brickweave.EventStore.csproj" />
+    <ProjectReference Include="..\Brickweave.Serialization\Brickweave.Serialization.csproj" />
   </ItemGroup>
 
 </Project>

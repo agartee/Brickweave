@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26730.12
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28922.388
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Brickweave.Cqrs", "src\Brickweave.Cqrs\Brickweave.Cqrs.csproj", "{1D489B4C-DBEA-46F6-AF8B-76B67E52F45A}"
 EndProject
@@ -49,7 +49,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Brickweave.Messaging.SqlSer
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Brickweave.Messaging.SqlServer.Tests", "tests\Brickweave.Messaging.SqlServer.Tests\Brickweave.Messaging.SqlServer.Tests.csproj", "{FC25B164-A295-40AB-B952-3F5335B4C223}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Brickweave.Samples.Domain.Tests", "samples\Brickweave.Samples.Domain.Tests\Brickweave.Samples.Domain.Tests.csproj", "{E3B2070A-452A-43EE-89B2-5AE48C367649}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Brickweave.Samples.Domain.Tests", "samples\Brickweave.Samples.Domain.Tests\Brickweave.Samples.Domain.Tests.csproj", "{E3B2070A-452A-43EE-89B2-5AE48C367649}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Brickweave.Samples.SqlServer.Tests", "samples\Brickweave.Samples.SqlServer.Tests\Brickweave.Samples.SqlServer.Tests.csproj", "{CADA0886-C1A7-44F0-BF7C-98F0DDA4C1E9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Brickweave.Serialization", "src\Brickweave.Serialization\Brickweave.Serialization.csproj", "{BD56171C-0C24-4474-8802-9FB217A85E85}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Brickweave.Serialization.Tests", "tests\Brickweave.Serialization.Tests\Brickweave.Serialization.Tests.csproj", "{E793FFD9-2AFB-4175-9A52-C9C0778DAFE7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -141,6 +147,18 @@ Global
 		{E3B2070A-452A-43EE-89B2-5AE48C367649}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E3B2070A-452A-43EE-89B2-5AE48C367649}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E3B2070A-452A-43EE-89B2-5AE48C367649}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CADA0886-C1A7-44F0-BF7C-98F0DDA4C1E9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CADA0886-C1A7-44F0-BF7C-98F0DDA4C1E9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CADA0886-C1A7-44F0-BF7C-98F0DDA4C1E9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CADA0886-C1A7-44F0-BF7C-98F0DDA4C1E9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BD56171C-0C24-4474-8802-9FB217A85E85}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BD56171C-0C24-4474-8802-9FB217A85E85}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BD56171C-0C24-4474-8802-9FB217A85E85}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BD56171C-0C24-4474-8802-9FB217A85E85}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E793FFD9-2AFB-4175-9A52-C9C0778DAFE7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E793FFD9-2AFB-4175-9A52-C9C0778DAFE7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E793FFD9-2AFB-4175-9A52-C9C0778DAFE7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E793FFD9-2AFB-4175-9A52-C9C0778DAFE7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -167,6 +185,9 @@ Global
 		{FC551C26-1EBF-4C37-A575-322B5FA2DDFB} = {685B773C-8922-47C0-9144-4219E1AF5A0C}
 		{FC25B164-A295-40AB-B952-3F5335B4C223} = {01363C09-641F-41CF-857A-E93663279BB5}
 		{E3B2070A-452A-43EE-89B2-5AE48C367649} = {0FEF9B3D-FB35-4B88-95F1-5FC50B032C6A}
+		{CADA0886-C1A7-44F0-BF7C-98F0DDA4C1E9} = {0FEF9B3D-FB35-4B88-95F1-5FC50B032C6A}
+		{BD56171C-0C24-4474-8802-9FB217A85E85} = {685B773C-8922-47C0-9144-4219E1AF5A0C}
+		{E793FFD9-2AFB-4175-9A52-C9C0778DAFE7} = {01363C09-641F-41CF-857A-E93663279BB5}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4E8CFE0E-1064-4953-B2D7-545AE105B2D9}

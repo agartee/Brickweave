@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace Brickweave.EventStore.Serialization
+namespace Brickweave.Serialization.Extensions
 {
     public static class JsonSerializerSettingsExtensions
     {

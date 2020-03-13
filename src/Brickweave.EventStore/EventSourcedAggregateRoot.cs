@@ -1,10 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using Brickweave.Domain;
+using System.Collections.Generic;
 
 namespace Brickweave.EventStore
 {
     public abstract class EventSourcedAggregateRoot : EventSourcedEntity
     {
-        protected EventSourcedAggregateRoot() : base(new Queue<IEvent>(), new RegistrationEventRouter())
+        protected EventSourcedAggregateRoot() : base(new Queue<IEvent>(), new Queue<IDomainEvent>(), new RegistrationEventRouter())
         {
 
         }

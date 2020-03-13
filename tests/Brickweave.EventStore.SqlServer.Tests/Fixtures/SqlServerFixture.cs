@@ -1,5 +1,6 @@
 ﻿using System;
 using Brickweave.EventStore.SqlServer.Entities;
+using Brickweave.EventStore.SqlServer.Tests.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 

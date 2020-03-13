@@ -1,6 +1,6 @@
 ﻿using System;
-using Brickweave.EventStore.Serialization;
-using Brickweave.EventStore.Tests.Models;
+using Brickweave.Serialization;
+using Brickweave.Serialization.Tests.Models;
 using FluentAssertions;
 using Xunit;
 using Xunit.Abstractions;
@@ -20,12 +20,12 @@ namespace Brickweave.EventStore.Tests.Serialization
         public void SerializeObject_WhenObjectIsRegisteredAsShorthandType_ReturnsJson()
         {
             var idValue = Guid.NewGuid();
-            var obj = new TestAggregateCreated(idValue);
-            var serializer = new JsonDocumentSerializer(typeof(TestAggregateCreated));
+            var obj = new TestClass(idValue);
+            var serializer = new JsonDocumentSerializer(typeof(TestClass));
 
             var json = serializer.SerializeObject(obj);
 
-            json.Should().Contain("\"$type\":\"TestAggregateCreated\"");
+            json.Should().Contain("\"$type\":\"TestClass\"");
 
             _output.WriteLine(json);
         }
@@ -34,12 +34,12 @@ namespace Brickweave.EventStore.Tests.Serialization
         public void SerializeObject_WhenObjectIsNotRegisteredAsShorthandType_ReturnsJson()
         {
             var idValue = Guid.NewGuid();
-            var obj = new TestAggregateCreated(idValue);
+            var obj = new TestClass(idValue);
             var serializer = new JsonDocumentSerializer();
 
             var json = serializer.SerializeObject(obj);
 
-            json.Should().Contain("\"$type\":\"Brickweave.EventStore.Tests.Models.TestAggregateCreated, Brickweave.EventStore.Tests\"");
+            json.Should().Contain("\"$type\":\"Brickweave.Serialization.Tests.Models.TestClass, Brickweave.Serialization.Tests\"");
 
             _output.WriteLine(json);
         }

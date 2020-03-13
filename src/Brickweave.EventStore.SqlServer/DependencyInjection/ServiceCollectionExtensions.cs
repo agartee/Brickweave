@@ -1,14 +1,12 @@
-﻿using System.Reflection;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 
 namespace Brickweave.EventStore.SqlServer.DependencyInjection
 {
     public static class ServiceCollectionExtensions
     {
-        public static EventStoreOptionsBuilder AddEventStore(this IServiceCollection services,
-            params Assembly[] domainAssemblies)
+        public static EventStoreOptionsBuilder AddEventStore(this IServiceCollection services)
         {
-            return new EventStoreOptionsBuilder(services, domainAssemblies);
+            return new EventStoreOptionsBuilder(services);
         }
     }
 }

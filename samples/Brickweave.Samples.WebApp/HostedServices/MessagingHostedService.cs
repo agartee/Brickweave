@@ -71,11 +71,11 @@ namespace Brickweave.Samples.WebApp.HostedServices
                             // note: transaction scope does not work in this scenario.
                             // "Local transactions are not supported with other resource managers/DTC." (ServiceBus exception)
 
-                            await messageOutboxReader.Delete(message.Id);
-                            _logger.LogInformation($"Deleted message with Id \"{message.Id}\"");
-
                             await domainMessenger.SendAsync(message.DomainEvent);
                             _logger.LogInformation($"Sent message with Id \"{message.Id}\"");
+
+                            await messageOutboxReader.Delete(message.Id);
+                            _logger.LogInformation($"Deleted message with Id \"{message.Id}\"");
                         }
                         catch(Exception ex)
                         {

@@ -10,8 +10,6 @@ namespace Brickweave.Messaging.ServiceBus.Tests.Fixtures
     {
         private readonly IConfiguration _config;
 
-        private readonly Func<Guid, ISubscriptionClient> _createClient;
-
         public ServiceBusFixture()
         {
             _config = new ConfigurationBuilder()

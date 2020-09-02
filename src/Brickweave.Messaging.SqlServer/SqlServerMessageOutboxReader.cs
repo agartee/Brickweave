@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 using Brickweave.Domain;
 using Brickweave.Messaging.Models;
 using Brickweave.Messaging.SqlServer.Entities;
 using Brickweave.Serialization;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 
 namespace Brickweave.Messaging.SqlServer
@@ -35,7 +35,7 @@ namespace Brickweave.Messaging.SqlServer
             var sql = CreateDequeueCommand(maxCountParam);
 
             var data = await _dbSet
-                .FromSql(sql, maxCountParam)
+                .FromSqlRaw(sql, maxCountParam)
                 .ToListAsync();
 
             return data

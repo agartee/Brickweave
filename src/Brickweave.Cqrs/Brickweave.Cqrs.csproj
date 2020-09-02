@@ -4,7 +4,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <VersionPrefix>0.10.0</VersionPrefix>
     <Authors>Adam Gartee</Authors>
-    <Company />
+    <Company>Adam Gartee</Company>
     <Description>Lightweight package to support common CQRS patterns</Description>
     <PackageProjectUrl>https://github.com/agartee/Brickweave</PackageProjectUrl>
     <PackageLicenseUrl>https://github.com/agartee/Brickweave/blob/master/LICENSE</PackageLicenseUrl>

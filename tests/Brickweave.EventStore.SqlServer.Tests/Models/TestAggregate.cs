@@ -25,7 +25,7 @@ namespace Brickweave.EventStore.SqlServer.Tests.Models
 
         private void Apply(TestAggregateCreated @event)
         {
-            Id = @event.TestId;
+            Id = @event.Id;
         }
     }
 }

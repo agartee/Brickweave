@@ -4,11 +4,11 @@ namespace Brickweave.EventStore.SqlServer.Tests.Models
 {
     public class TestAggregateCreated : IEvent
     {
-        public TestAggregateCreated(Guid testId)
+        public TestAggregateCreated(Guid id)
         {
-            TestId = testId;
+            Id = id;
         }
 
-        public Guid TestId { get; }
+        public Guid Id { get; }
     }
 }

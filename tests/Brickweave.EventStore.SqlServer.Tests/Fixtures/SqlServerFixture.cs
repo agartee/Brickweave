@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Threading.Tasks;
 using Brickweave.EventStore.SqlServer.Entities;
 using Brickweave.EventStore.SqlServer.Tests.Data;
 using Microsoft.EntityFrameworkCore;
@@ -8,29 +8,34 @@ namespace Brickweave.EventStore.SqlServer.Tests.Fixtures
 {
     public class SqlServerFixture
     {
+        private readonly IConfiguration _config;
+
         public SqlServerFixture()
         {
-            var config = new ConfigurationBuilder()
-                .SetBasePath(AppContext.BaseDirectory)
+            _config = new ConfigurationBuilder()
                 .AddUserSecrets<SqlServerFixture>()
                 .AddEnvironmentVariables()
                 .Build();
 
-            var connectionString = config.GetConnectionString("brickweave_tests");
+            var configurationDbContext = CreateDbContext();
 
-            DbContext = new EventStoreDbContext(
-                new DbContextOptionsBuilder<EventStoreDbContext>().UseSqlServer(connectionString).Options);
-
-            DbContext.Database.EnsureDeleted();
-            DbContext.Database.EnsureCreated();
+            configurationDbContext.Database.EnsureDeleted();
+            configurationDbContext.Database.EnsureCreated();
         }
 
-        public EventStoreDbContext DbContext { get; }
-
-        public void ClearDatabase()
+        public EventStoreDbContext CreateDbContext()
         {
+            return new EventStoreDbContext(new DbContextOptionsBuilder<EventStoreDbContext>()
+                .UseSqlServer(_config.GetConnectionString("brickweave-tests")).Options);
+        }
+
+        public void ClearData()
+        {
+            var dbContext = CreateDbContext();
+
             var sql = $"DELETE FROM [{EventStoreDbContext.SCHEMA_NAME}].[{EventData.TABLE_NAME}]";
-            DbContext.Database.ExecuteSqlCommand(sql);
+
+            dbContext.Database.ExecuteSqlRaw(sql);
         }
     }
 }

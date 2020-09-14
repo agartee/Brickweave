@@ -23,5 +23,10 @@ namespace Brickweave.Domain
         {
             return DomainEventQueue.ToArray();
         }
+
+        public void ClearDomainEvents()
+        {
+            DomainEventQueue.Clear();
+        }
     }
 }

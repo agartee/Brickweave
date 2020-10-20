@@ -43,7 +43,8 @@ namespace Brickweave.EventStore.SqlServer.Tests.Repositories
 
             var @event = events.First();
             @event.StreamId.Should().Be(id);
-            @event.Json.Should().Be("{\"$type\":\"TestAggregateCreated\",\"id\":\"a48fc8b1-bc2f-436f-9717-1717949d9b14\"}");
+            @event.TypeName.Should().Be(nameof(TestAggregateCreated));
+            @event.Json.Should().Be("{\"id\":\"a48fc8b1-bc2f-436f-9717-1717949d9b14\"}");
         }
 
         [Fact]

@@ -9,6 +9,7 @@ namespace Brickweave.EventStore.SqlServer.Entities
         public const string TABLE_NAME = "Event";
 
         public Guid Id { get; set; }
+        public string TypeName { get; set; }
         public Guid StreamId { get; set; }
         public string Json { get; set; }
         public DateTime Created { get; set; }

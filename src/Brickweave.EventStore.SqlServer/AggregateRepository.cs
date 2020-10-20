@@ -32,7 +32,7 @@ namespace Brickweave.EventStore.SqlServer
                 .ToListAsync();
 
             var events = eventData
-                .Select(d => _documentSerializer.DeserializeObject<IEvent>(d.Json))
+                .Select(d => _documentSerializer.DeserializeObject<IEvent>(d.TypeName, d.Json))
                 .ToList();
 
             return events;
@@ -50,7 +50,7 @@ namespace Brickweave.EventStore.SqlServer
                 .ToListAsync();
 
             var events = eventData
-                .GroupBy(d => d.StreamId, d => _documentSerializer.DeserializeObject<IEvent>(d.Json))
+                .GroupBy(d => d.StreamId, d => _documentSerializer.DeserializeObject<IEvent>(d.TypeName, d.Json))
                 .ToList();
 
             return events;
@@ -67,6 +67,7 @@ namespace Brickweave.EventStore.SqlServer
                 {
                     Id = Guid.NewGuid(),
                     StreamId = streamId,
+                    TypeName = e.GetType().Name,
                     Json = _documentSerializer.SerializeObject(e),
                     Created = created,
                     CommitSequence = i

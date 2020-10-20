@@ -29,29 +29,32 @@ namespace Brickweave.Serialization
         private JsonSerializerSettings DefaultSettings =>
             new JsonSerializerSettings
             {
-                SerializationBinder = new ShortNameBinder(_shorthandTypes),
                 Formatting = Formatting.None,
-                TypeNameHandling = TypeNameHandling.Objects,
+                TypeNameHandling = TypeNameHandling.None,
                 NullValueHandling = NullValueHandling.Ignore,
-                ContractResolver = new CamelCasePropertyNamesContractResolver
+                ContractResolver = new DefaultContractResolver
                 {
-                    NamingStrategy = new CamelCaseNamingStrategy
-                    {
-                        ProcessDictionaryKeys = true
-                    }
+                    NamingStrategy = new CamelCaseNamingStrategy()
                 }
             }
             .ConfigureForNodaTime(DateTimeZoneProviders.Tzdb)
             .AddJsonConverters(_converters.ToArray());
 
-        T IDocumentSerializer.DeserializeObject<T>(string json)
-        {
-            return (T) JsonConvert.DeserializeObject(json, DefaultSettings);
-        }
-
         public string SerializeObject(object obj)
         {
             return JsonConvert.SerializeObject(obj, DefaultSettings);
+        }
+
+        public T DeserializeObject<T>(string json)
+        {
+            return JsonConvert.DeserializeObject<T>(json, DefaultSettings);
+        }
+
+        public T DeserializeObject<T>(string typeName, string json)
+        {
+            var type = _shorthandTypes.FirstOrDefault(t => t.Name == typeName);
+
+            return (T)JsonConvert.DeserializeObject(json, type, DefaultSettings);
         }
     }
 }

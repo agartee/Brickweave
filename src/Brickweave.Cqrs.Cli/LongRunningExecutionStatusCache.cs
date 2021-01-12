@@ -9,9 +9,25 @@ namespace Brickweave.Cqrs.Cli
         private readonly ConcurrentDictionary<Guid, LongRunningExecutionStatus> _items
             = new ConcurrentDictionary<Guid, LongRunningExecutionStatus>();
 
-        public void ReportCompleted(Guid executionId, LongRunningExecutionStatus result)
+        public void ReportStarted(Guid executionId)
         {
-            _items.TryAdd(executionId, result);
+            _items.TryAdd(executionId, new RunningStatus(executionId, DateTime.UtcNow));
+        }
+
+        public void ReportCompleted(Guid executionId, object result)
+        {
+            _items.TryRemove(executionId, out var currentStatus);
+            
+            if(currentStatus is RunningStatus runningStatus)
+                _items.TryAdd(executionId, new CompletedStatus(executionId, runningStatus.Started, DateTime.UtcNow, result));
+        }
+
+        public void ReportError(Guid executionId, Exception exception)
+        {
+            _items.TryRemove(executionId, out var currentStatus);
+
+            if (currentStatus is RunningStatus runningStatus)
+                _items.TryAdd(executionId, new ErrorStatus(executionId, runningStatus.Started, DateTime.UtcNow, exception));
         }
 
         public LongRunningExecutionStatus ReadStatus(Guid executionId)

@@ -1,8 +1,6 @@
 ﻿using System.Collections.Generic;
 using LiteGuard;
 
-// ReSharper disable PossibleMultipleEnumeration
-
 namespace Brickweave.Cqrs.Cli.Models
 {
     public class ExecutableInfo

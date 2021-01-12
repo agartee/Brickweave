@@ -1,10 +1,12 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Brickweave.Cqrs.Cli.Extensions;
 using Brickweave.Cqrs.Cli.Factories;
 
 namespace Brickweave.Cqrs.Cli
 {
+    [Obsolete("Due to potential for long-running commands, usage should be replaced with the standard Dispatcher with additional Task logic.")]
     public class CliDispatcher : ICliDispatcher
     {
         private readonly IExecutableInfoFactory _executableInfoFactory;

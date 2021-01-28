@@ -1,12 +1,11 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Brickweave.Cqrs.Cli.Extensions;
 using Brickweave.Cqrs.Cli.Factories;
 
 namespace Brickweave.Cqrs.Cli
 {
-    [Obsolete("Due to potential for long-running commands, usage should be replaced with the standard Dispatcher with additional Task logic.")]
     public class CliDispatcher : ICliDispatcher
     {
         private readonly IExecutableInfoFactory _executableInfoFactory;
@@ -25,7 +24,7 @@ namespace Brickweave.Cqrs.Cli
             _helpInfoFactory = helpInfoFactory;
         }
 
-        public async Task<object> DispatchAsync(string commandText)
+        public async Task<object> DispatchAsync(string commandText, ClaimsPrincipal user = null)
         {
             var args = commandText.ParseCommandText();
 
@@ -36,8 +35,8 @@ namespace Brickweave.Cqrs.Cli
             var executable = _executableFactory.Create(executableInfo);
 
             var result = executable is ICommand
-                ? await _commandDispatcher.ExecuteAsync((ICommand)executable)
-                : await _queryDispatcher.ExecuteAsync((IQuery)executable);
+                ? await _commandDispatcher.ExecuteAsync((ICommand)executable, user)
+                : await _queryDispatcher.ExecuteAsync((IQuery)executable, user);
 
             return result;
         }

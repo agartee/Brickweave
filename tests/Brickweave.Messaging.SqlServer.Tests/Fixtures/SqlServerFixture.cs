@@ -28,7 +28,7 @@ namespace Brickweave.Messaging.SqlServer.Tests.Fixtures
         public void ClearDatabase()
         {
             var sql = $"DELETE FROM [{MessageStoreDbContext.SCHEMA_NAME}].[{MessageData.TABLE_NAME}]";
-            DbContext.Database.ExecuteSqlCommand(sql);
+            DbContext.Database.ExecuteSqlRaw(sql);
         }
     }
 }

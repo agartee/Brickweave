@@ -1,11 +1,10 @@
-﻿using System;
+﻿using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Brickweave.Cqrs.Cli
 {
-    [Obsolete("Due to potential for long-running commands, usage should be replaced with the standard IDispatcher with additional Task logic.")]
     public interface ICliDispatcher
     {
-        Task<object> DispatchAsync(string commandText);
+        Task<object> DispatchAsync(string commandText, ClaimsPrincipal user = null);
     }
 }

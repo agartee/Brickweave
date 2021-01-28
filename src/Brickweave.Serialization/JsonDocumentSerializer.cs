@@ -52,9 +52,18 @@ namespace Brickweave.Serialization
 
         public T DeserializeObject<T>(string typeName, string json)
         {
-            var type = _shorthandTypes.FirstOrDefault(t => t.Name == typeName);
+            var type = _shorthandTypes.FirstOrDefault(t => t.Name == typeName)
+                ?? Type.GetType(typeName);
 
             return (T)JsonConvert.DeserializeObject(json, type, DefaultSettings);
+        }
+
+        public object DeserializeObject(string typeName, string json)
+        {
+            var type = _shorthandTypes.FirstOrDefault(t => t.Name == typeName)
+                ?? Type.GetType(typeName);
+            
+            return JsonConvert.DeserializeObject(json, type, DefaultSettings);
         }
     }
 }

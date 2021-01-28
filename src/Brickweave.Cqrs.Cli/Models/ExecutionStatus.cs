@@ -2,9 +2,10 @@
 
 namespace Brickweave.Cqrs.Cli.Models
 {
-    public abstract class LongRunningExecutionStatus
+
+    public abstract class ExecutionStatus : IExecutionStatus
     {
-        protected LongRunningExecutionStatus(Guid id)
+        protected ExecutionStatus(Guid id)
         {
             Id = id;
         }
@@ -12,14 +13,14 @@ namespace Brickweave.Cqrs.Cli.Models
         public Guid Id { get; }
     }
 
-    public class NotFoundStatus : LongRunningExecutionStatus
+    public class NotFoundStatus : ExecutionStatus
     {
         public NotFoundStatus(Guid id) : base(id)
         {
         }
     }
 
-    public class RunningStatus : LongRunningExecutionStatus
+    public class RunningStatus : ExecutionStatus
     {
         public RunningStatus(Guid id, DateTime started) : base(id)
         {
@@ -29,7 +30,7 @@ namespace Brickweave.Cqrs.Cli.Models
         public DateTime Started { get; }
     }
 
-    public class CompletedStatus : LongRunningExecutionStatus
+    public class CompletedStatus : ExecutionStatus
     {
         public CompletedStatus(Guid id, DateTime started, DateTime completed, object result) : base(id)
         {
@@ -43,17 +44,17 @@ namespace Brickweave.Cqrs.Cli.Models
         public object Result { get; }
     }
 
-    public class ErrorStatus : LongRunningExecutionStatus
+    public class ErrorStatus : ExecutionStatus
     {
-        public ErrorStatus(Guid id, DateTime started, DateTime stopped, Exception exception) : base(id)
+        public ErrorStatus(Guid id, DateTime started, DateTime stopped, string message) : base(id)
         {
             Started = started;
             Stopped = stopped;
-            Exception = exception;
+            Message = message;
         }
 
         public DateTime Started { get; }
         public DateTime Stopped { get; }
-        public Exception Exception { get; }
+        public string Message { get; }
     }
 }

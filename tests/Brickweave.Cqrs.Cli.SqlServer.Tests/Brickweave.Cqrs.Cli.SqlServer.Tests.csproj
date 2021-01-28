@@ -19,7 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Brickweave.EventStore.SqlServer\Brickweave.EventStore.SqlServer.csproj" />
+    <ProjectReference Include="..\..\src\Brickweave.Cqrs.Cli.SqlServer\Brickweave.Cqrs.Cli.SqlServer.csproj" />
   </ItemGroup>
 
 </Project>

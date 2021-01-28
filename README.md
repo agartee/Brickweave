@@ -2,7 +2,7 @@
 ![Brickweave](https://github.com/agartee/brickweave/raw/master/assets/logo/brickweave200x200.png)
 
 [![NuGet version](https://img.shields.io/nuget/v/LiteGuard.svg?style=flat)](https://www.nuget.org/packages?q=Brickweave)
-[![Build status](https://ci.appveyor.com/api/projects/status/gk6r7gupecbc23rn?svg=true)](https://ci.appveyor.com/project/agartee/brickweave)
+[![Build status](https://ci.appveyor.com/api/projects/status/tjtip1xd6q11npio?svg=true)](https://ci.appveyor.com/project/agartee/brickweave)
 
 ## What is Brickweave?
 

@@ -43,10 +43,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Brickweave.Serialization", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Brickweave.Serialization.Tests", "tests\Brickweave.Serialization.Tests\Brickweave.Serialization.Tests.csproj", "{E793FFD9-2AFB-4175-9A52-C9C0778DAFE7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Brickweave.Cqrs.Cli.SqlServer", "src\Brickweave.Cqrs.Cli.SqlServer\Brickweave.Cqrs.Cli.SqlServer.csproj", "{9EF01892-1A0E-473A-9222-EA2E3F49AB14}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Brickweave.Cqrs.Cli.SqlServer.Tests", "tests\Brickweave.Cqrs.Cli.SqlServer.Tests\Brickweave.Cqrs.Cli.SqlServer.Tests.csproj", "{E2383C12-3E44-42E5-8DC9-C32FF3E10028}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -125,14 +121,6 @@ Global
 		{E793FFD9-2AFB-4175-9A52-C9C0778DAFE7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E793FFD9-2AFB-4175-9A52-C9C0778DAFE7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E793FFD9-2AFB-4175-9A52-C9C0778DAFE7}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9EF01892-1A0E-473A-9222-EA2E3F49AB14}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9EF01892-1A0E-473A-9222-EA2E3F49AB14}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9EF01892-1A0E-473A-9222-EA2E3F49AB14}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9EF01892-1A0E-473A-9222-EA2E3F49AB14}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E2383C12-3E44-42E5-8DC9-C32FF3E10028}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E2383C12-3E44-42E5-8DC9-C32FF3E10028}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E2383C12-3E44-42E5-8DC9-C32FF3E10028}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E2383C12-3E44-42E5-8DC9-C32FF3E10028}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -156,8 +144,6 @@ Global
 		{FC25B164-A295-40AB-B952-3F5335B4C223} = {01363C09-641F-41CF-857A-E93663279BB5}
 		{BD56171C-0C24-4474-8802-9FB217A85E85} = {685B773C-8922-47C0-9144-4219E1AF5A0C}
 		{E793FFD9-2AFB-4175-9A52-C9C0778DAFE7} = {01363C09-641F-41CF-857A-E93663279BB5}
-		{9EF01892-1A0E-473A-9222-EA2E3F49AB14} = {685B773C-8922-47C0-9144-4219E1AF5A0C}
-		{E2383C12-3E44-42E5-8DC9-C32FF3E10028} = {01363C09-641F-41CF-857A-E93663279BB5}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4E8CFE0E-1064-4953-B2D7-545AE105B2D9}

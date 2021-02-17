@@ -32,7 +32,7 @@ namespace Brickweave.Messaging.SqlServer
             var maxCountParam = new SqlParameter(
                 "@maxCount", batchSize);
 
-            var sql = CreateDequeueCommand(maxCountParam);
+            var sql = CreateDequeueQuery(maxCountParam);
 
             var data = await _dbSet
                 .FromSqlRaw(sql, maxCountParam)
@@ -59,7 +59,7 @@ namespace Brickweave.Messaging.SqlServer
             await _dbContext.SaveChangesAsync();
         }
 
-        private static string CreateDequeueCommand(SqlParameter maxCountParam)
+        private static string CreateDequeueQuery(SqlParameter maxCountParam)
         {
             return string.Format(
                 @"SET NOCOUNT ON;

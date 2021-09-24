@@ -1,0 +1,45 @@
+﻿@model IEnumerable<Person>
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <p>Learn about building application with Brickweave <a href="https://github.com/agartee/Brickweave">here</a>.</p>
+</div>
+
+<p>
+    In this demo application, the basic wire-up and usage of the <b>Brickweave.Cqrs</b> and <b>Brickweave.Cqrs.Cli</b> will 
+    be demonstrated. Comments throughout the class files combined with the documentation on the GitHub project page should 
+    give you a pretty good idea of what is going on.
+</p>
+
+<p>
+    There is also a demo CLI client (PowerShell script) included (<b>./scripts/cli-client-nosecurity.ps1</b>). Running the client
+    for the first time will prompt for an API endpoint. For this demo, use <b>https://localhost:5001/cli/run</b>. The script will save a 
+    configuration so that you don't need to enter this every time.
+</p>
+
+<p>
+    Please ignore the fact that no authentication/authorization takes place in this demo for either the web application or the 
+    CLI. Future demos will include Auth0 OAuth2.
+</p>
+
+<p>
+    While you're playing around with this demo, pelase try some of these commands from the PowerShell command prompt:
+</p>
+
+<code>./scripts/cli-client-nosecurity.ps1 --help</code>
+
+<code>./scripts/cli-client-nosecurity.ps1 person --help</code>
+
+<code>./scripts/cli-client-nosecurity.ps1 person list</code>
+
+<code>./scripts/cli-client-nosecurity.ps1 person create --help</code>
+
+<code><var>$person</var> = (./scripts/cli-client-nosecurity.ps1 person create --firstname "John" --lastname "Doe" | ConvertFrom-Json)</code>
+
+<code>./scripts/cli-client-nosecurity.ps1 person update --id <var>$person</var>.id --lastname "Wick"</code>
+
+<code>./scripts/cli-client-nosecurity.ps1 person delete --id <var>$person</var>.id</code>
+

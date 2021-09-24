@@ -38,9 +38,12 @@ namespace Brickweave.Cqrs.Cli.Extensions
                 .ToArray();
         }
 
-        private static string RemoveFirstAndLast(this string str)
+        public static string FirstCharToLowerCase(this string str)
         {
-            return string.Join(string.Empty, str.Skip(1).Take(str.Length - 2));
+            if (string.IsNullOrEmpty(str) || char.IsLower(str[0]))
+                return str;
+
+            return char.ToLower(str[0]) + str.Substring(1);
         }
     }
 }

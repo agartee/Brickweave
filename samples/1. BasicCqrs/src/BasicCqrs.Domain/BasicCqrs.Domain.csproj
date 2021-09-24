@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <LangVersion>9.0</LangVersion>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DocumentationFile>C:\dev\Brickweave\samples\1. BasicCqrs\src\BasicCqrs.Domain\BasicCqrs.Domain.xml</DocumentationFile>
+    <NoWarn>1701;1702;1591</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="LiteGuard" Version="2.2.0" />
+    <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\src\Brickweave.Cqrs.Cli\Brickweave.Cqrs.Cli.csproj" />
+    <ProjectReference Include="..\..\..\..\src\Brickweave.Cqrs\Brickweave.Cqrs.csproj" />
+    <ProjectReference Include="..\..\..\..\src\Brickweave.Domain\Brickweave.Domain.csproj" />
+  </ItemGroup>
+
+</Project>

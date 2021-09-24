@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -6,30 +6,31 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
 using Brickweave.Cqrs.Cli.Exceptions;
+using Brickweave.Cqrs.Cli.Extensions;
 using Brickweave.Cqrs.Cli.Models;
 using LiteGuard;
 
 namespace Brickweave.Cqrs.Cli.Readers
 {
-    public class XmlDocumentationFileHelpReader : IExecutableHelpReader
+    public class XmlDocumentationFileClassesAndPropertiesHelpReader : IExecutableHelpReader
     {
         private readonly string[] _filePaths;
         private readonly IEnumerable<IExecutableRegistration> _executableRegistrations;
         private readonly IEnumerable<Type> _excludedExecutableTypes = new List<Type>();
-        
-        public XmlDocumentationFileHelpReader(params string[] filePaths) 
+
+        public XmlDocumentationFileClassesAndPropertiesHelpReader(params string[] filePaths)
             : this(Enumerable.Empty<IExecutableRegistration>(), Enumerable.Empty<Type>(), filePaths)
         {
         }
 
-        public XmlDocumentationFileHelpReader(IEnumerable<IExecutableRegistration> executableRegistrations,
+        public XmlDocumentationFileClassesAndPropertiesHelpReader(IEnumerable<IExecutableRegistration> executableRegistrations,
             IEnumerable<Type> excludedExecutableTypes, params string[] filePaths)
         {
             _executableRegistrations = executableRegistrations;
             _excludedExecutableTypes = excludedExecutableTypes;
             _filePaths = filePaths;
         }
-        
+
         public IEnumerable<HelpInfo> GetHelpInfo(HelpAdjacencyCriteria adjacencyCriteria)
         {
             return _filePaths
@@ -47,24 +48,31 @@ namespace Brickweave.Cqrs.Cli.Readers
             try
             {
                 var document = XDocument.Load(filePath);
-
-                var results = document.Root.Element("members").Elements("member")
-                    .Where(IsConstructorWithDocumentation)
-                    .Where(IsNotInExcludedTypes)
-                    .Select(CreateHelpInfo)
-                    .Where(h => adjacencyCriteria.Subject == h.Subject)
-                    .Where(h => string.IsNullOrWhiteSpace(adjacencyCriteria.Action)
-                        || adjacencyCriteria.Action == h.Name)
-                    .ToArray();
+                var results = ReadClassAndPropertySummary(document, adjacencyCriteria);
 
                 return results;
             }
             catch { throw new ExecutableHelpFileInvalidExeption(); }
         }
 
-        private bool IsConstructorWithDocumentation(XElement element)
+        private HelpInfo[] ReadClassAndPropertySummary(XDocument document, HelpAdjacencyCriteria adjacencyCriteria)
         {
-            return element.Attribute("name").Value.Contains("#ctor");
+            var results = document.Root.Element("members").Elements("member")
+                    .Where(x => !x.Attribute("name").Value.Equals("T:System.Runtime.CompilerServices.IsExternalInit"))
+                    .Where(x => IsClassWithSummary(x))
+                    .Where(IsNotInExcludedTypes)
+                    .Select(x => CreateClassHelpInfo(x, GetPropertyElements(document, x)))
+                    .Where(h => adjacencyCriteria.Subject == h.Subject)
+                    .Where(h => string.IsNullOrWhiteSpace(adjacencyCriteria.Action)
+                        || adjacencyCriteria.Action == h.Name)
+                    .ToArray();
+
+            return results;
+        }
+
+        private bool IsClassWithSummary(XElement element)
+        {
+            return element.Attribute("name").Value.Contains("T:");
         }
 
         private bool IsNotInExcludedTypes(XElement element)
@@ -76,9 +84,20 @@ namespace Brickweave.Cqrs.Cli.Readers
                 .Any(n => typeName == n);
         }
 
-        private HelpInfo CreateHelpInfo(XElement constructorElement)
+        private IEnumerable<XElement> GetPropertyElements(XDocument document, XElement typeElement)
         {
-            var typeName = GetTypeName(constructorElement);
+            var typeName = GetTypeFullName(typeElement);
+
+            var results = document.Root.Element("members").Elements("member")
+                .Where(x => x.Attribute("name").Value.StartsWith($"P:{typeName}"))
+                .ToList();
+
+            return results;
+        }
+
+        private HelpInfo CreateClassHelpInfo(XElement typeElement, IEnumerable<XElement> propertyElements)
+        {
+            var typeName = GetTypeName(typeElement);
 
             var subjectName = GetSubjectName(typeName);
             var actionName = GetActionName(typeName);
@@ -86,13 +105,13 @@ namespace Brickweave.Cqrs.Cli.Readers
             return new HelpInfo(
                 actionName,
                 subjectName,
-                constructorElement.Element("summary")?.Value.Trim(),
+                typeElement.Element("summary")?.Value.Trim(),
                 HelpInfoType.Executable,
-                constructorElement.Elements("param")
+                propertyElements
                     .Select(p => new HelpInfo(
-                        $"{p.Attribute("name")?.Value}",
+                        $"{GetPropertyName(p).FirstCharToLowerCase()}",
                         $"{subjectName} {actionName}",
-                        p.Value,
+                        p.Element("summary")?.Value.Trim(),
                         HelpInfoType.Parameter))
                     .ToArray());
         }
@@ -117,21 +136,31 @@ namespace Brickweave.Cqrs.Cli.Readers
                 : SplitTypeName(typeName).First();
         }
 
-        private string GetTypeFullName(XElement constructorElement)
+        private string GetTypeFullName(XElement typeElement)
         {
-            var name = constructorElement.Attribute("name").Value;
-            var start = name.IndexOf("M:") + "M:".Length;
-            var end = name.Substring(start).IndexOf(".#ctor");
+            var name = typeElement.Attribute("name").Value;
+            var start = name.IndexOf("T:") + "T:".Length;
+            var end = name.Length;
 
-            return name.Substring(start, end);
+            return name.Substring(start, end - start);
         }
 
-        private string GetTypeName(XElement constructorElement)
+        private string GetTypeName(XElement typeElement)
         {
-            return constructorElement.Attribute("name").Value
-                .Split(new[] { "#ctor" }, StringSplitOptions.RemoveEmptyEntries)
-                .First().Split(new[] { "." }, StringSplitOptions.RemoveEmptyEntries)
-                .Last();
+            var name = typeElement.Attribute("name").Value;
+            var start = name.LastIndexOf('.') + 1;
+            var end = name.Length;
+
+            return name.Substring(start, end - start);
+        }
+
+        private string GetPropertyName(XElement propertyElement)
+        {
+            var name = propertyElement.Attribute("name").Value;
+            var start = name.LastIndexOf('.') + 1;
+            var end = name.Length;
+
+            return name.Substring(start, end - start);
         }
 
         private string[] SplitTypeName(string typeName)

@@ -1,0 +1,64 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>BasicCqrs.Domain</name>
+    </assembly>
+    <members>
+        <member name="T:System.Runtime.CompilerServices.IsExternalInit">
+            <summary>
+            Reserved to be used by the compiler for tracking metadata.
+            This class should not be used by developers in source code.
+            </summary>
+        </member>
+        <member name="M:BasicCqrs.Domain.People.Commands.CreatePerson.#ctor(System.String,System.String)">
+            <summary>
+            Creates a new Person.
+            </summary>
+            <param name="firstName">New person's first name.</param>
+            <param name="lastName">New person's last name.</param>
+        </member>
+        <member name="M:BasicCqrs.Domain.People.Commands.DeletePerson.#ctor(BasicCqrs.Domain.People.Models.PersonId)">
+            <summary>
+            Updates an existing Person.
+            </summary>
+            <param name="id">Existing person's unique identifier.</param>
+        </member>
+        <member name="T:BasicCqrs.Domain.People.Commands.UpdatePerson">
+            <summary>
+            Updates an existing Person.
+            </summary>
+        </member>
+        <member name="P:BasicCqrs.Domain.People.Commands.UpdatePerson.Id">
+            <summary>
+            Existing person's unique identifier.
+            </summary>
+        </member>
+        <member name="P:BasicCqrs.Domain.People.Commands.UpdatePerson.FirstName">
+            <summary>
+            Existing person's new first name.
+            </summary>
+        </member>
+        <member name="P:BasicCqrs.Domain.People.Commands.UpdatePerson.LastName">
+            <summary>
+            Existing person's new last name.
+            </summary>
+        </member>
+        <member name="M:BasicCqrs.Domain.People.Queries.GetPerson.#ctor(BasicCqrs.Domain.People.Models.PersonId)">
+            <summary>
+            Gets an existing person.
+            </summary>
+            <param name="id">The unique ID of an existing person.</param>
+        </member>
+        <member name="M:BasicCqrs.Domain.People.Queries.ListPeople.#ctor(System.String)">
+            <summary>
+            Get a list of existing people.
+            </summary>
+            <param name="nameLike">Name criteria for a partial match of either first or last name.</param>
+        </member>
+        <member name="T:BasicCqrs.Domain.People.Services.DummyPersonRepository">
+            <summary>
+            For this demo, real database reads/writes are not necessary.
+            </summary>
+        </member>
+    </members>
+</doc>

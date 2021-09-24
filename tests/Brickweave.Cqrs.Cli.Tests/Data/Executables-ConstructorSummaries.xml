@@ -13,6 +13,15 @@
             <param name="id">Id parameter</param>
             <param name="bar">Bar parameter</param>
         </member>
+
+        <member name="T:Brickweave.Cqrs.Cli.Tests.Models.DeleteFoo">
+        </member>
+        <member name="M:Brickweave.Cqrs.Cli.Tests.Models.DeleteFoo.#ctor(System.Int32)">
+          <summary>
+            Delete existing Foo
+          </summary>
+          <param name="id">Id parameter</param>
+        </member>
       
         <member name="T:Brickweave.Cqrs.Cli.Tests.Models.CreateBar">
         </member>

@@ -17,6 +17,7 @@ namespace Brickweave.Cqrs.Cli.DependencyInjection
         private readonly IServiceCollection _services;
         private readonly IList<IExecutableRegistration> _executableRegistrations = new List<IExecutableRegistration>();
         private readonly IList<Type> _excludedExecutableTypes = new List<Type>();
+        private readonly IEnumerable<string> _xmlDocumentationFilePaths = new List<string>();
 
         private CultureInfo _culture;
 
@@ -25,7 +26,11 @@ namespace Brickweave.Cqrs.Cli.DependencyInjection
             var executables = domainAssemblies.SelectMany(a => a.ExportedTypes)
                 .Where(t => typeof(IExecutable).IsAssignableFrom(t.GetTypeInfo()))
                 .ToList();
-            
+
+            _xmlDocumentationFilePaths = domainAssemblies
+                .Select(a => Path.Combine(Path.GetDirectoryName(a.Location), $"{a.GetName().Name}.xml"))
+                .ToList();
+
             services
                 .AddScoped<ICliDispatcher, CliDispatcher>()
                 .AddScoped<IExecutableInfoFactory>(provider =>
@@ -62,12 +67,9 @@ namespace Brickweave.Cqrs.Cli.DependencyInjection
                 .AddScoped<IParameterValueFactory, DictionaryParameterValueFactory>()
                 .AddScoped<IParameterValueFactory>(s => new EnumerableParameterValueFactory(s.GetServices<ISingleParameterValueFactory>()))
                 .AddScoped<IParameterValueFactory>(s => new ListParameterValueFactory(s.GetServices<ISingleParameterValueFactory>()))
-                .AddScoped<IExecutableFactory>(provider => new ExecutableFactory(
-                    provider.GetServices<IParameterValueFactory>(),
+                .AddScoped<IExecutableFactory>(s => new ExecutableFactory(
+                    s.GetServices<IParameterValueFactory>(),
                     executables.Where(t => !_excludedExecutableTypes.Contains(t))))
-                .AddScoped<IExecutableHelpReader>(s => new XmlDocumentationFileHelpReader(
-                    _executableRegistrations, _excludedExecutableTypes,
-                    domainAssemblies.Select(a => Path.Combine(Path.GetDirectoryName(a.Location), $"{a.GetName().Name}.xml")).ToArray()))
                 .AddScoped<IHelpInfoFactory, HelpInfoFactory>();
 
             _services = services;
@@ -112,6 +114,24 @@ namespace Brickweave.Cqrs.Cli.DependencyInjection
         public CliOptionsBuilder AddCategoryHelpFile(string filePath)
         {
             _services.AddScoped<ICategoryHelpReader>(services => new JsonFileCategoryHelpReader(filePath));
+            return this;
+        }
+
+        public CliOptionsBuilder AddPreferredDocumentationStrategy(HelpDocumentationStrategy helpDocumentationStrategy)
+        {
+            if (helpDocumentationStrategy == HelpDocumentationStrategy.ClassesAndProperties)
+            {
+                _services.AddScoped<IExecutableHelpReader>(s => new XmlDocumentationFileClassesAndPropertiesHelpReader(
+                    _executableRegistrations, _excludedExecutableTypes,
+                    _xmlDocumentationFilePaths.ToArray()));
+            }
+            else
+            {
+                _services.AddScoped<IExecutableHelpReader>(s => new XmlDocumentationFileConstructorHelpReader(
+                    _executableRegistrations, _excludedExecutableTypes,
+                    _xmlDocumentationFilePaths.ToArray()));
+            }
+
             return this;
         }
 

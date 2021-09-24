@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Brickweave.Cqrs.Cli.Tests</name>
+    </assembly>
+    <members>
+      <member name="T:Brickweave.Cqrs.Cli.Tests.Models.CreateBaz">
+        <summary>
+          Create new Baz
+        </summary>
+      </member>
+      <member name="P:Brickweave.Cqrs.Cli.Tests.Models.CreateBaz.Id">
+        <summary>
+          Id parameter
+        </summary>
+      </member>
+      <member name="P:Brickweave.Cqrs.Cli.Tests.Models.CreateBaz.Description">
+        <summary>
+          Description parameter
+        </summary>
+      </member>
+      
+      <member name="T:Brickweave.Cqrs.Cli.Tests.Models.DeleteBaz">
+        <summary>
+          Delete existing Baz
+        </summary>
+      </member>
+      <member name="P:Brickweave.Cqrs.Cli.Tests.Models.DeleteBaz.Id">
+        <summary>
+          Id parameter
+        </summary>
+      </member>
+
+      <member name="T:Brickweave.Cqrs.Cli.Tests.Models.ListFoos">
+        <summary>
+          List Foos
+        </summary>
+      </member>
+
+      <member name="T:Brickweave.Cqrs.Cli.Tests.Models.DeleteFoo">
+        <summary>
+          Create new Bar
+        </summary>
+      </member>
+      <member name="P:Brickweave.Cqrs.Cli.Tests.Models.DeleteFoo.Id">
+        <summary>
+          Id parameter
+        </summary>
+      </member>
+    
+    </members>
+</doc>

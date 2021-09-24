@@ -73,5 +73,45 @@ namespace Brickweave.Cqrs.Cli.Tests.Extensions
             result[0].Should().Be("Adam was");
             result[1].Should().Be("here");
         }
+
+        [Fact]
+        public void FirstCharToLowerCase_WithNullString_ReturnsNull()
+        {
+            string str = null;
+
+            var result = str.FirstCharToLowerCase();
+
+            result.Should().BeNull();
+        }
+
+        [Fact]
+        public void FirstCharToLowerCase_WithStringOfSingleCharacter_ReturnsStringStartingWithLowerCase()
+        {
+            var str = "S";
+
+            var result = str.FirstCharToLowerCase();
+
+            result.Should().Be("s");
+        }
+
+        [Fact]
+        public void FirstCharToLowerCase_WithStringOfMultipleCharacters_ReturnsStringStartingWithLowerCase()
+        {
+            var str = "String";
+
+            var result = str.FirstCharToLowerCase();
+
+            result.Should().Be("string");
+        }
+
+        [Fact]
+        public void FirstCharToLowerCase_WithStringOfMultipleCharactersWithMixedCases_ReturnsStringStartingWithLowerCase()
+        {
+            var str = "StRiNg";
+
+            var result = str.FirstCharToLowerCase();
+
+            result.Should().Be("stRiNg");
+        }
     }
 }

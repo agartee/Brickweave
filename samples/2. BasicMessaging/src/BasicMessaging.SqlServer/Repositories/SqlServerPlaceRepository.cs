@@ -9,10 +9,10 @@ namespace BasicMessaging.SqlServer.Repositories
 {
     public class SqlServerPlaceRepository : IPlaceRepository
     {
-        private readonly MessagingDemoDbContext _dbContext;
+        private readonly BasicMessagingDbContext _dbContext;
         private readonly IDocumentSerializer _serializer;
 
-        public SqlServerPlaceRepository(MessagingDemoDbContext dbContext, IDocumentSerializer serializer)
+        public SqlServerPlaceRepository(BasicMessagingDbContext dbContext, IDocumentSerializer serializer)
         {
             _dbContext = dbContext;
             _serializer = serializer;

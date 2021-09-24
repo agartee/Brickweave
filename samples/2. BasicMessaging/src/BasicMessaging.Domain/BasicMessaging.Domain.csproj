@@ -1,12 +1,12 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>netstandard2.1</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Brickweave.Cqrs" Version="0.11.0" />
-    <PackageReference Include="Brickweave.Messaging" Version="0.9.0" />
+    <ProjectReference Include="..\..\..\..\src\Brickweave.Cqrs\Brickweave.Cqrs.csproj" />
+    <ProjectReference Include="..\..\..\..\src\Brickweave.Messaging\Brickweave.Messaging.csproj" />
   </ItemGroup>
 
 </Project>

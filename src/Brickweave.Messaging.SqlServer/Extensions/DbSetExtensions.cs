@@ -28,6 +28,7 @@ namespace Brickweave.Messaging.SqlServer.Extensions
             var data = events.Select((e, i) => new TMessageData
             {
                 Id = Guid.NewGuid(),
+                TypeName = e.GetType().Name,
                 Json = serializer.SerializeObject(e),
                 Created = DateTime.UtcNow,
                 CommitSequence = i

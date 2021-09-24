@@ -7,29 +7,29 @@ using Microsoft.Extensions.Configuration;
 
 namespace BasicMessaging.WebApp.Data
 {
-    public class MessagingDemoDbContextFactory : IDesignTimeDbContextFactory<MessagingDemoDbContext>
+    public class BasicMessagingDbContextFactory : IDesignTimeDbContextFactory<BasicMessagingDbContext>
     {
         public static void Migrate()
         {
-            new MessagingDemoDbContextFactory().CreateDbContext(new string[] { })
+            new BasicMessagingDbContextFactory().CreateDbContext(new string[] { })
                 .Database.Migrate();
         }
 
-        public MessagingDemoDbContext CreateDbContext(string[] args)
+        public BasicMessagingDbContext CreateDbContext(string[] args)
         {
             var configuration = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddUserSecrets<Startup>()
                 .Build();
 
-            var migrationsAssembly = typeof(MessagingDemoDbContext).GetTypeInfo().Assembly.GetName().Name;
+            var migrationsAssembly = typeof(BasicMessagingDbContext).GetTypeInfo().Assembly.GetName().Name;
 
-            var options = new DbContextOptionsBuilder<MessagingDemoDbContext>()
+            var options = new DbContextOptionsBuilder<BasicMessagingDbContext>()
                 .UseSqlServer(configuration.GetConnectionString("demo"),
                     sql => sql.CommandTimeout(525600 * 60).MigrationsAssembly(migrationsAssembly))
                 .Options;
 
-            return new MessagingDemoDbContext(options);
+            return new BasicMessagingDbContext(options);
         }
     }
 }

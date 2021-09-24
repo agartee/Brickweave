@@ -4,9 +4,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BasicMessaging.SqlServer
 {
-    public class MessagingDemoDbContext : DbContext
+    public class BasicMessagingDbContext : DbContext
     {
-        public MessagingDemoDbContext(DbContextOptions options) : base(options)
+        public BasicMessagingDbContext(DbContextOptions options) : base(options)
         {
         }
 

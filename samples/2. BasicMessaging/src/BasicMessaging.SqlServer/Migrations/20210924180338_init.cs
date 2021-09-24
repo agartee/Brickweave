@@ -11,11 +11,14 @@ namespace BasicMessaging.SqlServer.Migrations
                 name: "MessageOutbox",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(nullable: false),
-                    Json = table.Column<string>(nullable: true),
-                    Created = table.Column<DateTime>(nullable: false),
-                    CommitSequence = table.Column<int>(nullable: false),
-                    IsSending = table.Column<bool>(nullable: false)
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    TypeName = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
+                    Json = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Created = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CommitSequence = table.Column<int>(type: "int", nullable: false),
+                    IsSending = table.Column<bool>(type: "bit", nullable: false),
+                    SendAttemptCount = table.Column<int>(type: "int", nullable: false),
+                    LastSendAttempt = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -26,8 +29,8 @@ namespace BasicMessaging.SqlServer.Migrations
                 name: "Place",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(nullable: false),
-                    Name = table.Column<string>(maxLength: 200, nullable: true)
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true)
                 },
                 constraints: table =>
                 {

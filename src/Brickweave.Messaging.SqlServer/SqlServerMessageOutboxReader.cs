@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Brickweave.Domain;
 using Brickweave.Messaging.Models;
 using Brickweave.Messaging.SqlServer.Entities;
+using Brickweave.Messaging.SqlServer.Extensions;
 using Brickweave.Serialization;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
@@ -27,24 +28,30 @@ namespace Brickweave.Messaging.SqlServer
             _serializer = serializer;
         }
 
-        public async Task<IEnumerable<DomainMessageInfo>> GetNextBatch(int batchSize)
+        public async Task<IEnumerable<DomainMessageInfo>> GetNextBatch(int batchSize, int retryAfterSeconds, int maxRetries)
         {
             var maxCountParam = new SqlParameter(
                 "@maxCount", batchSize);
+            var minRetryDateTimeParam = new SqlParameter(
+                "@retryAfterSeconds", retryAfterSeconds);
+            var maxRetriesParam = new SqlParameter(
+                "@maxRetries", maxRetries);
 
             var sql = CreateDequeueQuery(maxCountParam);
 
             var data = await _dbSet
-                .FromSqlRaw(sql, maxCountParam)
+                .FromSqlRaw(sql, maxCountParam, minRetryDateTimeParam, maxRetriesParam)
+                .AsNoTracking()
                 .ToListAsync();
 
             return data
                 .Select(m => new DomainMessageInfo(
                     new DomainMessageId(m.Id),
-                    _serializer.DeserializeObject<IDomainEvent>(m.Json),
+                    _serializer.DeserializeObject<IDomainEvent>(m.TypeName, m.Json),
                     m.Created,
-                    m.CommitSequence
-                    ))
+                    m.CommitSequence,
+                    m.SendAttemptCount,
+                    m.LastSendAttempt))
                 .ToList();
         }
 
@@ -59,6 +66,20 @@ namespace Brickweave.Messaging.SqlServer
             await _dbContext.SaveChangesAsync();
         }
 
+        public async Task ReportFailure(DomainMessageInfo domainMessage)
+        {
+            var data = await _dbSet
+                .Where(m => m.Id == domainMessage.Id.Value)
+                .SingleOrDefaultAsync();
+
+            data.IsSending = false;
+            data.SendAttemptCount = domainMessage.SendAttemptCount + 1;
+            data.LastSendAttempt = DateTime.UtcNow;
+
+            await _dbContext.SaveChangesAsync();
+            _dbContext.Entry(data).State = EntityState.Detached;
+        }
+
         private static string CreateDequeueQuery(SqlParameter maxCountParam)
         {
             return string.Format(
@@ -67,24 +88,56 @@ namespace Brickweave.Messaging.SqlServer
                 DECLARE @results TABLE 
 	            (
 		            [Id] UNIQUEIDENTIFIER
+                    , [TypeName] VARCHAR(200)
 		            , [Json] VARCHAR(MAX)
 		            , [Created] DATETIME
 		            , [CommitSequence] INT
                     , [IsSending] BIT
+                    , [SendAttemptCount] INT
+                    , [LastSendAttempt] DATETIME
 	            )
 
-	            INSERT INTO @results ([Id], [Json], [Created], [CommitSequence], [IsSending])
-	            SELECT TOP ({0}) [Id], [Json], [Created], [CommitSequence], [IsSending]
-	            FROM [MessageOutbox] WITH (ROWLOCK, READPAST)
-	            WHERE [isSending] = 0
-                ORDER BY [Created], [CommitSequence]
+	            INSERT INTO @results (
+                      [Id]
+                    , [TypeName]
+                    , [Json]
+                    , [Created]
+                    , [CommitSequence]
+                    , [IsSending]
+                    , [SendAttemptCount]
+                    , [LastSendAttempt]
+                )
+	            SELECT TOP ({0}) 
+                      [Id]
+                    , [TypeName]
+                    , [Json]
+                    , [Created]
+                    , [CommitSequence]
+                    , [IsSending]
+                    , [SendAttemptCount]
+                    , [LastSendAttempt]
+	            FROM 
+                    [MessageOutbox] WITH (ROWLOCK, UPDLOCK, READPAST)
+	            WHERE 
+                    [isSending] = 0
+                    AND (
+                        [LastSendAttempt] IS NULL 
+                        OR GETUTCDATE() >= DATEADD(second, @retryAfterSeconds, [LastSendAttempt])
+                    )
+                    AND [SendAttemptCount] < @maxRetries
+                ORDER BY 
+                      [Created]
+                    , [CommitSequence]
 
-	            UPDATE [MessageOutbox]
-	            SET [IsSending] = 1
-	            WHERE [Id] IN (SELECT [Id] FROM @results)
+	            UPDATE 
+                    [MessageOutbox]
+	            SET 
+                    [IsSending] = 1
+	            WHERE 
+                    [Id] IN (SELECT [Id] FROM @results)
 	
 	            SELECT * from @results",
-                maxCountParam.Value);
+                maxCountParam.Value).TrimExtraWhitespace();
         }
     }
 }

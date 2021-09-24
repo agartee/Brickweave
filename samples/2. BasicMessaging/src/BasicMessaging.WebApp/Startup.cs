@@ -7,6 +7,7 @@ using BasicMessaging.SqlServer.Repositories;
 using BasicMessaging.WebApp.HostedServices;
 using Brickweave.Cqrs.DependencyInjection;
 using Brickweave.Domain;
+using Brickweave.Domain.Serialization;
 using Brickweave.Messaging.ServiceBus.DependencyInjection;
 using Brickweave.Messaging.SqlServer;
 using Brickweave.Messaging.SqlServer.Entities;
@@ -44,7 +45,8 @@ namespace BasicMessaging.WebApp
                 .Where(t => typeof(IDomainEvent).IsAssignableFrom(t))
                 .ToArray();
 
-            services.AddBrickweaveSerialization(shortHandTypes);
+            services.AddBrickweaveSerialization(shortHandTypes)
+                .AddJsonConverter(new IdConverter());
 
             services.AddMessageBus()
                 .AddMessageSenderRegistration(
@@ -52,7 +54,7 @@ namespace BasicMessaging.WebApp
                     Configuration["messaging:queue"], isDefault: true)
                 .AddUtf8Encoding();
 
-            services.AddDbContext<MessagingDemoDbContext>(options =>
+            services.AddDbContext<BasicMessagingDbContext>(options =>
             {
                 options.UseSqlServer(Configuration.GetConnectionString("demo"),
                     sql => sql.MigrationsAssembly(GetMigrationAssemblyName()).CommandTimeout(120));
@@ -63,8 +65,8 @@ namespace BasicMessaging.WebApp
 
             services.AddTransient<IPlaceRepository, SqlServerPlaceRepository>();
             services.AddScoped<IMessageOutboxReader>(s =>
-                new SqlServerMessageOutboxReader<MessagingDemoDbContext, MessageData>(
-                    s.GetService<MessagingDemoDbContext>(),
+                new SqlServerMessageOutboxReader<BasicMessagingDbContext, MessageData>(
+                    s.GetService<BasicMessagingDbContext>(),
                     dbContext => dbContext.MessageOutbox,
                     s.GetService<IDocumentSerializer>()));
 
@@ -100,7 +102,7 @@ namespace BasicMessaging.WebApp
 
         private static string GetMigrationAssemblyName()
         {
-            return typeof(MessagingDemoDbContext).GetTypeInfo().Assembly.GetName().Name;
+            return typeof(BasicMessagingDbContext).GetTypeInfo().Assembly.GetName().Name;
         }
     }
 }

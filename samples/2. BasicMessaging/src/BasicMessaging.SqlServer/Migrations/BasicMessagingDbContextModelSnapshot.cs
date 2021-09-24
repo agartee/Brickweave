@@ -4,21 +4,19 @@ using BasicMessaging.SqlServer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BasicMessaging.SqlServer.Migrations
 {
-    [DbContext(typeof(MessagingDemoDbContext))]
-    [Migration("20201002091700_init")]
-    partial class init
+    [DbContext(typeof(BasicMessagingDbContext))]
+    partial class BasicMessagingDbContextModelSnapshot : ModelSnapshot
     {
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "3.1.8")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
+                .HasAnnotation("ProductVersion", "5.0.10")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
             modelBuilder.Entity("BasicMessaging.SqlServer.Entities.PlaceData", b =>
@@ -28,8 +26,8 @@ namespace BasicMessaging.SqlServer.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(200)")
-                        .HasMaxLength(200);
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.HasKey("Id");
 
@@ -53,6 +51,16 @@ namespace BasicMessaging.SqlServer.Migrations
 
                     b.Property<string>("Json")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("LastSendAttempt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("SendAttemptCount")
+                        .HasColumnType("int");
+
+                    b.Property<string>("TypeName")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.HasKey("Id");
 

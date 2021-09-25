@@ -57,12 +57,12 @@ namespace BasicCqrs.WebApp
 
             // Registers common CQRS services (e.g. IDispatcher) as well as the command handlers found in the provided
             // domain assemblies collection.
-            services.AddCqrs(domainAssemblies);
+            services.AddBrickweaveCqrs(domainAssemblies);
 
             // Registers CLI services that are used to translate command text (with args) as well as providing a hook 
             // for additional application customizations (e.g. date parsing). Here you may also override CLI command 
             // text for specific commands and/or queries.
-            services.AddCli(domainAssemblies)
+            services.AddBrickweaveCli(domainAssemblies)
                 .AddPreferredHelpDocumentationStrategy(HelpDocumentationStrategy.ClassesAndProperties) // determines which CLI help documentation stype to use
                 .AddDateParsingCulture(new CultureInfo("en-US"))
                 .AddCategoryHelpFile("cli-categories.json") // the file containing help documentation for domain model "categories" (domain model type, not a specific action)

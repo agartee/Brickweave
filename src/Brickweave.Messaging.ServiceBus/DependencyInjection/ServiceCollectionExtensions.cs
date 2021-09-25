@@ -4,7 +4,7 @@ namespace Brickweave.Messaging.ServiceBus.DependencyInjection
 {
     public static class ServiceCollectionExtensions
     {
-        public static ServiceBusOptionsBuilder AddMessageBus(this IServiceCollection services)
+        public static ServiceBusOptionsBuilder AddBrickweaveMessaging(this IServiceCollection services)
         {
             return new ServiceBusOptionsBuilder(services);
         }

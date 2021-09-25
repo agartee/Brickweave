@@ -39,7 +39,7 @@ namespace BasicMessaging.WebApp
                 .Where(a => a.FullName.Contains("BasicMessaging.Domain"))
                 .ToArray();
 
-            services.AddCqrs(domainAssemblies);
+            services.AddBrickweaveCqrs(domainAssemblies);
 
             var shortHandTypes = domainAssemblies.SelectMany(a => a.ExportedTypes)
                 .Where(t => typeof(IDomainEvent).IsAssignableFrom(t))
@@ -48,7 +48,7 @@ namespace BasicMessaging.WebApp
             services.AddBrickweaveSerialization(shortHandTypes)
                 .AddJsonConverter(new IdConverter());
 
-            services.AddMessageBus()
+            services.AddBrickweaveMessaging()
                 .AddMessageSenderRegistration(
                     Configuration.GetConnectionString("serviceBus"),
                     Configuration["messaging:queue"], isDefault: true)

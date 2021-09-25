@@ -4,7 +4,7 @@ namespace Brickweave.EventStore.SqlServer.DependencyInjection
 {
     public static class ServiceCollectionExtensions
     {
-        public static EventStoreOptionsBuilder AddEventStore(this IServiceCollection services)
+        public static EventStoreOptionsBuilder AddBrickweaveEventStore(this IServiceCollection services)
         {
             return new EventStoreOptionsBuilder(services);
         }

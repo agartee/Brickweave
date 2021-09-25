@@ -7,7 +7,7 @@ namespace Brickweave.Cqrs.DependencyInjection
 {
     public static class ServiceCollectionExtensions
     {
-        public static IServiceCollection AddCqrs(this IServiceCollection services, params Assembly[] domainAssemblies)
+        public static IServiceCollection AddBrickweaveCqrs(this IServiceCollection services, params Assembly[] domainAssemblies)
         {
             return services
                 .AddScoped<IDispatcher, Dispatcher>()

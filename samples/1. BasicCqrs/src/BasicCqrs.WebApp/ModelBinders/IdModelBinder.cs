@@ -2,31 +2,39 @@
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Brickweave.Domain;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace BasicCqrs.WebApp.ModelBinders
 {
-    public class IdModelBinder<T> : IModelBinder where T : Id<Guid>
+    public class IdModelBinder : IModelBinder
     {
         public Task BindModelAsync(ModelBindingContext bindingContext)
         {
             var fieldName = bindingContext.FieldName;
             var valueProviderResult = bindingContext.ValueProvider.GetValue(fieldName);
-            
-            if (valueProviderResult == ValueProviderResult.None) 
+
+            if (valueProviderResult == ValueProviderResult.None)
                 return Task.CompletedTask;
-            else 
+            else
                 bindingContext.ModelState.SetModelValue(fieldName, valueProviderResult);
 
             string value = valueProviderResult.FirstValue;
-            if (string.IsNullOrEmpty(value)) 
+            if (string.IsNullOrEmpty(value))
                 return Task.CompletedTask;
 
             try
             {
-                var constructor = GetConstructor(typeof(T));
-                var result = constructor.Invoke(new object[] { new Guid(value) });
+                var constructor = GetConstructor(bindingContext.ModelType);
+
+                var currentType = value.GetType();
+                var targetType = constructor.GetParameters().First().ParameterType;
+
+                object result = null;
+                if (currentType == targetType)
+                    result = constructor.Invoke(new[] { value });
+
+                if (targetType == typeof(Guid))
+                    result = constructor.Invoke(new object[] { new Guid(value) });
 
                 bindingContext.Result = ModelBindingResult.Success(result);
             }

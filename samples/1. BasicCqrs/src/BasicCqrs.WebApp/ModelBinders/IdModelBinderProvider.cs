@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using BasicCqrs.Domain.People.Models;
+using System.Linq;
+using System.Reflection;
+using Brickweave.Domain;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
 
@@ -29,12 +31,18 @@ namespace BasicCqrs.WebApp.ModelBinders
                 throw new ArgumentNullException(nameof(context));
             }
 
-            if (context.Metadata.ModelType == typeof(PersonId))
+            if (CanConvert(context.Metadata.ModelType))
             {
-                return new BinderTypeModelBinder(typeof(IdModelBinder<PersonId>));
+                return new BinderTypeModelBinder(typeof(IdModelBinder));
             }
 
             return null;
+        }
+
+        private bool CanConvert(Type objectType)
+        {
+            return SupportedTypes
+                .Any(t => typeof(Id<>).MakeGenericType(t).IsAssignableFrom(objectType.GetTypeInfo()));
         }
     }
 }

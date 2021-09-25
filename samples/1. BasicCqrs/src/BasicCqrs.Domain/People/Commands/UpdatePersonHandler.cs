@@ -18,11 +18,8 @@ namespace BasicCqrs.Domain.People.Commands
         {
             var person = await personRepository.GetPersonAsync(command.Id);
 
-            if (command.FirstName != null)
-                person.FirstName = command.FirstName;
-
-            if (command.LastName != null)
-                person.LastName = command.LastName;
+            person.FirstName = command.FirstName;
+            person.LastName = command.LastName;
 
             await personRepository.SavePersonAsync(person);
 

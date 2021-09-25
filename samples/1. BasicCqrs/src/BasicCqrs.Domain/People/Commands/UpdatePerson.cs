@@ -18,11 +18,13 @@ namespace BasicCqrs.Domain.People.Commands
         /// <summary>
         /// Existing person's new first name.
         /// </summary>
+        [Required] 
         public string FirstName { get; init; }
 
         /// <summary>
         /// Existing person's new last name.
         /// </summary>
+        [Required]
         public string LastName { get; init; }
     }
 }

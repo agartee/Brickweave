@@ -117,7 +117,7 @@ namespace Brickweave.Cqrs.Cli.DependencyInjection
             return this;
         }
 
-        public CliOptionsBuilder AddPreferredDocumentationStrategy(HelpDocumentationStrategy helpDocumentationStrategy)
+        public CliOptionsBuilder AddPreferredHelpDocumentationStrategy(HelpDocumentationStrategy helpDocumentationStrategy)
         {
             if (helpDocumentationStrategy == HelpDocumentationStrategy.ClassesAndProperties)
             {

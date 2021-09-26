@@ -8,7 +8,6 @@ using BasicCqrs.WebApp.Converters;
 using BasicCqrs.WebApp.Formatters;
 using BasicCqrs.WebApp.ModelBinders;
 using Brickweave.Cqrs.Cli.DependencyInjection;
-using Brickweave.Cqrs.Cli.Readers;
 using Brickweave.Cqrs.DependencyInjection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;

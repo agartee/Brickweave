@@ -44,7 +44,7 @@ namespace BasicCqrs.WebApp
                     config.JsonSerializerOptions.WriteIndented = true;
 
                     // Use a System.Text.Json coverter to write Id (e.g. PersonId) value objects as their root values. 
-                    // This will really only be used by the CLI in this demo, the web application does this 
+                    // This will really only be used by the CLI output in this demo, the web application does this 
                     // conversion in the view models for Razor page consumption.
                     config.JsonSerializerOptions.Converters.Add(new FlatIdConverter<PersonId>());
                 });

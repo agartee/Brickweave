@@ -70,7 +70,13 @@ namespace Brickweave.Cqrs.Cli.DependencyInjection
                 .AddScoped<IExecutableFactory>(s => new ExecutableFactory(
                     s.GetServices<IParameterValueFactory>(),
                     executables.Where(t => !_excludedExecutableTypes.Contains(t))))
-                .AddScoped<IHelpInfoFactory, HelpInfoFactory>();
+                .AddScoped<IHelpInfoFactory, HelpInfoFactory>()
+                .AddScoped<IExecutableHelpReader>(s => new XmlDocumentationFileClassesAndPropertiesHelpReader(
+                        _executableRegistrations, _excludedExecutableTypes,
+                        _xmlDocumentationFilePaths.ToArray()))
+                .AddScoped<IExecutableHelpReader>(s => new XmlDocumentationFileConstructorHelpReader(
+                    _executableRegistrations, _excludedExecutableTypes,
+                    _xmlDocumentationFilePaths.ToArray()));
 
             _services = services;
         }
@@ -114,24 +120,6 @@ namespace Brickweave.Cqrs.Cli.DependencyInjection
         public CliOptionsBuilder AddCategoryHelpFile(string filePath)
         {
             _services.AddScoped<ICategoryHelpReader>(services => new JsonFileCategoryHelpReader(filePath));
-            return this;
-        }
-
-        public CliOptionsBuilder AddPreferredHelpDocumentationStrategy(HelpDocumentationStrategy helpDocumentationStrategy)
-        {
-            if (helpDocumentationStrategy == HelpDocumentationStrategy.ClassesAndProperties)
-            {
-                _services.AddScoped<IExecutableHelpReader>(s => new XmlDocumentationFileClassesAndPropertiesHelpReader(
-                    _executableRegistrations, _excludedExecutableTypes,
-                    _xmlDocumentationFilePaths.ToArray()));
-            }
-            else
-            {
-                _services.AddScoped<IExecutableHelpReader>(s => new XmlDocumentationFileConstructorHelpReader(
-                    _executableRegistrations, _excludedExecutableTypes,
-                    _xmlDocumentationFilePaths.ToArray()));
-            }
-
             return this;
         }
 

@@ -52,7 +52,8 @@ namespace Brickweave.Cqrs.Cli.Readers
             {
                 var children = categories
                     .Where(h => h.FullName != adjacencyCriteria.Subject)
-                    .Select(o => new HelpInfo(o.Name, o.Subject, o.Description, o.Type));
+                    .Select(o => new HelpInfo(o.Name, o.Subject, o.Description, o.Type))
+                    .ToList();
 
                 return categories
                     .Where(h => h.FullName == adjacencyCriteria.Subject)

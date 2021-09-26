@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using Brickweave.Cqrs.Cli.Models;
 using Brickweave.Cqrs.Cli.Readers;
 
@@ -7,13 +8,13 @@ namespace Brickweave.Cqrs.Cli.Factories
     public class HelpInfoFactory : IHelpInfoFactory
     {
         private readonly ICategoryHelpReader _categoryHelpReader;
-        private readonly IExecutableHelpReader _executableHelpReader;
+        private readonly IEnumerable<IExecutableHelpReader> _executableHelpReaders;
         
-        public HelpInfoFactory(ICategoryHelpReader categoryHelpReader, 
-            IExecutableHelpReader executableHelpReader)
+        public HelpInfoFactory(ICategoryHelpReader categoryHelpReader,
+            IEnumerable<IExecutableHelpReader> executableHelpReaders)
         {
             _categoryHelpReader = categoryHelpReader;
-            _executableHelpReader = executableHelpReader;
+            _executableHelpReaders = executableHelpReaders;
         }
         
         public HelpInfo Create(string[] args)
@@ -29,8 +30,9 @@ namespace Brickweave.Cqrs.Cli.Factories
             if (categoryBySubject != null)
                 return GetCategoryHelpInfoWithChildren(categoryBySubjectCriteria, categoryBySubject);
             
-            var executablesBySubject = _executableHelpReader
-                .GetHelpInfo(categoryBySubjectCriteria)
+            var executablesBySubject = _executableHelpReaders
+                .SelectMany(r => r.GetHelpInfo(categoryBySubjectCriteria))
+                .OrderBy(h => h.Name)
                 .ToArray();
 
             if (executablesBySubject.Any())
@@ -43,8 +45,9 @@ namespace Brickweave.Cqrs.Cli.Factories
                     executablesBySubject);
             }
 
-            var executableBySubjectAndAction = _executableHelpReader
-                .GetHelpInfo(CreateSubjectAndActionCriteria(argsWithoutParams))
+            var executableBySubjectAndAction = _executableHelpReaders
+                .SelectMany(r => r.GetHelpInfo(CreateSubjectAndActionCriteria(argsWithoutParams)))
+                .OrderBy(h => h.Name)
                 .FirstOrDefault();
 
             return executableBySubjectAndAction;
@@ -78,8 +81,9 @@ namespace Brickweave.Cqrs.Cli.Factories
         private HelpInfo GetCategoryHelpInfoWithChildren(HelpAdjacencyCriteria categoryBySubjectCriteria,
             HelpInfo categoryBySubject)
         {
-            var childExecutables = _executableHelpReader
-                .GetHelpInfo(categoryBySubjectCriteria)
+            var childExecutables = _executableHelpReaders
+                .SelectMany(r => r.GetHelpInfo(categoryBySubjectCriteria))
+                .OrderBy(h => h.Name)
                 .ToList();
 
             return categoryBySubject.WithChildren(

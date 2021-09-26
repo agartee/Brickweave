@@ -63,7 +63,6 @@ namespace BasicCqrs.WebApp
             // for additional application customizations (e.g. date parsing). Here you may also override CLI command 
             // text for specific commands and/or queries.
             services.AddBrickweaveCli(domainAssemblies)
-                .AddPreferredHelpDocumentationStrategy(HelpDocumentationStrategy.ClassesAndProperties) // determines which CLI help documentation stype to use
                 .AddDateParsingCulture(new CultureInfo("en-US"))
                 .AddCategoryHelpFile("cli-categories.json") // the file containing help documentation for domain model "categories" (domain model type, not a specific action)
                 .OverrideQueryName<ListPeople>("list", "person"); // here we can override the auto-discovered CLI command named "people list" to "person list"

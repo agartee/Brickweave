@@ -20,8 +20,8 @@ namespace Brickweave.Cqrs.Cli.Tests.Factories
                     new List<HelpInfo> { new HelpInfo("bar", "foo", "Bar description", HelpInfoType.Category) }));
 
             var factory = new HelpInfoFactory(
-                categoryHelpReader,
-                Substitute.For<IExecutableHelpReader>());
+                new[] { categoryHelpReader },
+                new[] { Substitute.For<IExecutableHelpReader>() });
 
             var result = factory.Create(new[] { "foo", "--help" });
 
@@ -52,8 +52,8 @@ namespace Brickweave.Cqrs.Cli.Tests.Factories
             });
 
             var factory = new HelpInfoFactory(
-                categoryHelpReader,
-                executableHelpReader);
+                new[] { categoryHelpReader },
+                new[] { executableHelpReader } );
 
             var result = factory.Create(new[] { "foo", "--help" });
 
@@ -80,8 +80,8 @@ namespace Brickweave.Cqrs.Cli.Tests.Factories
             });
 
             var factory = new HelpInfoFactory(
-                Substitute.For<ICategoryHelpReader>(),
-                executableHelpReader);
+                new[] { Substitute.For<ICategoryHelpReader>() } ,
+                new[] { executableHelpReader } );
 
             var result = factory.Create(new[] { "foo", "--help" });
 

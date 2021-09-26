@@ -6,7 +6,16 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="cli-categories.json" />
+    <Content Remove="cli-categories2.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="cli-categories2.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="cli-categories.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
   <ItemGroup>

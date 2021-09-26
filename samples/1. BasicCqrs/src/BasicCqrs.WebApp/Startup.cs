@@ -64,6 +64,7 @@ namespace BasicCqrs.WebApp
             // text for specific commands and/or queries.
             services.AddBrickweaveCli(domainAssemblies)
                 .AddDateParsingCulture(new CultureInfo("en-US"))
+                .AddCategoryHelpFile("cli-categories2.json") // temp (delete this)
                 .AddCategoryHelpFile("cli-categories.json") // the file containing help documentation for domain model "categories" (domain model type, not a specific action)
                 .OverrideQueryName<ListPeople>("list", "person"); // here we can override the auto-discovered CLI command named "people list" to "person list"
 

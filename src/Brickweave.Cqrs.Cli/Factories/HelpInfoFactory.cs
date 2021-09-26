@@ -7,13 +7,13 @@ namespace Brickweave.Cqrs.Cli.Factories
 {
     public class HelpInfoFactory : IHelpInfoFactory
     {
-        private readonly ICategoryHelpReader _categoryHelpReader;
+        private readonly IEnumerable<ICategoryHelpReader> _categoryHelpReaders;
         private readonly IEnumerable<IExecutableHelpReader> _executableHelpReaders;
         
-        public HelpInfoFactory(ICategoryHelpReader categoryHelpReader,
+        public HelpInfoFactory(IEnumerable<ICategoryHelpReader> categoryHelpReaders,
             IEnumerable<IExecutableHelpReader> executableHelpReaders)
         {
-            _categoryHelpReader = categoryHelpReader;
+            _categoryHelpReaders = categoryHelpReaders;
             _executableHelpReaders = executableHelpReaders;
         }
         
@@ -24,8 +24,10 @@ namespace Brickweave.Cqrs.Cli.Factories
                 .ToArray();
 
             var categoryBySubjectCriteria = CreateSubjectCriteria(argsWithoutParams);
-            var categoryBySubject = _categoryHelpReader.GetHelpInfo(
-                categoryBySubjectCriteria);
+            var categoryBySubject = _categoryHelpReaders
+                .Select(r => r.GetHelpInfo(categoryBySubjectCriteria))
+                .Where(h => h != null)
+                .FirstOrDefault();
 
             if (categoryBySubject != null)
                 return GetCategoryHelpInfoWithChildren(categoryBySubjectCriteria, categoryBySubject);

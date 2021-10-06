@@ -46,6 +46,9 @@ namespace Brickweave.Domain.Serialization
             if (constructor == null)
                 throw new InvalidOperationException($"Unable to deserialize {objectType}. Cannot find suitable constructor.");
 
+            if (reader.Value == null)
+                return null;
+
             var currentType = reader.Value.GetType();
             var targetType = constructor.GetParameters().First().ParameterType;
 

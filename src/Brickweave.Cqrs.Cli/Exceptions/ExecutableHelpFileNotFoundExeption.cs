@@ -4,9 +4,9 @@ namespace Brickweave.Cqrs.Cli.Exceptions
 {
     public class ExecutableHelpFileNotFoundExeption : Exception
     {
-        private const string MESSAGE = "XML documentation file not found.";
+        private const string MESSAGE = "XML documentation file not found: {0}.";
 
-        public ExecutableHelpFileNotFoundExeption() : base(MESSAGE)
+        public ExecutableHelpFileNotFoundExeption(string filePath) : base(string.Format(MESSAGE, filePath))
         {
         }
     }

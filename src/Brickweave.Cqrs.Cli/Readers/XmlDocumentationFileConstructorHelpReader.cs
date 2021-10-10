@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -42,7 +42,7 @@ namespace Brickweave.Cqrs.Cli.Readers
             Guard.AgainstNullArgument(nameof(adjacencyCriteria), adjacencyCriteria);
 
             if (!File.Exists(filePath))
-                throw new ExecutableHelpFileNotFoundExeption();
+                throw new ExecutableHelpFileNotFoundExeption(filePath);
 
             try
             {

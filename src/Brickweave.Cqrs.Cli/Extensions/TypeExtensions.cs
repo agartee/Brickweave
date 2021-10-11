@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Brickweave.Cqrs.Cli.Extensions
 {
@@ -38,6 +39,11 @@ namespace Brickweave.Cqrs.Cli.Extensions
         {
             return type.IsGenericType && type.GetGenericTypeDefinition() == typeof(IDictionary<,>)
                 || type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Dictionary<,>);
+        }
+
+        public static bool HasConstructorWithParameters(this Type type)
+        {
+            return type.GetConstructors().Any(c => c.GetParameters().Any());
         }
     }
 }

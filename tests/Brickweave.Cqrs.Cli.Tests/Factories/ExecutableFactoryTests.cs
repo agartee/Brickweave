@@ -39,7 +39,7 @@ namespace Brickweave.Cqrs.Cli.Tests.Factories
         }
 
         [Fact]
-        public void Create_WhenCommandAssemblyIsRegistered_CreatesCommand()
+        public void Create_WhenCommandAssemblyIsRegistered_CreatesCommandViaConstructor()
         {
             var factory = new ExecutableFactory(
                 new IParameterValueFactory[] { new BasicParameterValueFactory(), new DateTimeParameterValueFactory(CultureInfo.InvariantCulture) },
@@ -60,7 +60,28 @@ namespace Brickweave.Cqrs.Cli.Tests.Factories
         }
 
         [Fact]
-        public void Create_WhenMissingParameterThatHasDefaultValue_CreatesCommandWithDefaultValue()
+        public void Create_WhenCommandAssemblyIsRegistered_CreatesCommandViaProperties()
+        {
+            var factory = new ExecutableFactory(
+                new IParameterValueFactory[] { new BasicParameterValueFactory(), new DateTimeParameterValueFactory(CultureInfo.InvariantCulture) },
+                new[] { typeof(CreateQux) });
+
+            var created = new DateTime(2017, 1, 1, 14, 0, 0);
+            var result = factory.Create(
+                typeof(CreateQux),
+                new ExecutableParameterInfo("bar", "something"),
+                new ExecutableParameterInfo("id", "12345"),
+                new ExecutableParameterInfo("datecreated", created.ToString(CultureInfo.InvariantCulture)));
+
+            result.Should().NotBeNull();
+            result.Should().BeOfType<CreateQux>();
+            result.As<CreateQux>().Id.Should().Be(12345);
+            result.As<CreateQux>().Bar.Should().Be("something");
+            result.As<CreateQux>().DateCreated.Should().Be(created);
+        }
+
+        [Fact]
+        public void Create_WhenMissingParameterThatHasDefaultValue_CreatesCommandWithDefaultValueViaConstructor()
         {
             var factory = new ExecutableFactory(
                 new[] { new BasicParameterValueFactory() },
@@ -70,7 +91,25 @@ namespace Brickweave.Cqrs.Cli.Tests.Factories
 
             result.Should().NotBeNull();
             result.Should().BeOfType<CreateFoo>();
+            result.As<CreateFoo>().Id.Should().Be(0);
             result.As<CreateFoo>().Bar.Should().Be("bar");
+            result.As<CreateFoo>().DateCreated.Should().Be(DateTime.MinValue);
+        }
+
+        [Fact]
+        public void Create_WhenMissingParameterThatHasDefaultValue_CreatesCommandWithDefaultValueViaProperties()
+        {
+            var factory = new ExecutableFactory(
+                new[] { new BasicParameterValueFactory() },
+                new[] { typeof(CreateQux) });
+
+            var result = factory.Create(typeof(CreateQux));
+
+            result.Should().NotBeNull();
+            result.Should().BeOfType<CreateQux>();
+            result.As<CreateQux>().Id.Should().Be(0);
+            result.As<CreateQux>().Bar.Should().Be("bar");
+            result.As<CreateQux>().DateCreated.Should().Be(DateTime.MinValue);
         }
 
         [Fact]
@@ -92,19 +131,40 @@ namespace Brickweave.Cqrs.Cli.Tests.Factories
             var factory = new ExecutableFactory(
                 new[] { new BasicParameterValueFactory() },
                 new[] { typeof(CreateFoo) });
-            
+
             var parameters = new List<ExecutableParameterInfo>
             {
                 new ExecutableParameterInfo("id", "1"),
                 new ExecutableParameterInfo("dateCreated", DateTime.Now.ToString(CultureInfo.InvariantCulture)),
-                new ExecutableParameterInfo("foo", "bar")
+                new ExecutableParameterInfo("foo", "foo does not exist in the class constructor")
             };
-            
-            var exception = Assert.Throws<ConstructorNotFoundException>(() => 
+
+            var exception = Assert.Throws<ConstructorNotFoundException>(() =>
                 factory.Create(new ExecutableInfo("CreateFoo", parameters)));
 
             exception.Type.Should().Be(typeof(CreateFoo));
             exception.Parameters.Should().BeEquivalentTo(parameters.Select(p => p.Name).ToList());
+        }
+
+        [Fact]
+        public void Create_WhenExecutableTypePropertiesDoNotMatchPassedParameters_Throws()
+        {
+            var factory = new ExecutableFactory(
+                new[] { new BasicParameterValueFactory() },
+                new[] { typeof(CreateQux) });
+
+            var parameters = new List<ExecutableParameterInfo>
+            {
+                new ExecutableParameterInfo("id", "1"),
+                new ExecutableParameterInfo("dateCreated", DateTime.Now.ToString(CultureInfo.InvariantCulture)),
+                new ExecutableParameterInfo("qux", "qux does not exist in the class as a property")
+            };
+
+            var exception = Assert.Throws<PropertyNotFoundException>(() =>
+                factory.Create(new ExecutableInfo("CreateQux", parameters)));
+
+            exception.Type.Should().Be(typeof(CreateQux));
+            exception.Parameter.Should().BeEquivalentTo("qux");
         }
 
         [Fact]
@@ -121,10 +181,8 @@ namespace Brickweave.Cqrs.Cli.Tests.Factories
         }
 
         [Fact]
-        public void Create_WhenParameterValueIsNotProvidedAndParameterIsNullable_ReturnsCommandWithNullPropertyValue()
+        public void Create_WhenParameterValueIsNotProvidedAndParameterIsNullable_ReturnsCommandWithNullPropertyValueViaConstructor()
         {
-            var name = "bar1";
-
             var factory = new ExecutableFactory(
                 new IParameterValueFactory[] 
                 {
@@ -134,13 +192,32 @@ namespace Brickweave.Cqrs.Cli.Tests.Factories
                 new[] { typeof(GetBar) });
 
             var executableInfo = new ExecutableInfo("GetBar",
-                new[] { new ExecutableParameterInfo("name", name) });
+                new ExecutableParameterInfo[] { });
 
             var result = factory.Create(executableInfo) as GetBar;
 
             result.Should().NotBeNull();
-            result.Id.Should().BeNull();
-            result.Name.Should().Be(name);
+            result.Name.Should().BeNull();
+        }
+
+        [Fact]
+        public void Create_WhenParameterValueIsNotProvidedAndParameterIsNullable_ReturnsCommandWithNullPropertyValueViaProperties()
+        {
+            var factory = new ExecutableFactory(
+                new IParameterValueFactory[]
+                {
+                    new BasicParameterValueFactory(),
+                    new WrappedGuidParameterValueFactory()
+                },
+                new[] { typeof(GetWaldo) });
+
+            var executableInfo = new ExecutableInfo("GetWaldo",
+                new ExecutableParameterInfo[] { });
+
+            var result = factory.Create(executableInfo) as GetWaldo;
+
+            result.Should().NotBeNull();
+            result.Name.Should().BeNull();
         }
     }
 }

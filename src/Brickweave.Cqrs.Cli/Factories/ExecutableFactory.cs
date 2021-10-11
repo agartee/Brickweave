@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
 using Brickweave.Cqrs.Cli.Exceptions;
@@ -37,47 +38,94 @@ namespace Brickweave.Cqrs.Cli.Factories
             return Create(executableType, executableInfo.Parameters.ToArray());
         }
 
-        public IExecutable Create(Type type, params ExecutableParameterInfo[] parameterValues)
+        public IExecutable Create(Type type, params ExecutableParameterInfo[] parameters)
         {
-            var parameterNames = parameterValues.Select(p => p.Name).ToArray();
+            var parameterNames = parameters.Select(p => p.Name).ToArray();
 
             var constructor = type.GetConstructors()
                 .FirstOrDefault(c => c.ContainsAllParameters(parameterNames));
-            
-            if(constructor == null)
+
+            if (constructor == null && type.HasConstructorWithParameters())
                 throw new ConstructorNotFoundException(type, parameterNames.ToArray());
 
-            var constructorArgs = GetConstructorParameterValues(constructor, parameterValues).ToArray();
-
-            return (IExecutable)constructor.Invoke(constructorArgs);
+            if (constructor != null)
+                return CreateViaConstructor(parameters, constructor);
+            else
+                return CreateViaProperties(parameters, type);
         }
 
-        IEnumerable<object> GetConstructorParameterValues(ConstructorInfo constructorInfo,
-            IEnumerable<ExecutableParameterInfo> parameterValues)
+        private IExecutable CreateViaConstructor(ExecutableParameterInfo[] parameters, ConstructorInfo constructor)
+        {
+            var constructorArgs = GetConstructorParameterValues(constructor, parameters).ToArray();
+
+            return (IExecutable) constructor.Invoke(constructorArgs);
+        }
+
+        private IExecutable CreateViaProperties(ExecutableParameterInfo[] parameters, Type type)
+        {
+            var executable = Activator.CreateInstance(type);
+            var typeProperties = type.GetProperties(BindingFlags.Public | BindingFlags.Instance);
+
+            var firstParameterMismatch = parameters
+                .FirstOrDefault(p => !typeProperties
+                    .Any(tp => tp.Name.Equals(p.Name, StringComparison.OrdinalIgnoreCase)));
+
+            if (firstParameterMismatch != null)
+                throw new PropertyNotFoundException(type, firstParameterMismatch.Name);
+
+            foreach (var property in typeProperties)
+            {
+                var value = GetParameterValue(property, parameters);
+
+                if (!property.PropertyType.IsDefaultable() && value == null && Attribute.IsDefined(property, typeof(RequiredAttribute)))
+                    throw new ArgumentNullException(property.Name);
+
+                property.SetValue(executable, value);
+            }
+
+            return (IExecutable) executable;
+        }
+
+        private IEnumerable<object> GetConstructorParameterValues(ConstructorInfo constructorInfo,
+            IEnumerable<ExecutableParameterInfo> parameters)
         {
             return constructorInfo.GetParameters()
-                .Select(p => GetParameterValue(p, parameterValues))
+                .Select(p => GetParameterValue(p, parameters))
                 .ToList();
         }
 
-        object GetParameterValue(ParameterInfo constructorParam, IEnumerable<ExecutableParameterInfo> parameterValues)
+        private object GetParameterValue(ParameterInfo constructorArg, IEnumerable<ExecutableParameterInfo> parameters)
         {
-            var constructorArgValue = parameterValues
-                .SingleOrDefault(p => constructorParam.Name.Equals(p.Name, StringComparison.OrdinalIgnoreCase));
+            var constructorParam = parameters
+                .SingleOrDefault(p => constructorArg.Name.Equals(p.Name, StringComparison.OrdinalIgnoreCase));
 
-            if (constructorParam.ParameterType.IsDefaultable())
+            if (constructorArg.ParameterType.IsDefaultable())
             {
-                if (string.IsNullOrWhiteSpace(constructorArgValue?.SingleValue))
-                    return constructorParam.DefaultValue != DBNull.Value ? constructorParam.DefaultValue : null;
+                if (string.IsNullOrWhiteSpace(constructorParam?.SingleValue))
+                    return constructorArg.DefaultValue != DBNull.Value ? constructorArg.DefaultValue : null;
             }
 
             var paramFactory = _parameterValueFactories.ToList()
-                .FirstOrDefault(f => f.Qualifies(constructorParam.ParameterType));
+                .FirstOrDefault(f => f.Qualifies(constructorArg.ParameterType));
 
             if (paramFactory == null)
-                throw new NoQualifyingParameterValueFactoryException(constructorParam.ParameterType.Name);
+                throw new NoQualifyingParameterValueFactoryException(constructorArg.ParameterType.Name);
 
-            return paramFactory.Create(constructorParam.ParameterType, constructorArgValue);
+            return paramFactory.Create(constructorArg.ParameterType, constructorParam);
+        }
+
+        private object GetParameterValue(PropertyInfo property, IEnumerable<ExecutableParameterInfo> parameters)
+        {
+            var propertyParam = parameters
+                .SingleOrDefault(p => property.Name.Equals(p.Name, StringComparison.OrdinalIgnoreCase));
+
+            var paramFactory = _parameterValueFactories.ToList()
+                .FirstOrDefault(f => f.Qualifies(property.PropertyType));
+
+            if (paramFactory == null)
+                throw new NoQualifyingParameterValueFactoryException(property.PropertyType.Name);
+
+            return paramFactory.Create(property.PropertyType, propertyParam);
         }
     }
 }

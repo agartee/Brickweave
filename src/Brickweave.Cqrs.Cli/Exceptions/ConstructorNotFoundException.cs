@@ -8,11 +8,11 @@ namespace Brickweave.Cqrs.Cli.Exceptions
     {
         private const string MESSAGE = "Constructor not found for type, \"{0}\" containing parameters: {1}";
 
-        public ConstructorNotFoundException(Type type, string[] parameters)
-            : base(string.Format(MESSAGE, type, string.Join(", ", parameters.Select(p => $"\"{p}\""))))
+        public ConstructorNotFoundException(Type type, string[] parameterNames)
+            : base(string.Format(MESSAGE, type, string.Join(", ", parameterNames.Select(p => $"\"{p}\""))))
         {
             Type = type;
-            Parameters = parameters;
+            Parameters = parameterNames;
         }
 
         public Type Type { get; }

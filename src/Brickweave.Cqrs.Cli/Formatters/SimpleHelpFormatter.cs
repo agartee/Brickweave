@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Text;
 using Brickweave.Cqrs.Cli.Extensions;
 using Brickweave.Cqrs.Cli.Models;

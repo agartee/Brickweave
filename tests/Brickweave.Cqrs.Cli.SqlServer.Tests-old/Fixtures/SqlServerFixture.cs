@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Brickweave.Cqrs.Cli.SqlServer.Entities;
+﻿using Brickweave.Cqrs.Cli.SqlServer.Entities;
 using Brickweave.Cqrs.Cli.SqlServer.Tests.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -35,21 +32,9 @@ namespace Brickweave.Cqrs.Cli.SqlServer.Tests.Fixtures
         {
             var dbContext = CreateDbContext();
 
-            var sqlCommandList = CreateList(
-                new { Order = 1, SqlCommand = $"DELETE FROM [{CqrsDbContext.SCHEMA_NAME}].[{CommandQueueData.TABLE_NAME}]" },
-                new { Order = 1, SqlCommand = $"DELETE FROM [{CqrsDbContext.SCHEMA_NAME}].[{CommandStatusData.TABLE_NAME}]" });
-
-            var sql = string.Join(Environment.NewLine, sqlCommandList
-                .OrderBy(item => item.Order)
-                .Select(item => item.SqlCommand)
-                .ToArray());
-
+            var sql = $"DELETE FROM [{CqrsDbContext.SCHEMA_NAME}].[{ExecutionStatusData.TABLE_NAME}]";
+            
             dbContext.Database.ExecuteSqlRaw(sql);
-        }
-
-        private static List<T> CreateList<T>(params T[] elements)
-        {
-            return new List<T>(elements);
         }
     }
 }

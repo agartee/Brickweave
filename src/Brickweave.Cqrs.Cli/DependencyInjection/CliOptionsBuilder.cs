@@ -123,12 +123,12 @@ namespace Brickweave.Cqrs.Cli.DependencyInjection
             return this;
         }
 
-        public CliOptionsBuilder AddDateParsingCulture(CultureInfo cultureInfo)
+        public CliOptionsBuilder SetDateParsingCulture(CultureInfo cultureInfo)
         {
             _culture = cultureInfo;
             return this;
         }
-        
+
         public IServiceCollection Services()
         {
             return _services;

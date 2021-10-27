@@ -5,7 +5,7 @@ namespace Brickweave.Cqrs.Cli.SqlServer.Tests.Data
 {
     public class CqrsDbContext : DbContext
     {
-        public const string SCHEMA_NAME = "Test";
+        public const string SCHEMA_NAME = "Cqrs";
 
         public CqrsDbContext(DbContextOptions<CqrsDbContext> options)
             : base(options)
@@ -13,8 +13,7 @@ namespace Brickweave.Cqrs.Cli.SqlServer.Tests.Data
 
         }
 
-        public DbSet<CommandQueueData> CommandQueue { get; set; }
-        public DbSet<CommandStatusData> CommandStatus { get; set; }
+        public DbSet<ExecutionStatusData> ExecutionStatus { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

@@ -1,9 +1,10 @@
-﻿using System.Threading.Tasks;
-using AdvancedCqrs.Domain.Things.Models;
+﻿using AdvancedCqrs.Domain.Things.Models;
 using Brickweave.Cqrs;
+using Brickweave.Cqrs.Attributes;
 
 namespace AdvancedCqrs.Domain.Things.Commands
 {
+    [LongRunning]
     public class CreateThing : ICommand<Thing>
     {
         public CreateThing(string name)
@@ -12,17 +13,5 @@ namespace AdvancedCqrs.Domain.Things.Commands
         }
 
         public string Name { get; }
-    }
-
-    public class CreateThingHandler : ICommandHandler<CreateThing, Thing>
-    {
-
-
-        public async Task<Thing> HandleAsync(CreateThing command)
-        {
-            return new Thing(
-                ThingId.NewId(),
-                command.Name);
-        }
     }
 }

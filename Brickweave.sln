@@ -67,9 +67,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.editorconfig = .editorconfig
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Brickweave.Cqrs.Cli.SqlServer", "src\Brickweave.Cqrs.Cli.SqlServer\Brickweave.Cqrs.Cli.SqlServer.csproj", "{FA60138B-E9CD-452E-9DB0-FB8636B35D7F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Brickweave.Cqrs.SqlServer", "src\Brickweave.Cqrs.SqlServer\Brickweave.Cqrs.SqlServer.csproj", "{FA60138B-E9CD-452E-9DB0-FB8636B35D7F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Brickweave.Cqrs.Cli.SqlServer.Tests", "tests\Brickweave.Cqrs.Cli.SqlServer.Tests\Brickweave.Cqrs.Cli.SqlServer.Tests.csproj", "{14E99497-0192-44BF-B90B-7F9B57A58E9D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Brickweave.Cqrs.SqlServer.Tests", "tests\Brickweave.Cqrs.SqlServer.Tests\Brickweave.Cqrs.SqlServer.Tests.csproj", "{14E99497-0192-44BF-B90B-7F9B57A58E9D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "3. AdvancedCqrs", "3. AdvancedCqrs", "{148F8258-020D-42E9-BD07-19DA69EE28B0}"
 	ProjectSection(SolutionItems) = preProject

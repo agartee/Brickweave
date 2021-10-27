@@ -1,5 +1,5 @@
 ﻿using AdvancedCqrs.SqlServer.Entities;
-using Brickweave.Cqrs.Cli.SqlServer.Entities;
+using Brickweave.Cqrs.SqlServer.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace AdvancedCqrs.SqlServer

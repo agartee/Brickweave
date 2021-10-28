@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Brickweave.Cqrs.Cli.Models;
 using Brickweave.Cqrs.Models;
 using Brickweave.Cqrs.SqlServer.Services;
 using Brickweave.Cqrs.SqlServer.Tests.Data;

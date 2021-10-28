@@ -10,7 +10,7 @@ using Brickweave.Serialization;
 using FluentAssertions;
 using Xunit;
 
-namespace Brickweave.Messaging.ServiceBus.Tests
+namespace Brickweave.Messaging.ServiceBus.Services.Tests
 {
     [Trait("Category", "Integration")]
     [Collection("ServiceBusTestCollection")]

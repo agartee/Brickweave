@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="5.0.10" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\src\Brickweave.Cqrs.SqlServer\Brickweave.Cqrs.SqlServer.csproj" />
+    <ProjectReference Include="..\..\..\..\src\Brickweave.Serialization\Brickweave.Serialization.csproj" />
+    <ProjectReference Include="..\AdvancedCqrs.Domain\AdvancedCqrs.Domain.csproj" />
+  </ItemGroup>
+
+</Project>

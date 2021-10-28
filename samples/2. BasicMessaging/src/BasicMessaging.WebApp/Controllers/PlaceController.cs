@@ -2,6 +2,7 @@
 using BasicMessaging.Domain.Places.Commands;
 using BasicMessaging.WebApp.Models;
 using Brickweave.Cqrs;
+using Brickweave.Cqrs.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BasicMessaging.WebApp.Controllers

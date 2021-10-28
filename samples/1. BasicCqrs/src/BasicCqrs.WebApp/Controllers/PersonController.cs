@@ -7,6 +7,7 @@ using BasicCqrs.Domain.People.Queries;
 using BasicCqrs.WebApp.Extensions;
 using BasicCqrs.WebApp.Models;
 using Brickweave.Cqrs;
+using Brickweave.Cqrs.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BasicCqrs.WebApp.Controllers

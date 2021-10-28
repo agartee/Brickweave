@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Brickweave.Domain;
 using Brickweave.Messaging.ServiceBus.Models;
+using Brickweave.Messaging.ServiceBus.Services;
 using Microsoft.Azure.ServiceBus;
 using Microsoft.Azure.ServiceBus.Core;
 using Microsoft.Extensions.DependencyInjection;

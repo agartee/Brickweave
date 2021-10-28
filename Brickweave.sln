@@ -52,6 +52,9 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "1. BasicCqrs", "1. BasicCqrs", "{3A52DB34-6897-4C0F-897B-69366038A389}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "2. BasicMessaging", "2. BasicMessaging", "{5C1A3DB4-DC51-4A23-9516-FCA864952000}"
+	ProjectSection(SolutionItems) = preProject
+		samples\2. BasicMessaging\readme.md = samples\2. BasicMessaging\readme.md
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BasicMessaging.Domain", "samples\2. BasicMessaging\src\BasicMessaging.Domain\BasicMessaging.Domain.csproj", "{6AE461AD-BC1D-415F-9292-A8BA96560E78}"
 EndProject
@@ -63,6 +66,23 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
 	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Brickweave.Cqrs.SqlServer", "src\Brickweave.Cqrs.SqlServer\Brickweave.Cqrs.SqlServer.csproj", "{FA60138B-E9CD-452E-9DB0-FB8636B35D7F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Brickweave.Cqrs.SqlServer.Tests", "tests\Brickweave.Cqrs.SqlServer.Tests\Brickweave.Cqrs.SqlServer.Tests.csproj", "{14E99497-0192-44BF-B90B-7F9B57A58E9D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "3. AdvancedCqrs", "3. AdvancedCqrs", "{148F8258-020D-42E9-BD07-19DA69EE28B0}"
+	ProjectSection(SolutionItems) = preProject
+		samples\3. AdvancedCqrs\readme.md = samples\3. AdvancedCqrs\readme.md
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdvancedCqrs.Domain", "samples\3. AdvancedCqrs\src\AdvancedCqrs.Domain\AdvancedCqrs.Domain.csproj", "{E162439D-8361-4C45-ABB4-AA035CB9B2D5}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdvancedCqrs.SqlServer", "samples\3. AdvancedCqrs\src\AdvancedCqrs.SqlServer\AdvancedCqrs.SqlServer.csproj", "{45D336F6-3D1A-48C4-B850-A0067FA2CE6F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdvancedCqrs.WebApp", "samples\3. AdvancedCqrs\src\AdvancedCqrs.WebApp\AdvancedCqrs.WebApp.csproj", "{D82980A5-DE61-4362-A43C-4D3610DD53DD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdvancedCqrs.CommandQueue.SqlServer", "samples\3. AdvancedCqrs\src\AdvancedCqrs.CommandQueue.SqlServer\AdvancedCqrs.CommandQueue.SqlServer.csproj", "{0AA80A5F-58C0-4A5C-9977-737E76D6F586}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -162,6 +182,30 @@ Global
 		{393D17A0-11CE-42B5-AD7F-035DA13ECE32}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{393D17A0-11CE-42B5-AD7F-035DA13ECE32}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{393D17A0-11CE-42B5-AD7F-035DA13ECE32}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FA60138B-E9CD-452E-9DB0-FB8636B35D7F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FA60138B-E9CD-452E-9DB0-FB8636B35D7F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FA60138B-E9CD-452E-9DB0-FB8636B35D7F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FA60138B-E9CD-452E-9DB0-FB8636B35D7F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{14E99497-0192-44BF-B90B-7F9B57A58E9D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{14E99497-0192-44BF-B90B-7F9B57A58E9D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{14E99497-0192-44BF-B90B-7F9B57A58E9D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{14E99497-0192-44BF-B90B-7F9B57A58E9D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E162439D-8361-4C45-ABB4-AA035CB9B2D5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E162439D-8361-4C45-ABB4-AA035CB9B2D5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E162439D-8361-4C45-ABB4-AA035CB9B2D5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E162439D-8361-4C45-ABB4-AA035CB9B2D5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{45D336F6-3D1A-48C4-B850-A0067FA2CE6F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{45D336F6-3D1A-48C4-B850-A0067FA2CE6F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{45D336F6-3D1A-48C4-B850-A0067FA2CE6F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{45D336F6-3D1A-48C4-B850-A0067FA2CE6F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D82980A5-DE61-4362-A43C-4D3610DD53DD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D82980A5-DE61-4362-A43C-4D3610DD53DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D82980A5-DE61-4362-A43C-4D3610DD53DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D82980A5-DE61-4362-A43C-4D3610DD53DD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0AA80A5F-58C0-4A5C-9977-737E76D6F586}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0AA80A5F-58C0-4A5C-9977-737E76D6F586}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0AA80A5F-58C0-4A5C-9977-737E76D6F586}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0AA80A5F-58C0-4A5C-9977-737E76D6F586}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -192,6 +236,13 @@ Global
 		{6AE461AD-BC1D-415F-9292-A8BA96560E78} = {5C1A3DB4-DC51-4A23-9516-FCA864952000}
 		{77B919AB-F030-44A1-BD78-4FFF25FBA329} = {5C1A3DB4-DC51-4A23-9516-FCA864952000}
 		{393D17A0-11CE-42B5-AD7F-035DA13ECE32} = {5C1A3DB4-DC51-4A23-9516-FCA864952000}
+		{FA60138B-E9CD-452E-9DB0-FB8636B35D7F} = {685B773C-8922-47C0-9144-4219E1AF5A0C}
+		{14E99497-0192-44BF-B90B-7F9B57A58E9D} = {01363C09-641F-41CF-857A-E93663279BB5}
+		{148F8258-020D-42E9-BD07-19DA69EE28B0} = {67047BD9-5FFA-47C7-BA35-67E749CE4EAE}
+		{E162439D-8361-4C45-ABB4-AA035CB9B2D5} = {148F8258-020D-42E9-BD07-19DA69EE28B0}
+		{45D336F6-3D1A-48C4-B850-A0067FA2CE6F} = {148F8258-020D-42E9-BD07-19DA69EE28B0}
+		{D82980A5-DE61-4362-A43C-4D3610DD53DD} = {148F8258-020D-42E9-BD07-19DA69EE28B0}
+		{0AA80A5F-58C0-4A5C-9977-737E76D6F586} = {148F8258-020D-42E9-BD07-19DA69EE28B0}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4E8CFE0E-1064-4953-B2D7-545AE105B2D9}

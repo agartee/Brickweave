@@ -1,7 +1,7 @@
 ﻿using System.Security.Claims;
 using Brickweave.Cqrs.Models;
 
-namespace Brickweave.Cqrs.SqlServer.Extensions
+namespace Brickweave.Cqrs.Extensions
 {
     public static class ClaimExtensions
     {

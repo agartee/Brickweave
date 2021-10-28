@@ -9,12 +9,12 @@ namespace Brickweave.Cqrs.Services
     {
         private readonly ICommandQueue _commandQueue;
         private readonly ICommandStatusRepository _commandStatusRepository;
-        private readonly IDispatcher _dispatcher;
+        private readonly IEnqueuedCommandDispatcher _dispatcher;
 
         private readonly int _pollingIntervalSeconds;
 
         public CommandProcessor(ICommandQueue commandQueue, ICommandStatusRepository commandStatusRepository,
-            IDispatcher dispatcher, int pollingIntervalSeconds = 0)
+            IEnqueuedCommandDispatcher dispatcher, int pollingIntervalSeconds = 0)
         {
             _commandQueue = commandQueue;
             _commandStatusRepository = commandStatusRepository;
@@ -43,7 +43,7 @@ namespace Brickweave.Cqrs.Services
 
                 if (nextCommand != null)
                 {
-                    var result = await _dispatcher.DispatchCommandAsync(nextCommand.Value, nextCommand.Principal);
+                    var result = await _dispatcher.ExecuteAsync(nextCommand.Value, nextCommand.Principal);
 
                     await _commandStatusRepository.ReportCompletedAsync(nextCommand.Id, result);
                 }

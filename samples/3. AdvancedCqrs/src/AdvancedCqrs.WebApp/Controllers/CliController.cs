@@ -1,48 +1,48 @@
-﻿using System.Linq;
+﻿using System;
 using System.Threading.Tasks;
-using Brickweave.Cqrs;
-using Brickweave.Cqrs.Cli.Extensions;
-using Brickweave.Cqrs.Cli.Factories;
-using Brickweave.Cqrs.Cli.Formatters;
+using Brickweave.Cqrs.Cli;
+using Brickweave.Cqrs.Models;
+using Brickweave.Cqrs.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AdvancedCqrs.WebApp.Controllers
 {
     public class CliController : Controller
     {
-        private readonly IDispatcher _dispatcher;
-        private readonly IHelpInfoFactory _helpInfoFactory;
-        private readonly IExecutableInfoFactory _executableInfoFactory;
-        private readonly IExecutableFactory _executableFactory;
+        private readonly ICliDispatcher _cliDispatcher;
+        private readonly ICommandStatusRepository _commandStatusRepository;
 
-        public CliController(IDispatcher dispatcher, IHelpInfoFactory helpInfoFactory, IExecutableInfoFactory executableInfoFactory, 
-            IExecutableFactory executableFactory)
+        public CliController(ICliDispatcher cliDispatcher, ICommandStatusRepository commandStatusRepository)
         {
-            _dispatcher = dispatcher;
-            _helpInfoFactory = helpInfoFactory;
-            _executableInfoFactory = executableInfoFactory;
-            _executableFactory = executableFactory;
+            _cliDispatcher = cliDispatcher;
+            _commandStatusRepository = commandStatusRepository;
         }
 
         [HttpPost, Route("/cli/run")]
         public async Task<IActionResult> RunAsync([FromBody] string commandText)
         {
-            var args = commandText.ParseCommandText();
+            Guid? commandId = null;
+            var result = await _cliDispatcher.DispatchAsync(commandText, id => commandId = id);
 
-            if (args.Any(a => a == "--help"))
-            {
-                var helpInfo = _helpInfoFactory.Create(args);
-                return Ok(SimpleHelpFormatter.Format(helpInfo));
-            }
-
-            var executableInfo = _executableInfoFactory.Create(args);
-            var executable = _executableFactory.Create(executableInfo);
-
-            var result = executable is ICommand
-                ? await _dispatcher.DispatchCommandAsync((ICommand)executable)
-                : await _dispatcher.DispatchQueryAsync((IQuery)executable);
+            if(commandId != null)
+                return Accepted($"https://{HttpContext.Request.Host}/cli/status/{commandId}");
 
             return Ok(result);
         }
+
+        [HttpGet, Route("/cli/status/{commandId}")]
+        public async Task<IActionResult> GetStatus(Guid commandId)
+        {
+            var status = await _commandStatusRepository.ReadStatusAsync(commandId);
+
+            if (status is CompletedExecutionStatus completedStatus)
+                return Ok(completedStatus.Result);
+
+            if (status is ErrorExecutionStatus errorStatus)
+                throw new InvalidOperationException(errorStatus.Message);
+
+            return Accepted($"https://{HttpContext.Request.Host}/cli/status/{commandId}");
+        }
+
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Security.Claims;
+﻿using System;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Brickweave.Cqrs
@@ -14,12 +15,22 @@ namespace Brickweave.Cqrs
             _queryDispatcher = queryDispatcher;
         }
 
-        public async Task<object> DispatchCommandAsync(ICommand command, ClaimsPrincipal user = null)
+        public async Task<object> DispatchCommandAsync(ICommand command, Action<Guid> handleCommandEnqueued = null)
+        {
+            return await DispatchCommandAsync(command, null, handleCommandEnqueued);
+        }
+
+        public async Task<object> DispatchCommandAsync(ICommand command, ClaimsPrincipal user = null, Action<Guid> handleCommandEnqueued = null)
         {
             return await _commandDispatcher.ExecuteAsync(command, user);
         }
 
-        public async Task<TResult> DispatchCommandAsync<TResult>(ICommand<TResult> command, ClaimsPrincipal user = null)
+        public async Task<TResult> DispatchCommandAsync<TResult>(ICommand<TResult> command, Action<Guid> handleCommandEnqueued = null)
+        {
+            return await DispatchCommandAsync(command, null, handleCommandEnqueued);
+        }
+
+        public async Task<TResult> DispatchCommandAsync<TResult>(ICommand<TResult> command, ClaimsPrincipal user = null, Action<Guid> handleCommandEnqueued = null)
         {
             return await _commandDispatcher.ExecuteAsync(command, user);
         }

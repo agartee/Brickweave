@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Reflection;
+using Brickweave.Cqrs.Services;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Brickweave.Cqrs.DependencyInjection
@@ -13,21 +14,13 @@ namespace Brickweave.Cqrs.DependencyInjection
                 .AddScoped<IDispatcher, Dispatcher>()
                 .AddScoped<ICommandDispatcher, CommandDispatcher>()
                 .AddScoped<IQueryDispatcher, QueryDispatcher>()
+                .AddScoped<ICommandQueue, NullCommandQueue>()
                 .AddHandlers(typeof(ICommandHandler<>), domainAssemblies)
                 .AddHandlers(typeof(ICommandHandler<,>), domainAssemblies)
                 .AddHandlers(typeof(ISecuredCommandHandler<>), domainAssemblies)
                 .AddHandlers(typeof(ISecuredCommandHandler<,>), domainAssemblies)
                 .AddHandlers(typeof(IQueryHandler<,>), domainAssemblies)
                 .AddHandlers(typeof(ISecuredQueryHandler<,>), domainAssemblies);
-        }
-
-        public static IServiceCollection AddCqrsExecutors(
-            this IServiceCollection services, IServiceProvider domainServiceProvider)
-        {
-            services.AddScoped(provider => domainServiceProvider.GetService<ICommandDispatcher>());
-            services.AddScoped(provider => domainServiceProvider.GetService<IQueryDispatcher>());
-
-            return services;
         }
 
         private static IServiceCollection AddHandlers(

@@ -6,6 +6,7 @@ using AdvancedCqrs.WebApp.BackgroundServices;
 using AdvancedCqrs.WebApp.Formatters;
 using Brickweave.Cqrs.Cli.DependencyInjection;
 using Brickweave.Cqrs.DependencyInjection;
+using Brickweave.Cqrs.SqlServer.DependencyInjection;
 using Brickweave.Domain.Serialization;
 using Brickweave.Serialization.DependencyInjection;
 using Microsoft.AspNetCore.Builder;
@@ -67,7 +68,11 @@ namespace AdvancedCqrs.WebApp
 
             services.AddBrickweaveCli(domainAssembly)
                 .SetDateParsingCulture(new CultureInfo("en-US"))
-                .AddCategoryHelpFile("cli-categories.json");
+                .AddCategoryHelpFile("cli-categories.json")
+                .EnableLongRunningCommands<AdvancedCqrsDbContext>(
+                    dbContext => dbContext.CommandQueue,
+                    dbContext => dbContext.CommandStatus,
+                    15);
 
             services.AddBrickweaveSerialization();
 

@@ -20,14 +20,5 @@ namespace Brickweave.Cqrs.SqlServer.Extensions
 
             return new ClaimsPrincipal(identity);
         }
-
-        public static ClaimsPrincipalInfo ToClaimsPrincipalInfo(this ClaimsPrincipal principal)
-        {
-            return new ClaimsPrincipalInfo(
-                principal.Identity.AuthenticationType,
-                principal.Claims
-                .Select(c => c.ToInfo())
-                .ToList());
-        }
     }
 }

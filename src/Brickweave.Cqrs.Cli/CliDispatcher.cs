@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Brickweave.Cqrs.Cli.Extensions;
@@ -24,7 +25,12 @@ namespace Brickweave.Cqrs.Cli
             _helpInfoFactory = helpInfoFactory;
         }
 
-        public async Task<object> DispatchAsync(string commandText, ClaimsPrincipal user = null)
+        public async Task<object> DispatchAsync(string commandText, Action<Guid> handleCommandEnqueued = null)
+        {
+            return await DispatchAsync(commandText, null, handleCommandEnqueued);
+        }
+
+        public async Task<object> DispatchAsync(string commandText, ClaimsPrincipal user, Action<Guid> handleCommandEnqueued = null)
         {
             var args = commandText.ParseCommandText();
 
@@ -35,7 +41,7 @@ namespace Brickweave.Cqrs.Cli
             var executable = _executableFactory.Create(executableInfo);
 
             var result = executable is ICommand
-                ? await _commandDispatcher.ExecuteAsync((ICommand)executable, user)
+                ? await _commandDispatcher.ExecuteAsync((ICommand)executable, user, handleCommandEnqueued)
                 : await _queryDispatcher.ExecuteAsync((IQuery)executable, user);
 
             return result;

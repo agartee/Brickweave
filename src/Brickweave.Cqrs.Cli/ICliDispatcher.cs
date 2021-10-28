@@ -1,10 +1,12 @@
-﻿using System.Security.Claims;
+﻿using System;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Brickweave.Cqrs.Cli
 {
     public interface ICliDispatcher
     {
-        Task<object> DispatchAsync(string commandText, ClaimsPrincipal user = null);
+        Task<object> DispatchAsync(string commandText, Action<Guid> handleCommandEnqueued = null);
+        Task<object> DispatchAsync(string commandText, ClaimsPrincipal user, Action<Guid> handleCommandEnqueued = null);
     }
 }

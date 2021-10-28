@@ -89,7 +89,7 @@ namespace Brickweave.Cqrs.SqlServer.Tests.Services
 
                 var result = await _repository.ReadStatusAsync(id);
 
-                result.Should().BeOfType<RunningStatus>();
+                result.Should().BeOfType<RunningExecutionStatus>();
             }
 
             [Fact]
@@ -100,7 +100,7 @@ namespace Brickweave.Cqrs.SqlServer.Tests.Services
                 await _repository.ReportStartedAsync(id);
                 await _repository.ReportCompletedAsync(id, new TestCommandResult("test"));
 
-                var result = (await _repository.ReadStatusAsync(id)).As<CompletedStatus>();
+                var result = (await _repository.ReadStatusAsync(id)).As<CompletedExecutionStatus>();
 
                 result.Should().NotBeNull();
                 result.Result.Should().BeOfType<TestCommandResult>();
@@ -114,7 +114,7 @@ namespace Brickweave.Cqrs.SqlServer.Tests.Services
                 await _repository.ReportStartedAsync(id);
                 await _repository.ReportErrorAsync(id, new InvalidOperationException("Unable to comply."));
 
-                var result = (await _repository.ReadStatusAsync(id)).As<ErrorStatus>();
+                var result = (await _repository.ReadStatusAsync(id)).As<ErrorExecutionStatus>();
 
                 result.Should().NotBeNull();
                 result.Message.Should().Be("Unable to comply.");

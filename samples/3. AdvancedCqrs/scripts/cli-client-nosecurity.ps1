@@ -135,7 +135,36 @@ function ExecuteCommand {
             -Body $body `
             -ContentType "text/plain" `
             -TimeoutSec 1800 `
-            -UseBasicParsing `
+            -UseBasicParsing
+
+        if($result.StatusCode -eq 202) {
+            if($script:verbose -eq $true) {
+                Write-Host "Long-running command detected."
+            }
+            
+            do {
+                $waitSeconds = 10
+
+                if($script:verbose -eq $true) {
+                    Write-Host "Waiting $waitSeconds seconds."
+                }
+                
+                Start-Sleep -Seconds $waitSeconds
+
+                if($script:verbose -eq $true) {
+                    Write-Host "Checking status..."
+                }
+
+                $location = $result.Headers["Location"]
+
+                $result = Invoke-WebRequest `
+                    -Uri $location `
+                    -Method Get `
+                    -TimeoutSec 1800 `
+                    -UseBasicParsing
+
+            } while ($result.StatusCode -eq 202)
+        }
 
         if($script:verbose -eq $true) {
             Write-Host "OK!"

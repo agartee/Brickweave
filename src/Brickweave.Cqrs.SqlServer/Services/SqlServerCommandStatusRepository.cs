@@ -68,16 +68,16 @@ namespace Brickweave.Cqrs.SqlServer.Services
             var data = await _commandStatusDbSet.SingleOrDefaultAsync(s => s.Id == executionId);
 
             if (data == null)
-                return new NotFoundStatus(executionId);
+                return new NotFoundExecutionStatus(executionId);
 
             if (data.ContentType == null)
-                return new RunningStatus(executionId, data.Start);
+                return new RunningExecutionStatus(executionId, data.Start);
             if (data.ContentType == nameof(Exception))
-                return new ErrorStatus(executionId, data.Start, data.End.Value, data.Content);
+                return new ErrorExecutionStatus(executionId, data.Start, data.End.Value, data.Content);
             if (data.ContentType != null)
             {
                 var result = _documentSerializer.DeserializeObject(data.ContentType, data.Content);
-                var status = new CompletedStatus(executionId, data.Start, data.End.Value, result);
+                var status = new CompletedExecutionStatus(executionId, data.Start, data.End.Value, result);
 
                 // cleanup
                 _commandStatusDbSet.Remove(data);

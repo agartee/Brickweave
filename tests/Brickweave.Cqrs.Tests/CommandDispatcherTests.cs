@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Brickweave.Cqrs.Exceptions;
+using Brickweave.Cqrs.Services;
 using Brickweave.Cqrs.Tests.Models;
 using FluentAssertions;
 using NSubstitute;
@@ -14,7 +15,8 @@ namespace Brickweave.Cqrs.Tests
         public async Task ExecuteAsync_WhenCommandHandlerIsNotRegistered_Throws()
         {
             var serviceProvider = Substitute.For<IServiceProvider>();
-            var commandExecutor = new CommandDispatcher(serviceProvider);
+            var commandQueue = Substitute.For<ICommandQueue>();
+            var commandExecutor = new CommandDispatcher(serviceProvider, commandQueue);
             
             var exception = await Assert.ThrowsAsync<CommandHandlerNotRegisteredException>(
                 () => commandExecutor.ExecuteAsync(new TestCommand()));
@@ -26,7 +28,8 @@ namespace Brickweave.Cqrs.Tests
         public async Task ExecuteAsync_WhenCommandIsNull_Throws()
         {
             var serviceProvider = Substitute.For<IServiceProvider>();
-            var commandExecutor = new CommandDispatcher(serviceProvider);
+            var commandQueue = Substitute.For<ICommandQueue>();
+            var commandExecutor = new CommandDispatcher(serviceProvider, commandQueue);
 
             await Assert.ThrowsAsync<ArgumentNullException>(
                 () => commandExecutor.ExecuteAsync(null));
@@ -41,8 +44,9 @@ namespace Brickweave.Cqrs.Tests
             var serviceProvider = Substitute.For<IServiceProvider>();
             serviceProvider.GetService(typeof(ICommandHandler<TestCommand>))
                 .Returns(handler);
+            var commandQueue = Substitute.For<ICommandQueue>();
 
-            var commandExecutor = new CommandDispatcher(serviceProvider);
+            var commandExecutor = new CommandDispatcher(serviceProvider, commandQueue);
             await commandExecutor.ExecuteAsync(new TestCommand());
 
             handlerWasCalled.Should().BeTrue();
@@ -57,8 +61,9 @@ namespace Brickweave.Cqrs.Tests
             var serviceProvider = Substitute.For<IServiceProvider>();
             serviceProvider.GetService(typeof(ISecuredCommandHandler<TestCommand>))
                 .Returns(handler);
+            var commandQueue = Substitute.For<ICommandQueue>();
 
-            var commandExecutor = new CommandDispatcher(serviceProvider);
+            var commandExecutor = new CommandDispatcher(serviceProvider, commandQueue);
             await commandExecutor.ExecuteAsync(new TestCommand());
 
             handlerWasCalled.Should().BeTrue();
@@ -72,8 +77,9 @@ namespace Brickweave.Cqrs.Tests
             var serviceProvider = Substitute.For<IServiceProvider>();
             serviceProvider.GetService(typeof(ICommandHandler<TestCommandWithResult, Result>))
                 .Returns(handler);
+            var commandQueue = Substitute.For<ICommandQueue>();
 
-            var commandExecutor = new CommandDispatcher(serviceProvider);
+            var commandExecutor = new CommandDispatcher(serviceProvider, commandQueue);
             var result = await commandExecutor.ExecuteAsync(new TestCommandWithResult("1"));
 
             result.Should().Be(new Result("1"));
@@ -87,8 +93,9 @@ namespace Brickweave.Cqrs.Tests
             var serviceProvider = Substitute.For<IServiceProvider>();
             serviceProvider.GetService(typeof(ISecuredCommandHandler<TestCommandWithResult, Result>))
                 .Returns(handler);
+            var commandQueue = Substitute.For<ICommandQueue>();
 
-            var commandExecutor = new CommandDispatcher(serviceProvider);
+            var commandExecutor = new CommandDispatcher(serviceProvider, commandQueue);
             var result = await commandExecutor.ExecuteAsync(new TestCommandWithResult("1"));
 
             result.Should().Be(new Result("1"));

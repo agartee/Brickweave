@@ -15,6 +15,7 @@ namespace Brickweave.Cqrs.SqlServer.Services
         private readonly DbContext _dbContext;
         private readonly DbSet<CommandQueueData> _commandQueueDbSet;
         private readonly IDocumentSerializer _serializer;
+        private readonly string _schemaName;
 
         public SqlServerCommandQueue(TDbContext dbContext, Func<TDbContext, DbSet<CommandQueueData>> getCommandQueueDbSet, IDocumentSerializer serializer)
         {
@@ -70,10 +71,12 @@ namespace Brickweave.Cqrs.SqlServer.Services
             await _dbContext.SaveChangesAsync();
         }
 
-        private static string CreateDequeueQuery()
+        private string CreateDequeueQuery()
         {
-            return string.Format(
-                @"SET NOCOUNT ON;
+            var schema = _dbContext.Model.FindEntityType(typeof(CommandQueueData)).GetSchema();
+             
+            var sql = string.Format(
+                $@"SET NOCOUNT ON;
 	            
                 DECLARE @results TABLE 
 	            (
@@ -87,15 +90,17 @@ namespace Brickweave.Cqrs.SqlServer.Services
 
 	            INSERT INTO @results ([Id], [TypeName], [CommandJson], [ClaimsPrincipalJson], [Created], [IsProcessing])
 	            SELECT TOP (1) [Id], [TypeName], [CommandJson], [ClaimsPrincipalJson], [Created], [IsProcessing]
-	            FROM [Surveyor].[CommandQueue] WITH (ROWLOCK, READPAST)
+	            FROM [{ schema }].[{ CommandQueueData.TABLE_NAME }] WITH (ROWLOCK, READPAST)
 	            WHERE [isProcessing] = 0
                 ORDER BY [Created]
 
-	            UPDATE [Surveyor].[CommandQueue]
+	            UPDATE [{ schema }].[{ CommandQueueData.TABLE_NAME }]
 	            SET [IsProcessing] = 1
 	            WHERE [Id] IN (SELECT [Id] FROM @results)
 	
 	            SELECT * from @results");
+
+            return sql.TrimExtraWhitespace();
         }
     }
 }

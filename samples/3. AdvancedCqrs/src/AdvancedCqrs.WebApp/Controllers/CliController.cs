@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Brickweave.Cqrs.Cli;
 using Brickweave.Cqrs.Cli.Services;
 using Brickweave.Cqrs.Models;
 using Brickweave.Cqrs.Services;

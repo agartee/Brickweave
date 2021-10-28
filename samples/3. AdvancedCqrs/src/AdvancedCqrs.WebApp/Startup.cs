@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Globalization;
+using AdvancedCqrs.CommandQueue.SqlServer;
 using AdvancedCqrs.Domain.Things.Models;
 using AdvancedCqrs.SqlServer;
 using AdvancedCqrs.WebApp.BackgroundServices;
@@ -81,6 +82,16 @@ namespace AdvancedCqrs.WebApp
             services.AddBrickweaveSerialization();
 
             services.AddDbContext<AdvancedCqrsDbContext>(options =>
+            {
+                options.UseSqlServer(
+                    Configuration.GetConnectionString("demo"),
+                    sql => sql.CommandTimeout(120));
+
+                if (Convert.ToBoolean(Configuration["logging:enableSensitiveDataLogging"]))
+                    options.EnableSensitiveDataLogging();
+            });
+
+            services.AddDbContext<CommandQueueDbContext>(options =>
             {
                 options.UseSqlServer(
                     Configuration.GetConnectionString("demo"),

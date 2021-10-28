@@ -1,31 +1,18 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace AdvancedCqrs.SqlServer.Migrations
+namespace AdvancedCqrs.CommandQueue.SqlServer.Migrations
 {
     public partial class init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.EnsureSchema(
-                name: "AdvancedCqrs");
-
-            migrationBuilder.CreateTable(
-                name: "Brand",
-                schema: "AdvancedCqrs",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Brand", x => x.Id);
-                });
+                name: "SeparateCommandQueue");
 
             migrationBuilder.CreateTable(
                 name: "CommandQueue",
-                schema: "AdvancedCqrs",
+                schema: "SeparateCommandQueue",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -42,7 +29,7 @@ namespace AdvancedCqrs.SqlServer.Migrations
 
             migrationBuilder.CreateTable(
                 name: "CommandStatus",
-                schema: "AdvancedCqrs",
+                schema: "SeparateCommandQueue",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -60,16 +47,12 @@ namespace AdvancedCqrs.SqlServer.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Brand",
-                schema: "AdvancedCqrs");
-
-            migrationBuilder.DropTable(
                 name: "CommandQueue",
-                schema: "AdvancedCqrs");
+                schema: "SeparateCommandQueue");
 
             migrationBuilder.DropTable(
                 name: "CommandStatus",
-                schema: "AdvancedCqrs");
+                schema: "SeparateCommandQueue");
         }
     }
 }

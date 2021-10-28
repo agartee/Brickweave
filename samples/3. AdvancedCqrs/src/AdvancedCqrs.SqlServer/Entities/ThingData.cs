@@ -6,7 +6,7 @@ namespace AdvancedCqrs.SqlServer.Entities
     [Table(TABLE_NAME)]
     public class ThingData
     {
-        public const string TABLE_NAME = "Brand";
+        public const string TABLE_NAME = "Thing";
 
         public Guid Id { get; set; }
         public string Name { get; set; }

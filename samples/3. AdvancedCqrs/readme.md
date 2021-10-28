@@ -29,8 +29,11 @@ You will need the following user secrets to run locally.
 From this samples (`\samples\3. AdvancedCqrs`) folder, run this command, replacing the `$migrationName` with a real value:
 
 ```powershell
-dotnet ef migrations add $migrationName --startup-project ./src/AdvancedCqrs.WebApp/ --project ./src/AdvancedCqrs.SqlServer/
-dotnet ef migrations add $migrationName --startup-project ./src/AdvancedCqrs.WebApp/ --project ./src/AdvancedCqrs.CommandQueue.SqlServer/
+dotnet ef migrations add $migrationName --startup-project ./src/AdvancedCqrs.WebApp/ --project ./src/AdvancedCqrs.SqlServer/ --context AdvancedCqrsDbContext
+```
+or
+```powershell
+dotnet ef migrations add $migrationName --startup-project ./src/AdvancedCqrs.WebApp/ --project ./src/AdvancedCqrs.CommandQueue.SqlServer/ --context CommandQueueDbContext
 ```
 
 ## Executing Entity Framework Database Migrations
@@ -38,8 +41,8 @@ dotnet ef migrations add $migrationName --startup-project ./src/AdvancedCqrs.Web
 To make executing migrations easier, a helper PowerShell script can be found in the `./script` folder. Migrations may also be run using the following commands.
 
 ```powershell
-dotnet ef database update --startup-project ./src/AdvancedCqrs.WebApp/ --project ./src/AdvancedCqrs.SqlServer/
-dotnet ef database update --startup-project ./src/AdvancedCqrs.WebApp/ --project ./src/AdvancedCqrs.CommandQueue.SqlServer/
+dotnet ef database update --startup-project ./src/AdvancedCqrs.WebApp/ --project ./src/AdvancedCqrs.SqlServer/ --context AdvancedCqrsDbContext
+dotnet ef database update --startup-project ./src/AdvancedCqrs.WebApp/ --project ./src/AdvancedCqrs.CommandQueue.SqlServer/ --context CommandQueueDbContext
 ```
 
 ## Sample Commands

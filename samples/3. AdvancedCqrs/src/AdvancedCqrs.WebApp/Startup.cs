@@ -69,7 +69,11 @@ namespace AdvancedCqrs.WebApp
             services.AddBrickweaveCli(domainAssembly)
                 .SetDateParsingCulture(new CultureInfo("en-US"))
                 .AddCategoryHelpFile("cli-categories.json")
-                .EnableLongRunningCommands<AdvancedCqrsDbContext>(
+                //.EnableLongRunningCommands<AdvancedCqrsDbContext>(
+                //    dbContext => dbContext.CommandQueue,
+                //    dbContext => dbContext.CommandStatus,
+                //    15)
+                .EnableLongRunningCommands<CommandQueueDbContext>(
                     dbContext => dbContext.CommandQueue,
                     dbContext => dbContext.CommandStatus,
                     15);

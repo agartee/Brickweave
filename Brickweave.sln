@@ -82,6 +82,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdvancedCqrs.SqlServer", "s
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdvancedCqrs.WebApp", "samples\3. AdvancedCqrs\src\AdvancedCqrs.WebApp\AdvancedCqrs.WebApp.csproj", "{D82980A5-DE61-4362-A43C-4D3610DD53DD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdvancedCqrs.CommandQueue.SqlServer", "samples\3. AdvancedCqrs\src\AdvancedCqrs.CommandQueue.SqlServer\AdvancedCqrs.CommandQueue.SqlServer.csproj", "{0AA80A5F-58C0-4A5C-9977-737E76D6F586}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -200,6 +202,10 @@ Global
 		{D82980A5-DE61-4362-A43C-4D3610DD53DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D82980A5-DE61-4362-A43C-4D3610DD53DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D82980A5-DE61-4362-A43C-4D3610DD53DD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0AA80A5F-58C0-4A5C-9977-737E76D6F586}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0AA80A5F-58C0-4A5C-9977-737E76D6F586}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0AA80A5F-58C0-4A5C-9977-737E76D6F586}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0AA80A5F-58C0-4A5C-9977-737E76D6F586}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -236,6 +242,7 @@ Global
 		{E162439D-8361-4C45-ABB4-AA035CB9B2D5} = {148F8258-020D-42E9-BD07-19DA69EE28B0}
 		{45D336F6-3D1A-48C4-B850-A0067FA2CE6F} = {148F8258-020D-42E9-BD07-19DA69EE28B0}
 		{D82980A5-DE61-4362-A43C-4D3610DD53DD} = {148F8258-020D-42E9-BD07-19DA69EE28B0}
+		{0AA80A5F-58C0-4A5C-9977-737E76D6F586} = {148F8258-020D-42E9-BD07-19DA69EE28B0}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4E8CFE0E-1064-4953-B2D7-545AE105B2D9}

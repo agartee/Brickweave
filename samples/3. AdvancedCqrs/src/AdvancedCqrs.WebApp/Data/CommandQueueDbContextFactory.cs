@@ -1,6 +1,6 @@
 ﻿using System.IO;
 using System.Reflection;
-using AdvancedCqrs.SqlServer;
+using AdvancedCqrs.CommandQueue.SqlServer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.Configuration;
@@ -25,7 +25,7 @@ namespace AdvancedCqrs.WebApp.Data
             var migrationsAssembly = typeof(CommandQueueDbContext).GetTypeInfo().Assembly.GetName().Name;
 
             var options = new DbContextOptionsBuilder<CommandQueueDbContext>()
-                .UseSqlServer(configuration.GetConnectionString("demo"),
+                .UseSqlServer(configuration.GetConnectionString("demo-commandqueue"),
                     sql => sql.CommandTimeout(525600 * 60).MigrationsAssembly(migrationsAssembly))
                 .Options;
 

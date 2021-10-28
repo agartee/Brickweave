@@ -1,7 +1,7 @@
 ﻿using System.Security.Claims;
 using System.Threading.Tasks;
 
-namespace Brickweave.Cqrs
+namespace Brickweave.Cqrs.Services
 {
     public interface IEnqueuedCommandDispatcher
     {

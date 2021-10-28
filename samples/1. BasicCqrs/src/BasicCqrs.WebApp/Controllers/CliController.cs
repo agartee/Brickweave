@@ -2,6 +2,7 @@
 using Brickweave.Cqrs.Cli;
 using Brickweave.Cqrs.Cli.Formatters;
 using Brickweave.Cqrs.Cli.Models;
+using Brickweave.Cqrs.Cli.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BasicCqrs.WebApp.Controllers

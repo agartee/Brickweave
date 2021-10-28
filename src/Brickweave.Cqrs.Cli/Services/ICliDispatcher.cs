@@ -2,7 +2,7 @@
 using System.Security.Claims;
 using System.Threading.Tasks;
 
-namespace Brickweave.Cqrs.Cli
+namespace Brickweave.Cqrs.Cli.Services
 {
     public interface ICliDispatcher
     {

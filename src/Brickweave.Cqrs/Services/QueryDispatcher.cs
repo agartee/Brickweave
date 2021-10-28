@@ -6,7 +6,7 @@ using Brickweave.Cqrs.Exceptions;
 using Brickweave.Cqrs.Extensions;
 using LiteGuard;
 
-namespace Brickweave.Cqrs
+namespace Brickweave.Cqrs.Services
 {
     public class QueryDispatcher : IQueryDispatcher
     {

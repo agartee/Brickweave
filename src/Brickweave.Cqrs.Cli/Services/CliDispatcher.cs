@@ -4,8 +4,9 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Brickweave.Cqrs.Cli.Extensions;
 using Brickweave.Cqrs.Cli.Factories;
+using Brickweave.Cqrs.Services;
 
-namespace Brickweave.Cqrs.Cli
+namespace Brickweave.Cqrs.Cli.Services
 {
     public class CliDispatcher : ICliDispatcher
     {

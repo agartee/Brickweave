@@ -7,7 +7,7 @@ using Brickweave.Cqrs.Extensions;
 using Brickweave.Cqrs.Services;
 using LiteGuard;
 
-namespace Brickweave.Cqrs
+namespace Brickweave.Cqrs.Services
 {
     public class CommandDispatcher : ICommandDispatcher, IEnqueuedCommandDispatcher
     {

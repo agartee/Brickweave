@@ -8,6 +8,7 @@ using Brickweave.Cqrs.Cli.Factories;
 using Brickweave.Cqrs.Cli.Factories.ParameterValues;
 using Brickweave.Cqrs.Cli.Models;
 using Brickweave.Cqrs.Cli.Readers;
+using Brickweave.Cqrs.Cli.Services;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Brickweave.Cqrs.Cli.DependencyInjection

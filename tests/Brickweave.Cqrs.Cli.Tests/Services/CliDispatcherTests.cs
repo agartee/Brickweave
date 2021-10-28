@@ -2,12 +2,14 @@
 using System.Threading.Tasks;
 using Brickweave.Cqrs.Cli.Factories;
 using Brickweave.Cqrs.Cli.Models;
+using Brickweave.Cqrs.Cli.Services;
 using Brickweave.Cqrs.Cli.Tests.Models;
+using Brickweave.Cqrs.Services;
 using FluentAssertions;
 using NSubstitute;
 using Xunit;
 
-namespace Brickweave.Cqrs.Cli.Tests
+namespace Brickweave.Cqrs.Cli.Services.Tests
 {
     public class CliDispatcherTests
     {

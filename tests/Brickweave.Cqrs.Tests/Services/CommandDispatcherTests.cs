@@ -7,7 +7,7 @@ using FluentAssertions;
 using NSubstitute;
 using Xunit;
 
-namespace Brickweave.Cqrs.Tests
+namespace Brickweave.Cqrs.Services.Tests
 {
     public class CommandDispatcherTests
     {

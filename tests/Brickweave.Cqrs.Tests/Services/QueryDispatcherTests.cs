@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Brickweave.Cqrs.Exceptions;
+using Brickweave.Cqrs.Services;
 using Brickweave.Cqrs.Tests.Models;
 using FluentAssertions;
 using NSubstitute;
 using Xunit;
 
-namespace Brickweave.Cqrs.Tests
+namespace Brickweave.Cqrs.Services.Tests
 {
     public class QueryDispatcherTests
     {

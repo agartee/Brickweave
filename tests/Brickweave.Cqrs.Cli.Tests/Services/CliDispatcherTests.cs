@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Brickweave.Cqrs.Cli.Factories;
 using Brickweave.Cqrs.Cli.Models;
@@ -40,20 +41,20 @@ namespace Brickweave.Cqrs.Cli.Services.Tests
             executableFactory.Create(Arg.Any<ExecutableInfo>())
                 .Returns(new CreateFoo(0, DateTime.MinValue));
             
-            var commandExecutor = Substitute.For<ICommandDispatcher>();
-            commandExecutor.ExecuteAsync(Arg.Any<ICommand>()).Returns("success!");
+            var commandDispatcher = Substitute.For<ICommandDispatcher>();
+            commandDispatcher.ExecuteAsync(Arg.Any<ICommand>(), Arg.Any<ClaimsPrincipal>(), Arg.Any<Action<Guid>>()).Returns("success!");
 
             var runner = new CliDispatcher(
                 Substitute.For<IExecutableInfoFactory>(),
                 Substitute.For<IHelpInfoFactory>(),
                 executableFactory,
-                commandExecutor,
+                commandDispatcher,
                 Substitute.For<IQueryDispatcher>());
 
             var result = await runner.DispatchAsync(string.Empty);
 
             result.Should().Be("success!");
-            await commandExecutor.Received(1).ExecuteAsync(Arg.Any<ICommand>());
+            await commandDispatcher.Received(1).ExecuteAsync(Arg.Any<ICommand>(), Arg.Any<ClaimsPrincipal>(), Arg.Any<Action<Guid>>());
         }
 
         [Fact]
@@ -64,7 +65,7 @@ namespace Brickweave.Cqrs.Cli.Services.Tests
                 .Returns(new GetFoo());
 
             var queryExecutor = Substitute.For<IQueryDispatcher>();
-            queryExecutor.ExecuteAsync(Arg.Any<IQuery>()).Returns("success!");
+            queryExecutor.ExecuteAsync(Arg.Any<IQuery>(), Arg.Any<ClaimsPrincipal>()).Returns("success!");
 
             var runner = new CliDispatcher(
                 Substitute.For<IExecutableInfoFactory>(),
@@ -76,7 +77,7 @@ namespace Brickweave.Cqrs.Cli.Services.Tests
             var result = await runner.DispatchAsync(string.Empty);
 
             result.Should().Be("success!");
-            await queryExecutor.Received(1).ExecuteAsync(Arg.Any<IQuery>());
+            await queryExecutor.Received(1).ExecuteAsync(Arg.Any<IQuery>(), Arg.Any<ClaimsPrincipal>());
         }
     }
 

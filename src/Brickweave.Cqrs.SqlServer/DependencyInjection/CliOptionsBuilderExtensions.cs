@@ -31,7 +31,6 @@ namespace Brickweave.Cqrs.SqlServer.DependencyInjection
                     s.GetService<IDocumentSerializer>()))
                 .AddScoped((Func<IServiceProvider, ICommandProcessor>)(s => new CommandProcessor(
                     s.GetService<ICommandQueue>(),
-                    s.GetService<ICommandStatusProvider>(),
                     s.GetService<IEnqueuedCommandDispatcher>(),
                     pollingIntervalInSeconds)))
                 .AddScoped<IEnqueuedCommandDispatcher, CommandDispatcher>()

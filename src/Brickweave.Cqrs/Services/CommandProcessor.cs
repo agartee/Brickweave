@@ -8,16 +8,13 @@ namespace Brickweave.Cqrs.Services
     public class CommandProcessor : ICommandProcessor
     {
         private readonly ICommandQueue _commandQueue;
-        private readonly ICommandStatusProvider _commandStatusProvider;
         private readonly IEnqueuedCommandDispatcher _dispatcher;
 
         private readonly int _pollingIntervalSeconds;
 
-        public CommandProcessor(ICommandQueue commandQueue, ICommandStatusProvider commandStatusProvider,
-            IEnqueuedCommandDispatcher dispatcher, int pollingIntervalSeconds = 0)
+        public CommandProcessor(ICommandQueue commandQueue, IEnqueuedCommandDispatcher dispatcher, int pollingIntervalSeconds = 0)
         {
             _commandQueue = commandQueue;
-            _commandStatusProvider = commandStatusProvider;
             _dispatcher = dispatcher;
             _pollingIntervalSeconds = pollingIntervalSeconds > 0 ? pollingIntervalSeconds : 15;
         }

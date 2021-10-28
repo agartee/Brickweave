@@ -8,16 +8,16 @@ namespace Brickweave.Cqrs.Services
     public class CommandProcessor : ICommandProcessor
     {
         private readonly ICommandQueue _commandQueue;
-        private readonly ICommandStatusRepository _commandStatusRepository;
+        private readonly ICommandStatusProvider _commandStatusProvider;
         private readonly IEnqueuedCommandDispatcher _dispatcher;
 
         private readonly int _pollingIntervalSeconds;
 
-        public CommandProcessor(ICommandQueue commandQueue, ICommandStatusRepository commandStatusRepository,
+        public CommandProcessor(ICommandQueue commandQueue, ICommandStatusProvider commandStatusProvider,
             IEnqueuedCommandDispatcher dispatcher, int pollingIntervalSeconds = 0)
         {
             _commandQueue = commandQueue;
-            _commandStatusRepository = commandStatusRepository;
+            _commandStatusProvider = commandStatusProvider;
             _dispatcher = dispatcher;
             _pollingIntervalSeconds = pollingIntervalSeconds > 0 ? pollingIntervalSeconds : 15;
         }
@@ -26,7 +26,7 @@ namespace Brickweave.Cqrs.Services
         {
             while (!stoppingToken.IsCancellationRequested)
             {
-                var nextCommand = await _commandQueue.GetNext();
+                var nextCommand = await _commandQueue.GetNextAsync();
 
                 if (nextCommand != null)
                     await ProcessCommand(nextCommand);
@@ -39,18 +39,16 @@ namespace Brickweave.Cqrs.Services
         {
             try
             {
-                await _commandStatusRepository.ReportStartedAsync(nextCommand.Id);
-
                 if (nextCommand != null)
                 {
                     var result = await _dispatcher.ExecuteAsync(nextCommand.Value, nextCommand.Principal);
 
-                    await _commandStatusRepository.ReportCompletedAsync(nextCommand.Id, result);
+                    await _commandQueue.ReportCompletedAsync(nextCommand.Id, result);
                 }
             }
             catch (Exception ex)
             {
-                await _commandStatusRepository.ReportErrorAsync(nextCommand.Id, ex);
+                await _commandQueue.ReportExceptionAsync(nextCommand.Id, ex);
             }
         }
     }

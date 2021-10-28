@@ -11,12 +11,12 @@ namespace AdvancedCqrs.WebApp.Controllers
     public class CliController : Controller
     {
         private readonly ICliDispatcher _cliDispatcher;
-        private readonly ICommandStatusRepository _commandStatusRepository;
+        private readonly ICommandStatusProvider _commandStatusProvider;
 
-        public CliController(ICliDispatcher cliDispatcher, ICommandStatusRepository commandStatusRepository)
+        public CliController(ICliDispatcher cliDispatcher, ICommandStatusProvider commandStatusProvider)
         {
             _cliDispatcher = cliDispatcher;
-            _commandStatusRepository = commandStatusRepository;
+            _commandStatusProvider = commandStatusProvider;
         }
 
         [HttpPost, Route("/cli/run")]
@@ -34,13 +34,13 @@ namespace AdvancedCqrs.WebApp.Controllers
         [HttpGet, Route("/cli/status/{commandId}")]
         public async Task<IActionResult> GetStatus(Guid commandId)
         {
-            var status = await _commandStatusRepository.ReadStatusAsync(commandId);
+            var status = await _commandStatusProvider.GetStatusAsync(commandId);
 
             if (status is CompletedExecutionStatus completedStatus)
                 return Ok(completedStatus.Result);
 
             if (status is ErrorExecutionStatus errorStatus)
-                throw new InvalidOperationException(errorStatus.Message);
+                throw new InvalidOperationException(errorStatus.Exception.ToString());
 
             return Accepted($"https://{HttpContext.Request.Host}/cli/status/{commandId}");
         }

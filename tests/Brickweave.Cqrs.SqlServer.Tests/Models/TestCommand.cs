@@ -1,12 +1,12 @@
 ﻿namespace Brickweave.Cqrs.SqlServer.Tests.Models
 {
-    public class TestCommandResult
+    public class TestCommand : ICommand<TestCommandResult>
     {
-        public TestCommandResult(string foo)
+        public TestCommand(string foo)
         {
             Foo = foo;
         }
-
+        
         public string Foo { get; }
     }
 }

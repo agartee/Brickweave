@@ -16,7 +16,6 @@ namespace Brickweave.Cqrs.SqlServer.DependencyInjection
 
         public static CliOptionsBuilder EnableLongRunningCommands<TDbContext>(this CliOptionsBuilder builder,
             Func<TDbContext, DbSet<CommandQueueData>> getCommandQueueDbSet,
-            Func<TDbContext, DbSet<CommandStatusData>> getCommandStatusDbSet,
             int pollingIntervalInSeconds) where TDbContext : DbContext
         {
             if (_longRunningCommandsEnabled)
@@ -25,15 +24,14 @@ namespace Brickweave.Cqrs.SqlServer.DependencyInjection
             _longRunningCommandsEnabled = true;
 
             builder.Services()
-                .AddScoped(s => (ICommandStatusRepository)Activator.CreateInstance(
-                    typeof(SqlServerCommandStatusRepository<>).MakeGenericType(typeof(TDbContext)),
+                .AddScoped(s => (ICommandStatusProvider)Activator.CreateInstance(
+                    typeof(SqlServerCommandStatusProvider<>).MakeGenericType(typeof(TDbContext)),
                     s.GetService<TDbContext>(),
                     getCommandQueueDbSet,
-                    getCommandStatusDbSet,
                     s.GetService<IDocumentSerializer>()))
                 .AddScoped((Func<IServiceProvider, ICommandProcessor>)(s => new CommandProcessor(
                     s.GetService<ICommandQueue>(),
-                    s.GetService<ICommandStatusRepository>(),
+                    s.GetService<ICommandStatusProvider>(),
                     s.GetService<IEnqueuedCommandDispatcher>(),
                     pollingIntervalInSeconds)))
                 .AddScoped<IEnqueuedCommandDispatcher, CommandDispatcher>()

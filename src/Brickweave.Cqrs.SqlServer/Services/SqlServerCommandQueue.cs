@@ -7,6 +7,7 @@ using Brickweave.Cqrs.Models;
 using Brickweave.Cqrs.SqlServer.Entities;
 using Brickweave.Cqrs.Services;
 using Brickweave.Cqrs.SqlServer.Extensions;
+using Microsoft.Data.SqlClient;
 
 namespace Brickweave.Cqrs.SqlServer.Services
 {
@@ -15,7 +16,6 @@ namespace Brickweave.Cqrs.SqlServer.Services
         private readonly DbContext _dbContext;
         private readonly DbSet<CommandQueueData> _commandQueueDbSet;
         private readonly IDocumentSerializer _serializer;
-        private readonly string _schemaName;
 
         public SqlServerCommandQueue(TDbContext dbContext, Func<TDbContext, DbSet<CommandQueueData>> getCommandQueueDbSet, IDocumentSerializer serializer)
         {
@@ -29,34 +29,65 @@ namespace Brickweave.Cqrs.SqlServer.Services
             _commandQueueDbSet.Add(new CommandQueueData
             {
                 Id = commandId,
-                TypeName = executable.GetType().AssemblyQualifiedName,
+                CommandTypeName = executable.GetType().AssemblyQualifiedName,
                 CommandJson = _serializer.SerializeObject(executable),
                 ClaimsPrincipalJson = user != null ? _serializer.SerializeObject(user) : null,
-                Created = DateTime.UtcNow,
-                IsProcessing = false
+                Created = DateTime.UtcNow
             });
 
             await _dbContext.SaveChangesAsync();
         }
 
-        public async Task<CommandInfo> GetNext()
+        public async Task<CommandInfo> GetNextAsync()
         {
             var sql = CreateDequeueQuery();
+            var startedParameter = new SqlParameter("@started", DateTime.UtcNow);
 
             var data = (await _commandQueueDbSet
-                .FromSqlRaw(sql)
+                .FromSqlRaw(sql, new[] { startedParameter })
+                .AsNoTracking()
                 .ToListAsync())
                 .FirstOrDefault();
 
             if (data == null)
                 return null;
 
-            var command = (ICommand)_serializer.DeserializeObject(data.TypeName, data.CommandJson);
+            var command = (ICommand) _serializer.DeserializeObject(data.CommandTypeName, data.CommandJson);
             var principal = data.ClaimsPrincipalJson != null
                 ? _serializer.DeserializeObject<ClaimsPrincipalInfo>(data.ClaimsPrincipalJson).ToClaimsPrincipal()
                 : null;
 
             return new CommandInfo(data.Id, command, principal);
+        }
+
+        public async Task ReportCompletedAsync(Guid commandId, object result = null)
+        {
+            var data = await _commandQueueDbSet.SingleOrDefaultAsync(s => s.Id == commandId);
+
+            if (data == null)
+                throw new InvalidOperationException($"Command with ID \"{commandId}\" was not found.");
+
+            data.Completed = DateTime.UtcNow;
+            data.ResultTypeName = result.GetType().AssemblyQualifiedName;
+            data.ResultJson = result != null 
+                ? _serializer.SerializeObject(result) 
+                : null;
+
+            await _dbContext.SaveChangesAsync();
+        }
+
+        public async Task ReportExceptionAsync(Guid commandId, Exception exception)
+        {
+            var data = await _commandQueueDbSet.SingleOrDefaultAsync(s => s.Id == commandId);
+
+            if (data == null)
+                throw new InvalidOperationException($"Command with ID \"{commandId}\" was not found.");
+
+            data.Completed = DateTime.UtcNow;
+            data.ResultTypeName = typeof(ExceptionInfo).AssemblyQualifiedName;
+            data.ResultJson = _serializer.SerializeObject(new ExceptionInfo(exception.GetType().Name, exception.Message));
+
+            await _dbContext.SaveChangesAsync();
         }
 
         public async Task Delete(Guid commandId)
@@ -73,7 +104,9 @@ namespace Brickweave.Cqrs.SqlServer.Services
 
         private string CreateDequeueQuery()
         {
-            var schema = _dbContext.Model.FindEntityType(typeof(CommandQueueData)).GetSchema();
+            var schema = _dbContext.Model
+                .FindEntityType(typeof(CommandQueueData))
+                .GetSchema();
              
             var sql = string.Format(
                 $@"SET NOCOUNT ON;
@@ -81,24 +114,41 @@ namespace Brickweave.Cqrs.SqlServer.Services
                 DECLARE @results TABLE 
 	            (
 		            [Id] UNIQUEIDENTIFIER
-                    , [TypeName] VARCHAR(200)
+                    , [CommandTypeName] VARCHAR(200)
 		            , [CommandJson] VARCHAR(MAX)
                     , [ClaimsPrincipalJson] VARCHAR(MAX)
 		            , [Created] DATETIME
-                    , [IsProcessing] BIT
 	            )
 
-	            INSERT INTO @results ([Id], [TypeName], [CommandJson], [ClaimsPrincipalJson], [Created], [IsProcessing])
-	            SELECT TOP (1) [Id], [TypeName], [CommandJson], [ClaimsPrincipalJson], [Created], [IsProcessing]
+	            INSERT INTO @results ([Id], [CommandTypeName], [CommandJson], [ClaimsPrincipalJson], [Created])
+	            SELECT TOP (1) 
+                    [Id]
+                    , [CommandTypeName]
+                    , [CommandJson]
+                    , [ClaimsPrincipalJson]
+                    , [Created]
+
 	            FROM [{ schema }].[{ CommandQueueData.TABLE_NAME }] WITH (ROWLOCK, READPAST)
-	            WHERE [isProcessing] = 0
+	            WHERE [Started] IS NULL
                 ORDER BY [Created]
 
 	            UPDATE [{ schema }].[{ CommandQueueData.TABLE_NAME }]
-	            SET [IsProcessing] = 1
-	            WHERE [Id] IN (SELECT [Id] FROM @results)
+	            SET [Started] = @started
+	            WHERE 
+                    [Id] IN (SELECT [Id] FROM @results)
 	
-	            SELECT * from @results");
+	            SELECT 
+                    [Id]
+                    , [CommandTypeName]
+                    , [CommandJson]
+                    , [ClaimsPrincipalJson]
+                    , NULL [ResultTypeName]
+                    , NULL [ResultJson]
+                    , [Created]
+                    , NULL [Started]
+                    , NULL [Completed]
+                FROM 
+                    @results");
 
             return sql.TrimExtraWhitespace();
         }

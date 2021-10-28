@@ -16,9 +16,24 @@ namespace Brickweave.Cqrs.Services
             return Task.CompletedTask;
         }
 
-        public Task<CommandInfo> GetNext()
+        public Task<CommandInfo> GetNextAsync()
         {
-            return null;
+            return Task.FromResult((CommandInfo) null);
+        }
+
+        public Task ReportCompletedAsync(Guid commandId, object result = null)
+        {
+            return Task.CompletedTask;
+        }
+
+        public Task ReportExceptionAsync(Guid commandId, Exception exception)
+        {
+            return Task.CompletedTask;
+        }
+
+        public Task ReportStartedAsync(Guid commandId)
+        {
+            return Task.CompletedTask;
         }
     }
 }

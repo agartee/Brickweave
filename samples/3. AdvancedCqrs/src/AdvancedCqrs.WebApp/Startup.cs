@@ -72,11 +72,9 @@ namespace AdvancedCqrs.WebApp
                 .AddCategoryHelpFile("cli-categories.json")
                 //.EnableLongRunningCommands<AdvancedCqrsDbContext>(
                 //    dbContext => dbContext.CommandQueue,
-                //    dbContext => dbContext.CommandStatus,
                 //    15)
                 .EnableLongRunningCommands<CommandQueueDbContext>(
                     dbContext => dbContext.CommandQueue,
-                    dbContext => dbContext.CommandStatus,
                     15);
 
             services.AddBrickweaveSerialization();

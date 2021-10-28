@@ -129,10 +129,5 @@ namespace Brickweave.Cqrs.Cli.DependencyInjection
             _culture = cultureInfo;
             return this;
         }
-
-        public IServiceCollection Services()
-        {
-            return _services;
-        }
     }
 }

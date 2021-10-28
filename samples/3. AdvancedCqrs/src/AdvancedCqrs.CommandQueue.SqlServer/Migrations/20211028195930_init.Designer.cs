@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AdvancedCqrs.CommandQueue.SqlServer.Migrations
 {
     [DbContext(typeof(CommandQueueDbContext))]
-    [Migration("20211028100546_init")]
+    [Migration("20211028195930_init")]
     partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -34,43 +34,29 @@ namespace AdvancedCqrs.CommandQueue.SqlServer.Migrations
                     b.Property<string>("CommandJson")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("CommandTypeName")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<DateTime?>("Completed")
+                        .HasColumnType("datetime2");
+
                     b.Property<DateTime>("Created")
                         .HasColumnType("datetime2");
 
-                    b.Property<bool>("IsProcessing")
-                        .HasColumnType("bit");
+                    b.Property<string>("ResultJson")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("TypeName")
+                    b.Property<string>("ResultTypeName")
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
+
+                    b.Property<DateTime?>("Started")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
                     b.ToTable("CommandQueue");
-                });
-
-            modelBuilder.Entity("Brickweave.Cqrs.SqlServer.Entities.CommandStatusData", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Content")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ContentType")
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<DateTime?>("End")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("Start")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("CommandStatus");
                 });
 #pragma warning restore 612, 618
         }

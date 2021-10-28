@@ -1,5 +1,4 @@
 ﻿using System;
-using Brickweave.Cqrs.Cli.DependencyInjection;
 using Brickweave.Cqrs.SqlServer.Entities;
 using Brickweave.Cqrs.SqlServer.Services;
 using Brickweave.Cqrs.Services;
@@ -7,14 +6,15 @@ using Brickweave.Serialization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Brickweave.Cqrs.DependencyInjection;
 
 namespace Brickweave.Cqrs.SqlServer.DependencyInjection
 {
-    public static class CliOptionsBuilderExtensions
+    public static class CqrsOptionsBuilderExtensions
     {
         private static bool _longRunningCommandsEnabled;
 
-        public static CliOptionsBuilder EnableLongRunningCommands<TDbContext>(this CliOptionsBuilder builder,
+        public static CqrsOptionsBuilder EnableLongRunningCommands<TDbContext>(this CqrsOptionsBuilder builder,
             Func<TDbContext, DbSet<CommandQueueData>> getCommandQueueDbSet,
             int pollingIntervalInSeconds) where TDbContext : DbContext
         {

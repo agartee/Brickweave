@@ -65,17 +65,17 @@ namespace AdvancedCqrs.WebApp
         {
             var domainAssembly = typeof(Thing).Assembly;
 
-            services.AddBrickweaveCqrs(domainAssembly);
-
-            services.AddBrickweaveCli(domainAssembly)
-                .SetDateParsingCulture(new CultureInfo("en-US"))
-                .AddCategoryHelpFile("cli-categories.json")
+            services.AddBrickweaveCqrs(domainAssembly)
                 //.EnableLongRunningCommands<AdvancedCqrsDbContext>(
                 //    dbContext => dbContext.CommandQueue,
                 //    15)
                 .EnableLongRunningCommands<CommandQueueDbContext>(
                     dbContext => dbContext.CommandQueue,
                     15);
+
+            services.AddBrickweaveCli(domainAssembly)
+                .SetDateParsingCulture(new CultureInfo("en-US"))
+                .AddCategoryHelpFile("cli-categories.json");
 
             services.AddBrickweaveSerialization();
 

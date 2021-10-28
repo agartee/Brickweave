@@ -9,6 +9,7 @@
   </ItemGroup>
   
   <ItemGroup>
+    <ProjectReference Include="..\..\..\..\src\Brickweave.Cqrs.Cli\Brickweave.Cqrs.Cli.csproj" />
     <ProjectReference Include="..\..\..\..\src\Brickweave.Cqrs.SqlServer\Brickweave.Cqrs.SqlServer.csproj" />
     <ProjectReference Include="..\..\..\..\src\Brickweave.Serialization\Brickweave.Serialization.csproj" />
     <ProjectReference Include="..\AdvancedCqrs.Domain\AdvancedCqrs.Domain.csproj" />

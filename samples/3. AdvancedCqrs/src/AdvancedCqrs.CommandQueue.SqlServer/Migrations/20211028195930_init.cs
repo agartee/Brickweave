@@ -16,31 +16,18 @@ namespace AdvancedCqrs.CommandQueue.SqlServer.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    TypeName = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
+                    CommandTypeName = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
                     CommandJson = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ClaimsPrincipalJson = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ResultTypeName = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
+                    ResultJson = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Created = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    IsProcessing = table.Column<bool>(type: "bit", nullable: false)
+                    Started = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Completed = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_CommandQueue", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "CommandStatus",
-                schema: "SeparateCommandQueue",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Start = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    End = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    ContentType = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
-                    Content = table.Column<string>(type: "nvarchar(max)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_CommandStatus", x => x.Id);
                 });
         }
 
@@ -48,10 +35,6 @@ namespace AdvancedCqrs.CommandQueue.SqlServer.Migrations
         {
             migrationBuilder.DropTable(
                 name: "CommandQueue",
-                schema: "SeparateCommandQueue");
-
-            migrationBuilder.DropTable(
-                name: "CommandStatus",
                 schema: "SeparateCommandQueue");
         }
     }

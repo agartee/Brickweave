@@ -4,6 +4,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Brickweave.Cqrs.Cli.Extensions;
 using Brickweave.Cqrs.Cli.Factories;
+using Brickweave.Cqrs.Cli.Formatters;
 using Brickweave.Cqrs.Services;
 
 namespace Brickweave.Cqrs.Cli.Services
@@ -36,7 +37,7 @@ namespace Brickweave.Cqrs.Cli.Services
             var args = commandText.ParseCommandText();
 
             if (args.Any(a => a == "--help"))
-                return _helpInfoFactory.Create(args);
+                return SimpleHelpFormatter.Format(_helpInfoFactory.Create(args));
 
             var executableInfo = _executableInfoFactory.Create(args);
             var executable = _executableFactory.Create(executableInfo);

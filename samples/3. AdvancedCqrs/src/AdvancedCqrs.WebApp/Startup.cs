@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Globalization;
-using AdvancedCqrs.CommandQueue.SqlServer;
 using AdvancedCqrs.Domain.Things.Models;
 using AdvancedCqrs.SqlServer;
 using AdvancedCqrs.WebApp.BackgroundServices;
@@ -15,6 +14,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
@@ -38,7 +38,7 @@ namespace AdvancedCqrs.WebApp
 
         private void ConfigureControllers(IServiceCollection services)
         {
-            services.AddControllers(options => 
+            services.AddControllersWithViews(options => 
             { 
                 options.InputFormatters.Add(new PlainTextInputFormatter()); 
             })
@@ -66,10 +66,7 @@ namespace AdvancedCqrs.WebApp
             var domainAssembly = typeof(Thing).Assembly;
 
             services.AddBrickweaveCqrs(domainAssembly)
-                //.EnableLongRunningCommands<AdvancedCqrsDbContext>(
-                //    dbContext => dbContext.CommandQueue,
-                //    15)
-                .EnableLongRunningCommands<CommandQueueDbContext>(
+                .EnableLongRunningCommands<AdvancedCqrsDbContext>(
                     dbContext => dbContext.CommandQueue,
                     15);
 
@@ -88,16 +85,6 @@ namespace AdvancedCqrs.WebApp
                 if (Convert.ToBoolean(Configuration["logging:enableSensitiveDataLogging"]))
                     options.EnableSensitiveDataLogging();
             });
-
-            services.AddDbContext<CommandQueueDbContext>(options =>
-            {
-                options.UseSqlServer(
-                    Configuration.GetConnectionString("demo"),
-                    sql => sql.CommandTimeout(120));
-
-                if (Convert.ToBoolean(Configuration["logging:enableSensitiveDataLogging"]))
-                    options.EnableSensitiveDataLogging();
-            });
         }
 
         private void ConfigureHostedServices(IServiceCollection services)
@@ -107,15 +94,25 @@ namespace AdvancedCqrs.WebApp
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            app.UseHsts();
-
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+            }
+            else
+            {
+                app.UseExceptionHandler("/Home/Error");
+                app.UseHsts();
+            }
             app.UseHttpsRedirection();
+            app.UseStaticFiles();
 
             app.UseRouting();
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapDefaultControllerRoute();
+                endpoints.MapControllerRoute(
+                    name: "default",
+                    pattern: "{controller=Home}/{action=Index}/{id?}");
             });
         }
     }

@@ -14,7 +14,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\AdvancedCqrs.CommandQueue.SqlServer\AdvancedCqrs.CommandQueue.SqlServer.csproj" />
     <ProjectReference Include="..\AdvancedCqrs.Domain\AdvancedCqrs.Domain.csproj" />
     <ProjectReference Include="..\AdvancedCqrs.SqlServer\AdvancedCqrs.SqlServer.csproj" />
   </ItemGroup>

@@ -10,6 +10,8 @@ namespace AdvancedCqrs.Domain.Things.Commands
 
         public async Task<Thing> HandleAsync(CreateThing command)
         {
+            await Task.Delay(30000);
+
             return new Thing(
                 ThingId.NewId(),
                 command.Name);

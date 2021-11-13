@@ -153,7 +153,7 @@ namespace Brickweave.Cqrs.SqlServer.Tests.Services
 
             await _commandQueue.EnqueueCommandAsync(commandId, command);
 
-            await _commandQueue.Delete(commandId);
+            await _commandQueue.DeleteAsync(commandId);
 
             var result = await _fixture.CreateDbContext().CommandQueue
                 .FirstOrDefaultAsync(c => c.Id == commandId);
@@ -167,7 +167,7 @@ namespace Brickweave.Cqrs.SqlServer.Tests.Services
             var commandId = Guid.NewGuid();
 
             var exception = await Record.ExceptionAsync(() => 
-                _commandQueue.Delete(commandId));
+                _commandQueue.DeleteAsync(commandId));
 
             exception.Should().BeNull();
         }

@@ -2,8 +2,8 @@
 using System.Globalization;
 using AdvancedCqrs.Domain.Things.Models;
 using AdvancedCqrs.SqlServer;
-using AdvancedCqrs.WebApp.BackgroundServices;
 using AdvancedCqrs.WebApp.Formatters;
+using Brickweave.Cqrs.AspNetCore.DependencyInjection;
 using Brickweave.Cqrs.Cli.DependencyInjection;
 using Brickweave.Cqrs.DependencyInjection;
 using Brickweave.Cqrs.SqlServer.DependencyInjection;
@@ -33,7 +33,6 @@ namespace AdvancedCqrs.WebApp
         {
             ConfigureControllers(services);
             ConfigureDomainServices(services);
-            ConfigureHostedServices(services);
         }
 
         private void ConfigureControllers(IServiceCollection services)
@@ -68,7 +67,12 @@ namespace AdvancedCqrs.WebApp
             services.AddBrickweaveCqrs(domainAssembly)
                 .EnableLongRunningCommands<AdvancedCqrsDbContext>(
                     dbContext => dbContext.CommandQueue,
-                    15);
+                    pollingInterval: TimeSpan.FromSeconds(15))
+                .EnableCommandCleanup(
+                    pollingInterval: TimeSpan.FromMinutes(2),
+                    deleteCommandsAfter: TimeSpan.FromMinutes(5))
+                .AddLongRunningCommandBackgroundService()
+                .AddLongRunningCommandCustodianBackgroundService();
 
             services.AddBrickweaveCli(domainAssembly)
                 .SetDateParsingCulture(new CultureInfo("en-US"))
@@ -85,11 +89,6 @@ namespace AdvancedCqrs.WebApp
                 if (Convert.ToBoolean(Configuration["logging:enableSensitiveDataLogging"]))
                     options.EnableSensitiveDataLogging();
             });
-        }
-
-        private void ConfigureHostedServices(IServiceCollection services)
-        {
-            services.AddHostedService<LongRunningCommandBackgroundService>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

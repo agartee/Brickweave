@@ -193,20 +193,7 @@ try {
     return $result.Content
 }
 catch [System.Net.WebException] {
-    # perform a single retry after attempting to reauthenticate
-    if([System.Net.HttpStatusCode]::Unauthorized -eq $_.Exception.Response.StatusCode) {
-        try {
-            Login
-            $result = ExecuteCommand($args)
-            return $result.Content
-        }
-        catch [System.Net.WebException] {
-            DisplayHttpExceptionMessage($_.Exception)
-        }
-    }
-    else {
-        DisplayHttpExceptionMessage($_.Exception)
-    }
+    DisplayHttpExceptionMessage($_.Exception)
 }
 catch {
     DisplayGenericExceptionMessage($_.Exception)

@@ -90,7 +90,7 @@ namespace Brickweave.Cqrs.SqlServer.Services
             await _dbContext.SaveChangesAsync();
         }
 
-        public async Task Delete(Guid commandId)
+        public async Task DeleteAsync(Guid commandId)
         {
             var data = await _commandQueueDbSet
                 .FirstOrDefaultAsync(c => c.Id == commandId);
@@ -100,6 +100,14 @@ namespace Brickweave.Cqrs.SqlServer.Services
 
             _commandQueueDbSet.Remove(data);
             await _dbContext.SaveChangesAsync();
+        }
+
+        public async Task DeleteOlderThanAsync(TimeSpan deleteAfter)
+        {
+            var sql = CreateCleanupQuery();
+            var deleteAfterParameter = new SqlParameter("@deleteAfterMilliseconds", deleteAfter.Milliseconds);
+
+            await _dbContext.Database.ExecuteSqlRawAsync(sql, deleteAfterParameter);
         }
 
         private string CreateDequeueQuery()
@@ -149,6 +157,23 @@ namespace Brickweave.Cqrs.SqlServer.Services
                     , NULL [Completed]
                 FROM 
                     @results");
+
+            return sql.TrimExtraWhitespace();
+        }
+
+        private string CreateCleanupQuery()
+        {
+            var schema = _dbContext.Model
+                .FindEntityType(typeof(CommandQueueData))
+                .GetSchema();
+
+            var sql = string.Format(
+                $@"SET NOCOUNT ON;
+	            
+                DELETE FROM [{ schema }].[{ CommandQueueData.TABLE_NAME }]
+                WHERE 
+                    DATEDIFF(millisecond, [Started], GETUTCDATE()) >= @deleteAfterMilliseconds
+	            ");
 
             return sql.TrimExtraWhitespace();
         }

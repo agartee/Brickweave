@@ -4,8 +4,8 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Brickweave.Cqrs.Exceptions;
 using Brickweave.Cqrs.Extensions;
-using Brickweave.Cqrs.Services;
 using LiteGuard;
+using Microsoft.Extensions.Logging;
 
 namespace Brickweave.Cqrs.Services
 {
@@ -13,11 +13,13 @@ namespace Brickweave.Cqrs.Services
     {
         private readonly IServiceProvider _serviceProvider;
         private readonly ICommandQueue _commandQueue;
+        private readonly ILogger<CommandDispatcher> _logger;
 
-        public CommandDispatcher(IServiceProvider serviceProvider, ICommandQueue commandQueue)
+        public CommandDispatcher(IServiceProvider serviceProvider, ICommandQueue commandQueue, ILogger<CommandDispatcher> logger)
         {
             _serviceProvider = serviceProvider;
             _commandQueue = commandQueue;
+            _logger = logger;
         }
 
         public async Task<object> ExecuteAsync(ICommand command, Action<Guid> handleCommandEnqueued = null)
@@ -33,6 +35,8 @@ namespace Brickweave.Cqrs.Services
             {
                 var commandId = Guid.NewGuid();
 
+                _logger.LogInformation($"A long running command ({ commandId }) was detected and will be enqueued.");
+
                 await _commandQueue.EnqueueCommandAsync(commandId, command, user?.ToInfo());
                 handleCommandEnqueued?.Invoke(commandId);
 
@@ -40,7 +44,9 @@ namespace Brickweave.Cqrs.Services
             }
 
             dynamic handler = GetCommandHandler(command, command.GetCommandReturnType());
-            
+
+            _logger.LogInformation($"{ command.GetType() } command will be handled by { handler.GetType() }.");
+
             if (command.GetCommandReturnType() != null)
             {
                 if(handler is ISecured)
@@ -60,8 +66,10 @@ namespace Brickweave.Cqrs.Services
         async Task<object> IEnqueuedCommandDispatcher.ExecuteAsync(ICommand command, ClaimsPrincipal user)
         {
             Guard.AgainstNullArgument(nameof(command), command);
-
+            
             dynamic handler = GetCommandHandler(command, command.GetCommandReturnType());
+
+            _logger.LogInformation($"{ command.GetType() } command will be handled by { handler.GetType() }.");
 
             if (command.GetCommandReturnType() != null)
             {
@@ -92,6 +100,8 @@ namespace Brickweave.Cqrs.Services
             {
                 var commandId = Guid.NewGuid();
 
+                _logger.LogInformation($"A long running command ({ commandId }) was detected and will be enqueued.");
+
                 await _commandQueue.EnqueueCommandAsync(commandId, command, user?.ToInfo());
                 handleCommandEnqueued?.Invoke(commandId);
 
@@ -99,6 +109,8 @@ namespace Brickweave.Cqrs.Services
             }
 
             dynamic handler = GetCommandHandler(command, typeof(TResult));
+
+            _logger.LogInformation($"{ command.GetType() } command will be handled by { handler.GetType() }.");
 
             if (handler is ISecured)
                 return await handler.HandleAsync((dynamic)command, user);

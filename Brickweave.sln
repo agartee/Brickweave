@@ -50,6 +50,9 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BasicCqrs.WebApp", "samples\1. BasicCqrs\src\BasicCqrs.WebApp\BasicCqrs.WebApp.csproj", "{986768A3-C600-4B72-AA9E-AB637FA2CC29}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "1. BasicCqrs", "1. BasicCqrs", "{3A52DB34-6897-4C0F-897B-69366038A389}"
+	ProjectSection(SolutionItems) = preProject
+		samples\1. BasicCqrs\readme.md = samples\1. BasicCqrs\readme.md
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "2. BasicMessaging", "2. BasicMessaging", "{5C1A3DB4-DC51-4A23-9516-FCA864952000}"
 	ProjectSection(SolutionItems) = preProject
@@ -81,6 +84,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdvancedCqrs.SqlServer", "samples\3. AdvancedCqrs\src\AdvancedCqrs.SqlServer\AdvancedCqrs.SqlServer.csproj", "{45D336F6-3D1A-48C4-B850-A0067FA2CE6F}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdvancedCqrs.WebApp", "samples\3. AdvancedCqrs\src\AdvancedCqrs.WebApp\AdvancedCqrs.WebApp.csproj", "{D82980A5-DE61-4362-A43C-4D3610DD53DD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Brickweave.Cqrs.AspNetCore", "src\Brickweave.Cqrs.AspNetCore\Brickweave.Cqrs.AspNetCore.csproj", "{9DB9CED1-F073-4262-B87A-B673AE002C41}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -200,6 +205,10 @@ Global
 		{D82980A5-DE61-4362-A43C-4D3610DD53DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D82980A5-DE61-4362-A43C-4D3610DD53DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D82980A5-DE61-4362-A43C-4D3610DD53DD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9DB9CED1-F073-4262-B87A-B673AE002C41}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9DB9CED1-F073-4262-B87A-B673AE002C41}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9DB9CED1-F073-4262-B87A-B673AE002C41}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9DB9CED1-F073-4262-B87A-B673AE002C41}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -236,6 +245,7 @@ Global
 		{E162439D-8361-4C45-ABB4-AA035CB9B2D5} = {148F8258-020D-42E9-BD07-19DA69EE28B0}
 		{45D336F6-3D1A-48C4-B850-A0067FA2CE6F} = {148F8258-020D-42E9-BD07-19DA69EE28B0}
 		{D82980A5-DE61-4362-A43C-4D3610DD53DD} = {148F8258-020D-42E9-BD07-19DA69EE28B0}
+		{9DB9CED1-F073-4262-B87A-B673AE002C41} = {685B773C-8922-47C0-9144-4219E1AF5A0C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4E8CFE0E-1064-4953-B2D7-545AE105B2D9}

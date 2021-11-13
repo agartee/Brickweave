@@ -3,8 +3,8 @@ using System.Threading.Tasks;
 
 namespace Brickweave.Cqrs.Services
 {
-    public interface ICommandProcessor
+    public interface ILongRunningCommandCostodian
     {
-        Task ProcessCommandsAsync(CancellationToken stoppingToken);
+        Task AttendAsync(CancellationToken stoppingToken);
     }
 }

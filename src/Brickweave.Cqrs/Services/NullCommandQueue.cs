@@ -6,7 +6,12 @@ namespace Brickweave.Cqrs.Services
 {
     public class NullCommandQueue : ICommandQueue
     {
-        public Task Delete(Guid commandId)
+        public Task DeleteAsync(Guid commandId)
+        {
+            return Task.CompletedTask;
+        }
+
+        public Task DeleteOlderThanAsync(TimeSpan startedCommandAge)
         {
             return Task.CompletedTask;
         }

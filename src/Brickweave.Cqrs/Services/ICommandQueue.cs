@@ -10,6 +10,7 @@ namespace Brickweave.Cqrs.Services
         Task<CommandInfo> GetNextAsync();
         Task ReportCompletedAsync(Guid commandId, object result = null);
         Task ReportExceptionAsync(Guid commandId, Exception exception);
-        Task Delete(Guid commandId);
+        Task DeleteAsync(Guid commandId);
+        Task DeleteOlderThanAsync(TimeSpan startedCommandAge);
     }
 }

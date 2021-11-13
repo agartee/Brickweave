@@ -61,9 +61,9 @@ namespace BasicCqrs.WebApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditAsync(UpdatePerson command)
         {
-            var result = await _dispatcher.DispatchCommandAsync(command);
+            await _dispatcher.DispatchCommandAsync(command);
 
-            return View(result.ToViewModel());
+            return Redirect("/people");
         }
 
         [HttpPost, Route("/person/{id}/delete")]

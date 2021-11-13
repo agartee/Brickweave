@@ -1,47 +1,22 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
 <head>
+    <title>Brickweave Demo</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Brickweave Basic Messaging Demo</title>
-    <link rel="stylesheet" href="~/lib/twitter-bootstrap/css/bootstrap.css" />
-    <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="https://cdn.simplecss.org/simple.min.css">
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Brickweave Demo</a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Place" asp-action="Create">Manage Places</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
+        <h1>Brickweave Basic Messaging Demo</h1>
+        <nav>
+            <a asp-controller="Place" asp-action="Create">Demo: Manage Places</a>
         </nav>
     </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-        </div>
-    </footer>
-
-    <script src="~/lib/twitter-bootstrap/js/bootstrap.js"></script>
-    <script src="~/js/site.js"></script>
+    <main>
+        @RenderBody()
+    </main>
 
     @RenderSection("Scripts", required: false)
 </body>

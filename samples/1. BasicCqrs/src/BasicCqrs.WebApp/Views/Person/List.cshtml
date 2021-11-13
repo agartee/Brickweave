@@ -1,14 +1,14 @@
 ﻿@model IEnumerable<PersonViewModel>
 
 @{
-    ViewData["Title"] = "List of People";
+    ViewData["Title"] = "People";
 }
 
 <h1>People</h1>
 
-<p>
+<div>
     <a asp-action="Create">Create New</a>
-</p>
+</div>
 <table class="table">
     <thead>
         <tr>
@@ -22,7 +22,7 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+        @foreach (var item in Model) {
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.FirstName)

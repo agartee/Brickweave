@@ -31,10 +31,6 @@ From this samples (`\samples\3. AdvancedCqrs`) folder, run this command, replaci
 ```powershell
 dotnet ef migrations add $migrationName --startup-project ./src/AdvancedCqrs.WebApp/ --project ./src/AdvancedCqrs.SqlServer/ --context AdvancedCqrsDbContext
 ```
-or
-```powershell
-dotnet ef migrations add $migrationName --startup-project ./src/AdvancedCqrs.WebApp/ --project ./src/AdvancedCqrs.CommandQueue.SqlServer/ --context CommandQueueDbContext
-```
 
 ## Executing Entity Framework Database Migrations
 
@@ -42,13 +38,10 @@ To make executing migrations easier, a helper PowerShell script can be found in 
 
 ```powershell
 dotnet ef database update --startup-project ./src/AdvancedCqrs.WebApp/ --project ./src/AdvancedCqrs.SqlServer/ --context AdvancedCqrsDbContext
-dotnet ef database update --startup-project ./src/AdvancedCqrs.WebApp/ --project ./src/AdvancedCqrs.CommandQueue.SqlServer/ --context CommandQueueDbContext
 ```
 
-## Sample Commands
+## Sample CLI Commands
 
 ```powershell
-
 ./scripts/cli-client-nosecurity thing create --name "The Thing"
-
 ```

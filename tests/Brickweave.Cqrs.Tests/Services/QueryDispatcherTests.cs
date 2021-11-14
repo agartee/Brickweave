@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Brickweave.Cqrs.Exceptions;
-using Brickweave.Cqrs.Services;
 using Brickweave.Cqrs.Tests.Models;
 using FluentAssertions;
+using Microsoft.Extensions.Logging;
 using NSubstitute;
 using Xunit;
 
@@ -15,7 +15,9 @@ namespace Brickweave.Cqrs.Services.Tests
         public async Task ExecuteAsync_WhenQueryHandlerIsNotRegistered_Throws()
         {
             var serviceLocator = Substitute.For<IServiceProvider>();
-            var queryProcessor = new QueryDispatcher(serviceLocator);
+            var logger = Substitute.For<ILogger<QueryDispatcher>>();
+
+            var queryProcessor = new QueryDispatcher(serviceLocator, logger);
 
             var exception = await Assert.ThrowsAsync<QueryHandlerNotRegisteredException>(
                 () => queryProcessor.ExecuteAsync(new TestQuery("1")));
@@ -27,7 +29,9 @@ namespace Brickweave.Cqrs.Services.Tests
         public async Task ExecuteAsync_WhenQueryIsNull_Throws()
         {
             var serviceLocator = Substitute.For<IServiceProvider>();
-            var queryProcessor = new QueryDispatcher(serviceLocator);
+            var logger = Substitute.For<ILogger<QueryDispatcher>>();
+
+            var queryProcessor = new QueryDispatcher(serviceLocator, logger);
 
             var exception = await Assert.ThrowsAsync<ArgumentNullException>(
                 () => queryProcessor.ExecuteAsync(null));
@@ -43,8 +47,9 @@ namespace Brickweave.Cqrs.Services.Tests
             var serviceLocator = Substitute.For<IServiceProvider>();
             serviceLocator.GetService(typeof(IQueryHandler<TestQuery, Result>))
                 .Returns(handler);
+            var logger = Substitute.For<ILogger<QueryDispatcher>>();
 
-            var queryProcessor = new QueryDispatcher(serviceLocator);
+            var queryProcessor = new QueryDispatcher(serviceLocator, logger);
             var result = await queryProcessor.ExecuteAsync(new TestQuery("1"));
 
             result.Should().Be(new Result("1"));
@@ -58,8 +63,9 @@ namespace Brickweave.Cqrs.Services.Tests
             var serviceLocator = Substitute.For<IServiceProvider>();
             serviceLocator.GetService(typeof(IQueryHandler<TestQuery, Result>))
                 .Returns(handler);
+            var logger = Substitute.For<ILogger<QueryDispatcher>>();
 
-            var queryProcessor = new QueryDispatcher(serviceLocator);
+            var queryProcessor = new QueryDispatcher(serviceLocator, logger);
             var result = await queryProcessor.ExecuteAsync(new TestQuery("1"));
 
             result.Should().Be(new Result("1"));

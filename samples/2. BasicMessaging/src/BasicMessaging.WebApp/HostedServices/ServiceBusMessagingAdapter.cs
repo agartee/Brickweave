@@ -8,10 +8,6 @@ using Microsoft.Extensions.Logging;
 
 namespace BasicMessaging.WebApp.HostedServices
 {
-    internal interface IMessagingAdapter
-    {
-        Task DoWork(CancellationToken stoppingToken);
-    }
 
     internal class ServiceBusMessagingAdapter : IMessagingAdapter
     {

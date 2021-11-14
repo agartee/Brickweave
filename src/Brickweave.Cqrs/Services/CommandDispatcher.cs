@@ -35,7 +35,7 @@ namespace Brickweave.Cqrs.Services
             {
                 var commandId = Guid.NewGuid();
 
-                _logger.LogInformation($"A long running command ({ commandId }) was detected and will be enqueued.");
+                _logger.LogInformation($"A long running command ({ commandId }) of type { command.GetType() } was detected and will be enqueued.");
 
                 await _commandQueue.EnqueueCommandAsync(commandId, command, user?.ToInfo());
                 handleCommandEnqueued?.Invoke(commandId);
@@ -100,7 +100,7 @@ namespace Brickweave.Cqrs.Services
             {
                 var commandId = Guid.NewGuid();
 
-                _logger.LogInformation($"A long running command ({ commandId }) was detected and will be enqueued.");
+                _logger.LogInformation($"A long running command ({ commandId }) of type { command.GetType() } was detected and will be enqueued.");
 
                 await _commandQueue.EnqueueCommandAsync(commandId, command, user?.ToInfo());
                 handleCommandEnqueued?.Invoke(commandId);

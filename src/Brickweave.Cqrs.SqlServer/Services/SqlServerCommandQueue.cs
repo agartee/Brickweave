@@ -8,6 +8,7 @@ using Brickweave.Cqrs.SqlServer.Entities;
 using Brickweave.Cqrs.Services;
 using Brickweave.Cqrs.SqlServer.Extensions;
 using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.Logging;
 
 namespace Brickweave.Cqrs.SqlServer.Services
 {
@@ -16,12 +17,14 @@ namespace Brickweave.Cqrs.SqlServer.Services
         private readonly DbContext _dbContext;
         private readonly DbSet<CommandQueueData> _commandQueueDbSet;
         private readonly IDocumentSerializer _serializer;
-
-        public SqlServerCommandQueue(TDbContext dbContext, Func<TDbContext, DbSet<CommandQueueData>> getCommandQueueDbSet, IDocumentSerializer serializer)
+        private readonly ILogger<SqlServerCommandQueue<TDbContext>> _logger;
+        public SqlServerCommandQueue(TDbContext dbContext, Func<TDbContext, DbSet<CommandQueueData>> getCommandQueueDbSet, IDocumentSerializer serializer, 
+            ILogger<SqlServerCommandQueue<TDbContext>> logger)
         {
             _dbContext = dbContext;
             _commandQueueDbSet = getCommandQueueDbSet.Invoke(dbContext);
             _serializer = serializer;
+            _logger = logger;
         }
 
         public async Task EnqueueCommandAsync(Guid commandId, ICommand executable, ClaimsPrincipalInfo user = null)
@@ -74,6 +77,8 @@ namespace Brickweave.Cqrs.SqlServer.Services
                 : null;
 
             await _dbContext.SaveChangesAsync();
+
+            _logger.LogDebug($"Command with ID { commandId } reported complete with a result of: { Environment.NewLine + data.ResultJson }");
         }
 
         public async Task ReportExceptionAsync(Guid commandId, Exception exception)

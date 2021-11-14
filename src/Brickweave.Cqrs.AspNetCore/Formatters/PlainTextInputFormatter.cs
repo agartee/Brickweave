@@ -1,25 +1,26 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Formatters;
 
-namespace BasicCqrs.WebApp.Formatters
+namespace Brickweave.Cqrs.AspNetCore.Formatters
 {
-    /// <summary>
-    /// Formatter that allows ASP.NET to process plain-text request data, which is sent by the 
-    /// demo CLI client (/scripts/cli-client-nosecurity.ps1).
-    /// </summary>
-    public class StringInputFormatter : TextInputFormatter
+    public class PlainTextInputFormatter : TextInputFormatter
     {
-        public StringInputFormatter()
+        public PlainTextInputFormatter()
         {
             SupportedMediaTypes.Add("text/plain");
             SupportedEncodings.Add(UTF8EncodingWithoutBOM);
             SupportedEncodings.Add(UTF16EncodingLittleEndian);
         }
 
-        public async override Task<InputFormatterResult> ReadRequestBodyAsync(InputFormatterContext context,
-            Encoding encoding)
+        protected override bool CanReadType(Type type)
+        {
+            return type == typeof(string);
+        }
+
+        public override async Task<InputFormatterResult> ReadRequestBodyAsync(InputFormatterContext context, Encoding encoding)
         {
             var httpContext = context.HttpContext;
 

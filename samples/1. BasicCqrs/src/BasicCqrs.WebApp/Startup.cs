@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Globalization;
 using System.Linq;
-using BasicCqrs.Domain.People.Models;
 using BasicCqrs.Domain.People.Queries;
 using BasicCqrs.Domain.People.Services;
-using BasicCqrs.WebApp.Converters;
-using BasicCqrs.WebApp.Formatters;
-using BasicCqrs.WebApp.ModelBinders;
+using Brickweave.Cqrs.AspNetCore.Formatters;
 using Brickweave.Cqrs.Cli.DependencyInjection;
 using Brickweave.Cqrs.DependencyInjection;
+using Brickweave.Domain.AspNetCore.ModelBinders;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -32,7 +30,7 @@ namespace BasicCqrs.WebApp
                 {
                     // Add the PlainTextInputFormatter to use with the CLI-enabled endpoint, as the example
                     // PowerShell client (/scripts/cli-client-nosecurity.ps1) sends web requests as "text/plain".
-                    config.InputFormatters.Add(new StringInputFormatter());
+                    config.InputFormatters.Add(new PlainTextInputFormatter());
 
                     // Add custom model binding so that ID value objects can be deserialized by the framework
                     // for use directly in the controllers.
@@ -41,11 +39,6 @@ namespace BasicCqrs.WebApp
                 .AddJsonOptions(config =>
                 {
                     config.JsonSerializerOptions.WriteIndented = true;
-
-                    // Use a System.Text.Json coverter to write Id (e.g. PersonId) value objects as their root values. 
-                    // This will really only be used by the CLI output in this demo, the web application does this 
-                    // conversion in the view models for Razor page consumption.
-                    config.JsonSerializerOptions.Converters.Add(new FlatIdConverter<PersonId>());
                 });
 
             // Brickweave supports wiring up multiple domain libraries. Simply assemble all of the libraries you want

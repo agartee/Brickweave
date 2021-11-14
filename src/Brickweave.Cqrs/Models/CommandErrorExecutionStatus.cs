@@ -2,9 +2,9 @@
 
 namespace Brickweave.Cqrs.Models
 {
-    public class ErrorExecutionStatus : ExecutionStatus
+    public class CommandErrorExecutionStatus : ExecutionStatus
     {
-        public ErrorExecutionStatus(Guid commandId, DateTime started, DateTime stopped, ExceptionInfo exception) : base(commandId)
+        public CommandErrorExecutionStatus(Guid commandId, DateTime started, DateTime stopped, ExceptionInfo exception) : base(commandId)
         {
             Started = started;
             Stopped = stopped;

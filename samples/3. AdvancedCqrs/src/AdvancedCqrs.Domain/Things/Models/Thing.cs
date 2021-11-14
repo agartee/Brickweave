@@ -9,6 +9,6 @@
         }
 
         public ThingId Id { get; }
-        public string Name { get; }
+        public string Name { get; set; }
     }
 }

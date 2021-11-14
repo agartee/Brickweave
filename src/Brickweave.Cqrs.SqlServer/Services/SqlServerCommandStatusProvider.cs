@@ -11,13 +11,13 @@ namespace Brickweave.Cqrs.SqlServer.Services
     public class SqlServerCommandStatusProvider<TDbContext> : ICommandStatusProvider where TDbContext : DbContext
     {
         private readonly DbContext _dbContext;
-        private readonly DbSet<CommandQueueData> _commandQueueDbSet;
+        private readonly DbSet<CommandStatusData> _commandQueueDbSet;
         private readonly IDocumentSerializer _serializer;
 
-        public SqlServerCommandStatusProvider(TDbContext dbContext, Func<TDbContext, DbSet<CommandQueueData>> getCommandQueueDbSet, IDocumentSerializer serializer)
+        public SqlServerCommandStatusProvider(TDbContext dbContext, Func<TDbContext, DbSet<CommandStatusData>> getCommandStatusDbSet, IDocumentSerializer serializer)
         {
             _dbContext = dbContext;
-            _commandQueueDbSet = getCommandQueueDbSet.Invoke(dbContext);
+            _commandQueueDbSet = getCommandStatusDbSet.Invoke(dbContext);
             _serializer = serializer;
         }
 
@@ -26,11 +26,14 @@ namespace Brickweave.Cqrs.SqlServer.Services
             var data = await _commandQueueDbSet
                 .SingleOrDefaultAsync(s => s.Id == commandId);
 
+            if(data == null)
+                return new CommandNotFoundExecutionStatus(commandId);
+
             if (data.Started == null)
-                return new NotStartedExecutionStatus(commandId);
+                return new CommandNotStartedExecutionStatus(commandId);
 
             if (data.Started != null && data.Completed == null)
-                return new RunningExecutionStatus(commandId, data.Started.Value);
+                return new CommandRunningExecutionStatus(commandId, data.Started.Value);
 
             if (data.Completed != null)
             {
@@ -38,8 +41,8 @@ namespace Brickweave.Cqrs.SqlServer.Services
                     ? _serializer.DeserializeObject(data.ResultTypeName, data.ResultJson)
                     : null;
                 var status = result is ExceptionInfo
-                    ? (ExecutionStatus) new ErrorExecutionStatus(commandId, data.Started.Value, data.Completed.Value, (ExceptionInfo) result)
-                    : new CompletedExecutionStatus(commandId, data.Started.Value, data.Completed.Value, result);
+                    ? (ExecutionStatus) new CommandErrorExecutionStatus(commandId, data.Started.Value, data.Completed.Value, (ExceptionInfo) result)
+                    : new CommandCompletedExecutionStatus(commandId, data.Started.Value, data.Completed.Value, result);
 
                 _commandQueueDbSet.Remove(data);
                 await _dbContext.SaveChangesAsync();
@@ -47,7 +50,7 @@ namespace Brickweave.Cqrs.SqlServer.Services
                 return status;
             }
 
-            return new NotFoundExecutionStatus(commandId);
+            throw new InvalidOperationException($"An unhandled result occurred in { nameof(SqlServerCommandStatusProvider<TDbContext>) }.{ nameof(GetStatusAsync) }");
         }
     }
 }

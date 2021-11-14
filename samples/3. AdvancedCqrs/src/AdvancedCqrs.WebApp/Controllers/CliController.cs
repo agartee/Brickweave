@@ -35,10 +35,10 @@ namespace AdvancedCqrs.WebApp.Controllers
         {
             var status = await _commandStatusProvider.GetStatusAsync(commandId);
 
-            if (status is CompletedExecutionStatus completedStatus)
+            if (status is CommandCompletedExecutionStatus completedStatus)
                 return Ok(completedStatus.Result);
 
-            if (status is ErrorExecutionStatus errorStatus)
+            if (status is CommandErrorExecutionStatus errorStatus)
                 throw new InvalidOperationException(errorStatus.Exception.ToString());
 
             return Accepted($"https://{HttpContext.Request.Host}/cli/status/{commandId}");

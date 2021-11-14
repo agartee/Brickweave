@@ -2,13 +2,12 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
-    <VersionPrefix>0.1.0</VersionPrefix>
+    <VersionPrefix>0.17.0</VersionPrefix>
     <Authors>Adam Gartee</Authors>
     <Company>Adam Gartee</Company>
-    <Description>Lightweight package to support common Brickweave CLI patterns using ASP.NET Core</Description>
+    <Description>Lightweight package to support common CQRS patterns</Description>
     <PackageProjectUrl>https://github.com/agartee/Brickweave</PackageProjectUrl>
     <PackageLicenseUrl>https://github.com/agartee/Brickweave/blob/master/LICENSE</PackageLicenseUrl>
-    <PackageIconUrl>https://github.com/agartee/Brickweave/blob/master/assets/logo/brickweave64x64transp.png</PackageIconUrl>
   </PropertyGroup>
 
   <ItemGroup>

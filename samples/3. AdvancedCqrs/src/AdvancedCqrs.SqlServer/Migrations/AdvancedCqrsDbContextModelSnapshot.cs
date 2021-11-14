@@ -51,24 +51,74 @@ namespace AdvancedCqrs.SqlServer.Migrations
                         .HasColumnType("nvarchar(200)");
 
                     b.Property<DateTime?>("Completed")
-                        .HasColumnType("datetime2");
+                        .ValueGeneratedOnUpdateSometimes()
+                        .HasColumnType("datetime2")
+                        .HasColumnName("Completed");
 
                     b.Property<DateTime>("Created")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("ResultJson")
-                        .HasColumnType("nvarchar(max)");
+                        .ValueGeneratedOnUpdateSometimes()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("ResultJson");
 
                     b.Property<string>("ResultTypeName")
+                        .ValueGeneratedOnUpdateSometimes()
                         .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
+                        .HasColumnType("nvarchar(200)")
+                        .HasColumnName("ResultTypeName");
 
                     b.Property<DateTime?>("Started")
-                        .HasColumnType("datetime2");
+                        .ValueGeneratedOnUpdateSometimes()
+                        .HasColumnType("datetime2")
+                        .HasColumnName("Started");
 
                     b.HasKey("Id");
 
                     b.ToTable("CommandQueue");
+                });
+
+            modelBuilder.Entity("Brickweave.Cqrs.SqlServer.Entities.CommandStatusData", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("Completed")
+                        .ValueGeneratedOnUpdateSometimes()
+                        .HasColumnType("datetime2")
+                        .HasColumnName("Completed");
+
+                    b.Property<string>("ResultJson")
+                        .ValueGeneratedOnUpdateSometimes()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("ResultJson");
+
+                    b.Property<string>("ResultTypeName")
+                        .ValueGeneratedOnUpdateSometimes()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)")
+                        .HasColumnName("ResultTypeName");
+
+                    b.Property<DateTime?>("Started")
+                        .ValueGeneratedOnUpdateSometimes()
+                        .HasColumnType("datetime2")
+                        .HasColumnName("Started");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("CommandQueue");
+                });
+
+            modelBuilder.Entity("Brickweave.Cqrs.SqlServer.Entities.CommandStatusData", b =>
+                {
+                    b.HasOne("Brickweave.Cqrs.SqlServer.Entities.CommandQueueData", "CommandQueue")
+                        .WithMany()
+                        .HasForeignKey("Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("CommandQueue");
                 });
 #pragma warning restore 612, 618
         }

@@ -2,12 +2,12 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
-    <VersionPrefix>0.8.0</VersionPrefix>
+    <VersionPrefix>0.9.0</VersionPrefix>
     <Authors>Adam Gartee</Authors>
     <Company>Adam Gartee</Company>
     <Description>Lightweight package to support Domain Messaging persistence/logging patterns using Microsoft SQL Server</Description>
-    <PackageLicenseUrl>https://github.com/agartee/Brickweave/blob/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/agartee/Brickweave</PackageProjectUrl>
+    <PackageLicenseUrl>https://github.com/agartee/Brickweave/blob/master/LICENSE</PackageLicenseUrl>
   </PropertyGroup>
 
   <ItemGroup>

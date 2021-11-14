@@ -16,6 +16,7 @@ namespace AdvancedCqrs.SqlServer
         public DbSet<ThingData> Things { get; set; }
 
         public DbSet<CommandQueueData> CommandQueue { get; set; }
+        public DbSet<CommandStatusData> CommandStatus { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

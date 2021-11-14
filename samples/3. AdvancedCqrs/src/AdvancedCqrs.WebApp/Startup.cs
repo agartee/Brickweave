@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Globalization;
 using AdvancedCqrs.Domain.Things.Models;
+using AdvancedCqrs.Domain.Things.Services;
 using AdvancedCqrs.SqlServer;
+using AdvancedCqrs.SqlServer.Repositories;
 using AdvancedCqrs.WebApp.Formatters;
 using Brickweave.Cqrs.AspNetCore.DependencyInjection;
 using Brickweave.Cqrs.Cli.DependencyInjection;
@@ -67,6 +69,7 @@ namespace AdvancedCqrs.WebApp
             services.AddBrickweaveCqrs(domainAssembly)
                 .EnableLongRunningCommands<AdvancedCqrsDbContext>(
                     dbContext => dbContext.CommandQueue,
+                    dbContext => dbContext.CommandStatus,
                     pollingInterval: TimeSpan.FromSeconds(15))
                 .EnableCommandCleanup(
                     pollingInterval: TimeSpan.FromMinutes(2),
@@ -89,6 +92,8 @@ namespace AdvancedCqrs.WebApp
                 if (Convert.ToBoolean(Configuration["logging:enableSensitiveDataLogging"]))
                     options.EnableSensitiveDataLogging();
             });
+
+            services.AddScoped<IThingRepository, SqlServerThingRepository>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

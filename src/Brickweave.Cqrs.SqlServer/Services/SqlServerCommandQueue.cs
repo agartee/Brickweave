@@ -105,7 +105,7 @@ namespace Brickweave.Cqrs.SqlServer.Services
         public async Task DeleteOlderThanAsync(TimeSpan deleteAfter)
         {
             var sql = CreateCleanupQuery();
-            var deleteAfterParameter = new SqlParameter("@deleteAfterMilliseconds", deleteAfter.Milliseconds);
+            var deleteAfterParameter = new SqlParameter("@deleteAfterMilliseconds", deleteAfter.TotalMilliseconds);
 
             await _dbContext.Database.ExecuteSqlRawAsync(sql, deleteAfterParameter);
         }

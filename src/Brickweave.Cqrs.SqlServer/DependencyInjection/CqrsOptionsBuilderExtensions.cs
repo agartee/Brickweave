@@ -17,7 +17,7 @@ namespace Brickweave.Cqrs.SqlServer.DependencyInjection
         private static bool _longRunningCommandCleanupEnabled;
 
         public static CqrsOptionsBuilder EnableLongRunningCommands<TDbContext>(this CqrsOptionsBuilder builder,
-            Func<TDbContext, DbSet<CommandQueueData>> getCommandQueueDbSet,
+            Func<TDbContext, DbSet<CommandQueueData>> getCommandQueueDbSet, Func<TDbContext, DbSet<CommandStatusData>> getCommandStatusDbSet,
             TimeSpan pollingInterval) where TDbContext : DbContext
         {
             if (_longRunningCommandsEnabled)
@@ -29,7 +29,7 @@ namespace Brickweave.Cqrs.SqlServer.DependencyInjection
                 .AddScoped(s => (ICommandStatusProvider)Activator.CreateInstance(
                     typeof(SqlServerCommandStatusProvider<>).MakeGenericType(typeof(TDbContext)),
                     s.GetService<TDbContext>(),
-                    getCommandQueueDbSet,
+                    getCommandStatusDbSet,
                     s.GetService<IDocumentSerializer>()))
                 .AddScoped((Func<IServiceProvider, ILongRunningCommandProcessor>)(s => new LongRunningCommandProcessor(
                     s.GetService<ICommandQueue>(),

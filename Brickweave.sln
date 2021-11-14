@@ -87,6 +87,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdvancedCqrs.WebApp", "samp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Brickweave.Cqrs.AspNetCore", "src\Brickweave.Cqrs.AspNetCore\Brickweave.Cqrs.AspNetCore.csproj", "{9DB9CED1-F073-4262-B87A-B673AE002C41}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Brickweave.Domain.AspNetCore", "src\Brickweave.Domain.AspNetCore\Brickweave.Domain.AspNetCore.csproj", "{D9BAF61C-7FDB-4E69-85CF-10EE870B2A36}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -209,6 +211,10 @@ Global
 		{9DB9CED1-F073-4262-B87A-B673AE002C41}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9DB9CED1-F073-4262-B87A-B673AE002C41}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9DB9CED1-F073-4262-B87A-B673AE002C41}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D9BAF61C-7FDB-4E69-85CF-10EE870B2A36}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D9BAF61C-7FDB-4E69-85CF-10EE870B2A36}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D9BAF61C-7FDB-4E69-85CF-10EE870B2A36}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D9BAF61C-7FDB-4E69-85CF-10EE870B2A36}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -246,6 +252,7 @@ Global
 		{45D336F6-3D1A-48C4-B850-A0067FA2CE6F} = {148F8258-020D-42E9-BD07-19DA69EE28B0}
 		{D82980A5-DE61-4362-A43C-4D3610DD53DD} = {148F8258-020D-42E9-BD07-19DA69EE28B0}
 		{9DB9CED1-F073-4262-B87A-B673AE002C41} = {685B773C-8922-47C0-9144-4219E1AF5A0C}
+		{D9BAF61C-7FDB-4E69-85CF-10EE870B2A36} = {685B773C-8922-47C0-9144-4219E1AF5A0C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4E8CFE0E-1064-4953-B2D7-545AE105B2D9}

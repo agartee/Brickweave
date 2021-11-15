@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Brickweave.Domain;
 
-namespace Brickweave.Messaging
+namespace Brickweave.Messaging.Services
 {
     public interface IDomainMessenger
     {

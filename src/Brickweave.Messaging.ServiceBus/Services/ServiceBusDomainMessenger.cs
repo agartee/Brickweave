@@ -6,6 +6,7 @@ using Brickweave.Domain;
 using Brickweave.Messaging.ServiceBus.Exceptions;
 using Brickweave.Messaging.ServiceBus.Extensions;
 using Brickweave.Messaging.ServiceBus.Models;
+using Brickweave.Messaging.Services;
 using Brickweave.Serialization;
 using Microsoft.Azure.ServiceBus;
 using Microsoft.Azure.ServiceBus.Core;

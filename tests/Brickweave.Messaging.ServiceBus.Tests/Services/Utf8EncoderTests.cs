@@ -1,8 +1,9 @@
 ﻿using System.Text;
+using Brickweave.Messaging.ServiceBus.Services;
 using FluentAssertions;
 using Xunit;
 
-namespace Brickweave.Messaging.ServiceBus.Tests
+namespace Brickweave.Messaging.ServiceBus.Tests.Services
 {
     public class Utf8EncoderTests
     {

@@ -1,4 +1,4 @@
-﻿namespace Brickweave.Messaging.ServiceBus
+﻿namespace Brickweave.Messaging.ServiceBus.Services
 {
     public interface IMessageEncoder
     {

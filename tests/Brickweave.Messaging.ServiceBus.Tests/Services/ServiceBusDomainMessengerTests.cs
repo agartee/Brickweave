@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Brickweave.Messaging.ServiceBus.Models;
 using Brickweave.Messaging.ServiceBus.Tests.Fixtures;
 using Brickweave.Messaging.ServiceBus.Tests.Models;
+using Brickweave.Messaging.Services;
 using Brickweave.Serialization;
 using FluentAssertions;
 using Xunit;

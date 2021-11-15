@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Brickweave.Messaging.Models;
 
-namespace Brickweave.Messaging.SqlServer
+namespace Brickweave.Messaging.SqlServer.Services
 {
     public interface IMessageOutboxReader
     {

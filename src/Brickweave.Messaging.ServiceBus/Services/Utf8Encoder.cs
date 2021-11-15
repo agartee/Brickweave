@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace Brickweave.Messaging.ServiceBus
+namespace Brickweave.Messaging.ServiceBus.Services
 {
     public class Utf8Encoder : IMessageEncoder
     {

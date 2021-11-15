@@ -11,6 +11,7 @@ using Brickweave.Domain.Serialization;
 using Brickweave.Messaging.ServiceBus.DependencyInjection;
 using Brickweave.Messaging.SqlServer;
 using Brickweave.Messaging.SqlServer.Entities;
+using Brickweave.Messaging.SqlServer.Services;
 using Brickweave.Serialization;
 using Brickweave.Serialization.DependencyInjection;
 using Microsoft.AspNetCore.Builder;

@@ -10,7 +10,7 @@ using Brickweave.Serialization;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 
-namespace Brickweave.Messaging.SqlServer
+namespace Brickweave.Messaging.SqlServer.Services
 {
     public class SqlServerMessageOutboxReader<TDbContext, TMessageData> : IMessageOutboxReader
         where TDbContext : DbContext

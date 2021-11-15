@@ -2,8 +2,8 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Brickweave.Messaging;
-using Brickweave.Messaging.SqlServer;
+using Brickweave.Messaging.Services;
+using Brickweave.Messaging.SqlServer.Services;
 using Microsoft.Extensions.Logging;
 
 namespace BasicMessaging.WebApp.HostedServices

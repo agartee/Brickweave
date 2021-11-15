@@ -14,6 +14,7 @@ namespace Brickweave.Cqrs.SqlServer.Tests.Data
         }
 
         public DbSet<CommandQueueData> CommandQueue { get; set; }
+        public DbSet<CommandStatusData> CommandStatus { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

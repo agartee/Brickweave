@@ -29,6 +29,7 @@ namespace Brickweave.Cqrs.SqlServer.Tests.Services
             _commandQueue = new SqlServerCommandQueue<CqrsDbContext>(
                 _fixture.CreateDbContext(),
                 dbContext => dbContext.CommandQueue,
+                dbContext => dbContext.CommandStatus,
                 new JsonDocumentSerializer(),
                 Substitute.For<ILogger<SqlServerCommandQueue<CqrsDbContext>>>());
         }

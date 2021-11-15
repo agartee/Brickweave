@@ -41,6 +41,7 @@ namespace Brickweave.Cqrs.SqlServer.DependencyInjection
                     typeof(ICommandQueue), s => Activator.CreateInstance(typeof(SqlServerCommandQueue<>).MakeGenericType(typeof(TDbContext)),
                         s.GetService<TDbContext>(),
                         getCommandQueueDbSet,
+                        getCommandStatusDbSet,
                         s.GetService<IDocumentSerializer>(),
                         s.GetService<ILogger<SqlServerCommandQueue<TDbContext>>>()), ServiceLifetime.Scoped));
 

@@ -45,18 +45,17 @@ namespace Brickweave.Cqrs.Services
 
             try
             {
-                if (nextCommand != null)
-                {
-                    var result = await _dispatcher.ExecuteAsync(nextCommand.Value, nextCommand.Principal);
+                var result = await _dispatcher.ExecuteAsync(nextCommand.Value, nextCommand.Principal);
 
-                    _logger.LogInformation($"Reporting { nextCommand.Value.GetType() } command with ID { nextCommand.Id } completed.");
-                    await _commandQueue.ReportCompletedAsync(nextCommand.Id, result);
-                }
+                await _commandQueue.ReportCompletedAsync(nextCommand.Id, result);
+
+                _logger.LogInformation($"Command with ID { nextCommand.Id } reported completed.");
             }
             catch (Exception ex)
             {
-                _logger.LogInformation($"Reporting exception thrown by { nextCommand.Value.GetType() } command with ID { nextCommand.Id }.");
                 await _commandQueue.ReportExceptionAsync(nextCommand.Id, ex);
+
+                _logger.LogInformation($"Command with ID { nextCommand.Id } reported exception thrown.");
             }
         }
     }

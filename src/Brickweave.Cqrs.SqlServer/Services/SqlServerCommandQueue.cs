@@ -16,13 +16,16 @@ namespace Brickweave.Cqrs.SqlServer.Services
     {
         private readonly DbContext _dbContext;
         private readonly DbSet<CommandQueueData> _commandQueueDbSet;
+        private readonly DbSet<CommandStatusData> _commandStatusDbSet;
         private readonly IDocumentSerializer _serializer;
         private readonly ILogger<SqlServerCommandQueue<TDbContext>> _logger;
-        public SqlServerCommandQueue(TDbContext dbContext, Func<TDbContext, DbSet<CommandQueueData>> getCommandQueueDbSet, IDocumentSerializer serializer, 
+        public SqlServerCommandQueue(TDbContext dbContext, Func<TDbContext, DbSet<CommandQueueData>> getCommandQueueDbSet,
+            Func<TDbContext, DbSet<CommandStatusData>> getCommandStatusDbSet, IDocumentSerializer serializer, 
             ILogger<SqlServerCommandQueue<TDbContext>> logger)
         {
             _dbContext = dbContext;
             _commandQueueDbSet = getCommandQueueDbSet.Invoke(dbContext);
+            _commandStatusDbSet = getCommandStatusDbSet.Invoke(dbContext);
             _serializer = serializer;
             _logger = logger;
         }
@@ -65,7 +68,7 @@ namespace Brickweave.Cqrs.SqlServer.Services
 
         public async Task ReportCompletedAsync(Guid commandId, object result = null)
         {
-            var data = await _commandQueueDbSet.SingleOrDefaultAsync(s => s.Id == commandId);
+            var data = await _commandStatusDbSet.SingleOrDefaultAsync(s => s.Id == commandId);
 
             if (data == null)
                 throw new InvalidOperationException($"Command with ID \"{commandId}\" was not found.");
@@ -77,13 +80,11 @@ namespace Brickweave.Cqrs.SqlServer.Services
                 : null;
 
             await _dbContext.SaveChangesAsync();
-
-            _logger.LogDebug($"Command with ID { commandId } reported complete with a result of: { Environment.NewLine + data.ResultJson }");
         }
 
         public async Task ReportExceptionAsync(Guid commandId, Exception exception)
         {
-            var data = await _commandQueueDbSet.SingleOrDefaultAsync(s => s.Id == commandId);
+            var data = await _commandStatusDbSet.SingleOrDefaultAsync(s => s.Id == commandId);
 
             if (data == null)
                 throw new InvalidOperationException($"Command with ID \"{commandId}\" was not found.");
@@ -97,13 +98,13 @@ namespace Brickweave.Cqrs.SqlServer.Services
 
         public async Task DeleteAsync(Guid commandId)
         {
-            var data = await _commandQueueDbSet
+            var data = await _commandStatusDbSet
                 .FirstOrDefaultAsync(c => c.Id == commandId);
 
             if (data == null)
                 return;
 
-            _commandQueueDbSet.Remove(data);
+            _commandStatusDbSet.Remove(data);
             await _dbContext.SaveChangesAsync();
         }
 

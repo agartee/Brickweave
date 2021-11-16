@@ -16,7 +16,7 @@ namespace AdvancedCqrs.Domain.Things.Commands
 
         public async Task<Thing> HandleAsync(CreateThing command)
         {
-            await Task.Delay(30000); // long-running command for demo should take a bit ;)
+            await Task.Delay(10000); // long-running command for demo should take a bit ;)
 
             var thing = new Thing(ThingId.NewId(), command.Name);
             

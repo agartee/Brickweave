@@ -17,8 +17,8 @@ namespace Brickweave.Cqrs.SqlServer.DependencyInjection
         private static bool _longRunningCommandCleanupEnabled;
 
         public static CqrsOptionsBuilder EnableLongRunningCommands<TDbContext>(this CqrsOptionsBuilder builder,
-            Func<TDbContext, DbSet<CommandQueueData>> getCommandQueueDbSet, Func<TDbContext, DbSet<CommandStatusData>> getCommandStatusDbSet,
-            TimeSpan pollingInterval) where TDbContext : DbContext
+            Func<TDbContext, DbSet<CommandQueueData>> getCommandQueueDbSet, Func<TDbContext, DbSet<CommandStatusData>> getCommandStatusDbSet) 
+            where TDbContext : DbContext
         {
             if (_longRunningCommandsEnabled)
                 throw new InvalidOperationException("Long-running commands are already enabled.");
@@ -34,21 +34,19 @@ namespace Brickweave.Cqrs.SqlServer.DependencyInjection
                 .AddScoped((Func<IServiceProvider, ILongRunningCommandProcessor>)(s => new LongRunningCommandProcessor(
                     s.GetService<ICommandQueue>(),
                     s.GetService<IEnqueuedCommandDispatcher>(),
-                    pollingInterval,
                     s.GetService<ILogger<LongRunningCommandProcessor>>())))
                 .AddScoped<IEnqueuedCommandDispatcher, CommandDispatcher>()
                 .Replace(new ServiceDescriptor(
                     typeof(ICommandQueue), s => Activator.CreateInstance(typeof(SqlServerCommandQueue<>).MakeGenericType(typeof(TDbContext)),
-                        s.GetService<TDbContext>(),
+                        s.GetService<IDbContextFactory<TDbContext>>(),
                         getCommandQueueDbSet,
                         getCommandStatusDbSet,
-                        s.GetService<IDocumentSerializer>(),
-                        s.GetService<ILogger<SqlServerCommandQueue<TDbContext>>>()), ServiceLifetime.Scoped));
+                        s.GetService<IDocumentSerializer>()), ServiceLifetime.Scoped));
 
             return builder;
         }
 
-        public static CqrsOptionsBuilder EnableCommandCleanup(this CqrsOptionsBuilder builder, TimeSpan pollingInterval, TimeSpan deleteCommandsAfter)
+        public static CqrsOptionsBuilder EnableCommandCleanup(this CqrsOptionsBuilder builder, TimeSpan deleteCommandsAfter)
         {
             if (_longRunningCommandCleanupEnabled)
                 throw new InvalidOperationException("Long-running command cleanup is already enabled.");
@@ -58,7 +56,6 @@ namespace Brickweave.Cqrs.SqlServer.DependencyInjection
             builder.Services()
                 .AddScoped((Func<IServiceProvider, ILongRunningCommandCostodian>)(s => new LongRunningCommandCostodian(
                     s.GetService<ICommandQueue>(),
-                    pollingInterval, 
                     deleteCommandsAfter,
                     s.GetService<ILogger<LongRunningCommandCostodian>>())));
 

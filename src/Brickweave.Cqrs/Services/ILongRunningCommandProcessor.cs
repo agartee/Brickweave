@@ -5,6 +5,6 @@ namespace Brickweave.Cqrs.Services
 {
     public interface ILongRunningCommandProcessor
     {
-        Task ProcessCommandsAsync(CancellationToken stoppingToken);
+        Task TryProcessNextCommandAsync();
     }
 }

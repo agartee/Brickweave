@@ -8,7 +8,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace Brickweave.Cqrs.SqlServer.Tests.Fixtures
 {
-    public class SqlServerFixture
+    public class SqlServerFixture : IDbContextFactory<CqrsDbContext>
     {
         private readonly IConfiguration _config;
 

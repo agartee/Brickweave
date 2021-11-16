@@ -8,31 +8,31 @@ using Brickweave.Cqrs.SqlServer.Entities;
 using Brickweave.Cqrs.Services;
 using Brickweave.Cqrs.SqlServer.Extensions;
 using Microsoft.Data.SqlClient;
-using Microsoft.Extensions.Logging;
 
 namespace Brickweave.Cqrs.SqlServer.Services
 {
     public class SqlServerCommandQueue<TDbContext> : ICommandQueue where TDbContext : DbContext
     {
-        private readonly DbContext _dbContext;
-        private readonly DbSet<CommandQueueData> _commandQueueDbSet;
-        private readonly DbSet<CommandStatusData> _commandStatusDbSet;
+        private readonly IDbContextFactory<TDbContext> _dbContextFactory;
+        private readonly Func<TDbContext, DbSet<CommandQueueData>> _commandQueueDbSet;
+        private readonly Func<TDbContext, DbSet<CommandStatusData>> _commandStatusDbSet;
         private readonly IDocumentSerializer _serializer;
-        private readonly ILogger<SqlServerCommandQueue<TDbContext>> _logger;
-        public SqlServerCommandQueue(TDbContext dbContext, Func<TDbContext, DbSet<CommandQueueData>> getCommandQueueDbSet,
-            Func<TDbContext, DbSet<CommandStatusData>> getCommandStatusDbSet, IDocumentSerializer serializer, 
-            ILogger<SqlServerCommandQueue<TDbContext>> logger)
+
+        public SqlServerCommandQueue(IDbContextFactory<TDbContext> dbContextFactory, Func<TDbContext, DbSet<CommandQueueData>> getCommandQueueDbSet,
+            Func<TDbContext, DbSet<CommandStatusData>> getCommandStatusDbSet, IDocumentSerializer serializer)
         {
-            _dbContext = dbContext;
-            _commandQueueDbSet = getCommandQueueDbSet.Invoke(dbContext);
-            _commandStatusDbSet = getCommandStatusDbSet.Invoke(dbContext);
+            _dbContextFactory = dbContextFactory;
+            _commandQueueDbSet = getCommandQueueDbSet;
+            _commandStatusDbSet = getCommandStatusDbSet;
             _serializer = serializer;
-            _logger = logger;
         }
 
         public async Task EnqueueCommandAsync(Guid commandId, ICommand executable, ClaimsPrincipalInfo user = null)
         {
-            _commandQueueDbSet.Add(new CommandQueueData
+            using var dbContext = _dbContextFactory.CreateDbContext();
+            var dbSet = _commandQueueDbSet.Invoke(dbContext);
+
+            dbSet.Add(new CommandQueueData
             {
                 Id = commandId,
                 CommandTypeName = executable.GetType().AssemblyQualifiedName,
@@ -41,15 +41,21 @@ namespace Brickweave.Cqrs.SqlServer.Services
                 Created = DateTime.UtcNow
             });
 
-            await _dbContext.SaveChangesAsync();
+            await dbContext.SaveChangesAsync();
         }
 
         public async Task<CommandInfo> GetNextAsync()
         {
-            var sql = CreateDequeueQuery();
+            using var dbContext = _dbContextFactory.CreateDbContext();
+            var dbSet = _commandQueueDbSet.Invoke(dbContext);
+            var schema = dbContext.Model
+                .FindEntityType(typeof(CommandQueueData))
+                .GetSchema();
+
+            var sql = CreateDequeueQuery(schema);
             var startedParameter = new SqlParameter("@started", DateTime.UtcNow);
 
-            var data = (await _commandQueueDbSet
+            var data = (await dbSet
                 .FromSqlRaw(sql, new[] { startedParameter })
                 .AsNoTracking()
                 .ToListAsync())
@@ -68,7 +74,10 @@ namespace Brickweave.Cqrs.SqlServer.Services
 
         public async Task ReportCompletedAsync(Guid commandId, object result = null)
         {
-            var data = await _commandStatusDbSet.SingleOrDefaultAsync(s => s.Id == commandId);
+            using var dbContext = _dbContextFactory.CreateDbContext();
+            var dbSet = _commandStatusDbSet.Invoke(dbContext);
+
+            var data = await dbSet.SingleOrDefaultAsync(s => s.Id == commandId);
 
             if (data == null)
                 throw new InvalidOperationException($"Command with ID \"{commandId}\" was not found.");
@@ -79,49 +88,56 @@ namespace Brickweave.Cqrs.SqlServer.Services
                 ? _serializer.SerializeObject(result) 
                 : null;
 
-            await _dbContext.SaveChangesAsync();
+            await dbContext.SaveChangesAsync();
         }
 
         public async Task ReportExceptionAsync(Guid commandId, Exception exception)
         {
-            var data = await _commandStatusDbSet.SingleOrDefaultAsync(s => s.Id == commandId);
+            using var dbContext = _dbContextFactory.CreateDbContext();
+            var dbSet = _commandStatusDbSet.Invoke(dbContext);
+
+            var data = await dbSet.SingleOrDefaultAsync(s => s.Id == commandId);
 
             if (data == null)
                 throw new InvalidOperationException($"Command with ID \"{commandId}\" was not found.");
 
             data.Completed = DateTime.UtcNow;
             data.ResultTypeName = typeof(ExceptionInfo).AssemblyQualifiedName;
-            data.ResultJson = _serializer.SerializeObject(new ExceptionInfo(exception.GetType().Name, exception.Message));
+            data.ResultJson = _serializer.SerializeObject(new ExceptionInfo(exception.GetType().Name, exception.GetFullMessage()));
 
-            await _dbContext.SaveChangesAsync();
+            await dbContext.SaveChangesAsync();
         }
 
         public async Task DeleteAsync(Guid commandId)
         {
-            var data = await _commandStatusDbSet
+            using var dbContext = _dbContextFactory.CreateDbContext();
+            var dbSet = _commandStatusDbSet.Invoke(dbContext);
+
+            var data = await dbSet
                 .FirstOrDefaultAsync(c => c.Id == commandId);
 
             if (data == null)
                 return;
 
-            _commandStatusDbSet.Remove(data);
-            await _dbContext.SaveChangesAsync();
+            dbSet.Remove(data);
+            await dbContext.SaveChangesAsync();
         }
 
         public async Task DeleteOlderThanAsync(TimeSpan deleteAfter)
         {
-            var sql = CreateCleanupQuery();
-            var deleteAfterParameter = new SqlParameter("@deleteAfterMilliseconds", deleteAfter.TotalMilliseconds);
-
-            await _dbContext.Database.ExecuteSqlRawAsync(sql, deleteAfterParameter);
-        }
-
-        private string CreateDequeueQuery()
-        {
-            var schema = _dbContext.Model
+            using var dbContext = _dbContextFactory.CreateDbContext();
+            var schema = dbContext.Model
                 .FindEntityType(typeof(CommandQueueData))
                 .GetSchema();
-             
+
+            var sql = CreateCleanupQuery(schema);
+            var deleteAfterParameter = new SqlParameter("@deleteAfterMilliseconds", deleteAfter.TotalMilliseconds);
+
+            await dbContext.Database.ExecuteSqlRawAsync(sql, deleteAfterParameter);
+        }
+
+        private string CreateDequeueQuery(string schema)
+        {
             var sql = string.Format(
                 $@"SET NOCOUNT ON;
 	            
@@ -167,12 +183,8 @@ namespace Brickweave.Cqrs.SqlServer.Services
             return sql.TrimExtraWhitespace();
         }
 
-        private string CreateCleanupQuery()
+        private string CreateCleanupQuery(string schema)
         {
-            var schema = _dbContext.Model
-                .FindEntityType(typeof(CommandQueueData))
-                .GetSchema();
-
             var sql = string.Format(
                 $@"SET NOCOUNT ON;
 	            

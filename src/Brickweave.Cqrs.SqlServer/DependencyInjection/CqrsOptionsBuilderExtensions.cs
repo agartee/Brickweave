@@ -38,11 +38,10 @@ namespace Brickweave.Cqrs.SqlServer.DependencyInjection
                 .AddScoped<IEnqueuedCommandDispatcher, CommandDispatcher>()
                 .Replace(new ServiceDescriptor(
                     typeof(ICommandQueue), s => Activator.CreateInstance(typeof(SqlServerCommandQueue<>).MakeGenericType(typeof(TDbContext)),
-                        s.GetService<TDbContext>(),
+                        s.GetService<IDbContextFactory<TDbContext>>(),
                         getCommandQueueDbSet,
                         getCommandStatusDbSet,
-                        s.GetService<IDocumentSerializer>(),
-                        s.GetService<ILogger<SqlServerCommandQueue<TDbContext>>>()), ServiceLifetime.Scoped));
+                        s.GetService<IDocumentSerializer>()), ServiceLifetime.Scoped));
 
             return builder;
         }

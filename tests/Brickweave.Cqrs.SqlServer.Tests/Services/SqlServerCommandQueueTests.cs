@@ -8,7 +8,6 @@ using Brickweave.Cqrs.SqlServer.Tests.Models;
 using Brickweave.Serialization;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using NSubstitute;
 using Xunit;
 
@@ -26,12 +25,14 @@ namespace Brickweave.Cqrs.SqlServer.Tests.Services
             _fixture = fixture;
             _fixture.ClearData();
 
+            var dbContextFactory = Substitute.For<IDbContextFactory<CqrsDbContext>>();
+            dbContextFactory.CreateDbContext().Returns(_fixture.CreateDbContext());
+            
             _commandQueue = new SqlServerCommandQueue<CqrsDbContext>(
-                _fixture.CreateDbContext(),
+                dbContextFactory,
                 dbContext => dbContext.CommandQueue,
                 dbContext => dbContext.CommandStatus,
-                new JsonDocumentSerializer(),
-                Substitute.For<ILogger<SqlServerCommandQueue<CqrsDbContext>>>());
+                new JsonDocumentSerializer());
         }
 
         [Fact]

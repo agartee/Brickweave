@@ -80,7 +80,7 @@ namespace AdvancedCqrs.WebApp
 
             services.AddBrickweaveSerialization();
 
-            services.AddDbContext<AdvancedCqrsDbContext>(options =>
+            services.AddDbContextFactory<AdvancedCqrsDbContext>(options =>
             {
                 options.UseSqlServer(
                     Configuration.GetConnectionString("demo"),
@@ -89,6 +89,7 @@ namespace AdvancedCqrs.WebApp
                 if (Convert.ToBoolean(Configuration["logging:enableSensitiveDataLogging"]))
                     options.EnableSensitiveDataLogging();
             });
+            services.AddDbContext<AdvancedCqrsDbContext>();
 
             services.AddScoped<IThingRepository, SqlServerThingRepository>();
         }

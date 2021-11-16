@@ -69,13 +69,10 @@ namespace AdvancedCqrs.WebApp
             services.AddBrickweaveCqrs(domainAssembly)
                 .EnableLongRunningCommands<AdvancedCqrsDbContext>(
                     dbContext => dbContext.CommandQueue,
-                    dbContext => dbContext.CommandStatus,
-                    pollingInterval: TimeSpan.FromSeconds(15))
-                .EnableCommandCleanup(
-                    pollingInterval: TimeSpan.FromMinutes(2),
-                    deleteCommandsAfter: TimeSpan.FromMinutes(5))
-                .AddLongRunningCommandBackgroundService()
-                .AddLongRunningCommandCustodianBackgroundService();
+                    dbContext => dbContext.CommandStatus)
+                .EnableCommandCleanup(deleteCommandsAfter: TimeSpan.FromMinutes(5))
+                .AddLongRunningCommandBackgroundService(pollingInterval: TimeSpan.FromSeconds(15))
+                .AddLongRunningCommandCustodianBackgroundService(pollingInterval: TimeSpan.FromSeconds(15));
 
             services.AddBrickweaveCli(domainAssembly)
                 .SetDateParsingCulture(new CultureInfo("en-US"))

@@ -11,6 +11,10 @@ using Microsoft.Data.SqlClient;
 
 namespace Brickweave.Cqrs.SqlServer.Services
 {
+    /// <summary>
+    /// The Command Queue service is intended to be long-running and therefore requires a different way of managing DbContext interactions.
+    /// </summary>
+    /// <typeparam name="TDbContext"></typeparam>
     public class SqlServerCommandQueue<TDbContext> : ICommandQueue where TDbContext : DbContext
     {
         private readonly IDbContextFactory<TDbContext> _dbContextFactory;

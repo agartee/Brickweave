@@ -22,22 +22,24 @@ namespace Brickweave.Cqrs.Services
         {
             _logger.LogInformation($"Checking for enqueued command...");
             var nextCommand = await _commandQueue.GetNextAsync();
-
+            
             if (nextCommand == null)
                 return;
 
+            var commandType = nextCommand.Value.GetType();
+
             try
             {
-                _logger.LogInformation($"Command of type, { nextCommand.Value.GetType() } found. Processing command...");
+                _logger.LogInformation($"Command with ID { nextCommand.Id } ({ commandType }) found. Processing command...");
                 var result = await _dispatcher.ExecuteAsync(nextCommand.Value, nextCommand.Principal);
 
                 await _commandQueue.ReportCompletedAsync(nextCommand.Id, result);
-                _logger.LogInformation($"Command with ID { nextCommand.Id } reported completed.");
+                _logger.LogInformation($"Command with ID { nextCommand.Id } ({ commandType }) reported completed.");
             }
             catch (Exception ex)
             {
                 await _commandQueue.ReportExceptionAsync(nextCommand.Id, ex);
-                _logger.LogInformation($"Command with ID { nextCommand.Id } reported exception thrown.");
+                _logger.LogInformation($"Command with ID { nextCommand.Id } ({ commandType }) reported exception thrown.");
             }
         }
     }

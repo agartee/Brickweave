@@ -14,7 +14,7 @@ namespace Brickweave.Cqrs.DependencyInjection
                 .AddScoped<IDispatcher, Dispatcher>()
                 .AddScoped<ICommandDispatcher, CommandDispatcher>()
                 .AddScoped<IQueryDispatcher, QueryDispatcher>()
-                .AddScoped<ICommandQueue, NullCommandQueue>()
+                .AddSingleton<ICommandQueue, NullCommandQueue>()
                 .AddHandlers(typeof(ICommandHandler<>), domainAssemblies)
                 .AddHandlers(typeof(ICommandHandler<,>), domainAssemblies)
                 .AddHandlers(typeof(ISecuredCommandHandler<>), domainAssemblies)

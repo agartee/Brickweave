@@ -41,7 +41,7 @@ namespace Brickweave.Cqrs.SqlServer.DependencyInjection
                         s.GetService<IDbContextFactory<TDbContext>>(),
                         getCommandQueueDbSet,
                         getCommandStatusDbSet,
-                        s.GetService<IDocumentSerializer>()), ServiceLifetime.Scoped));
+                        s.GetService<IDocumentSerializer>()), ServiceLifetime.Singleton));
 
             return builder;
         }
@@ -54,7 +54,7 @@ namespace Brickweave.Cqrs.SqlServer.DependencyInjection
             _longRunningCommandCleanupEnabled = true;
 
             builder.Services()
-                .AddScoped((Func<IServiceProvider, ILongRunningCommandCostodian>)(s => new LongRunningCommandCostodian(
+                .AddSingleton((Func<IServiceProvider, ILongRunningCommandCostodian>)(s => new LongRunningCommandCostodian(
                     s.GetService<ICommandQueue>(),
                     deleteCommandsAfter,
                     s.GetService<ILogger<LongRunningCommandCostodian>>())));

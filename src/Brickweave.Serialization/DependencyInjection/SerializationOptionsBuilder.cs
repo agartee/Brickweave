@@ -12,7 +12,7 @@ namespace Brickweave.Serialization.DependencyInjection
 
         public SerializationOptionsBuilder(IServiceCollection services, params Type[] shorthandTypes)
         {
-            services.AddScoped<IDocumentSerializer>(s => 
+            services.AddSingleton<IDocumentSerializer>(s => 
                 new JsonDocumentSerializer(shorthandTypes, _converters.ToArray()));
         }
 

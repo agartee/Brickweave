@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
 using AdvancedCqrs.Domain.Things.Commands;
-using AdvancedCqrs.WebApp.Models;
+using AdvancedCqrs.Domain.Things.Models;
+using AdvancedCqrs.Domain.Things.Queries;
 using Brickweave.Cqrs.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,6 +17,14 @@ namespace AdvancedCqrs.WebApp.Controllers
             _dispatcher = dispatcher;
         }
 
+        [HttpGet, Route("/things")]
+        public async Task<IActionResult> ListAsync()
+        {
+            var results = await _dispatcher.DispatchQueryAsync(new ListThings());
+
+            return View(results);
+        }
+
         [HttpGet, Route("/thing/create")]
         public IActionResult Create()
         {
@@ -24,13 +33,31 @@ namespace AdvancedCqrs.WebApp.Controllers
 
         [HttpPost, Route("/thing/create")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateAsync(ThingViewModel viewModel)
+        public async Task<IActionResult> CreateAsync(CreateThing command)
         {
             Guid? commandId = null;
-            await _dispatcher.DispatchCommandAsync(new CreateThing(viewModel.Name), 
+            await _dispatcher.DispatchCommandAsync(command, 
                 id => commandId = id);
 
-            return Redirect("/");
+            return Redirect("/things");
+        }
+
+        [HttpGet, Route("/thing/{id}/edit")]
+        public async Task<IActionResult> EditAsync([FromRoute] Guid id)
+        {
+            var result = await _dispatcher.DispatchQueryAsync(new GetThing(
+                new ThingId(id)));
+
+            return View(result);
+        }
+
+        [HttpPost, Route("/thing/{id}/edit")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditAsync(UpdateThing command)
+        {
+            await _dispatcher.DispatchCommandAsync(command);
+
+            return Redirect("/things");
         }
     }
 }

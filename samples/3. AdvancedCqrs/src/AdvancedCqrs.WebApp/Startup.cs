@@ -4,6 +4,7 @@ using AdvancedCqrs.Domain.Things.Models;
 using AdvancedCqrs.Domain.Things.Services;
 using AdvancedCqrs.SqlServer;
 using AdvancedCqrs.SqlServer.Repositories;
+using AdvancedCqrs.WebApp.ModelBinders;
 using Brickweave.Cqrs.AspNetCore.DependencyInjection;
 using Brickweave.Cqrs.AspNetCore.Formatters;
 using Brickweave.Cqrs.Cli.DependencyInjection;
@@ -41,7 +42,8 @@ namespace AdvancedCqrs.WebApp
         {
             services.AddControllersWithViews(options => 
             { 
-                options.InputFormatters.Add(new PlainTextInputFormatter()); 
+                options.InputFormatters.Add(new PlainTextInputFormatter());
+                options.ModelBinderProviders.Insert(0, new ThingCommandModelBinderProvider());
             })
             .AddNewtonsoftJson(options =>
             {

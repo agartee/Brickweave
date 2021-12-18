@@ -26,14 +26,10 @@ namespace Brickweave.Domain.AspNetCore.ModelBinders
         public IModelBinder GetBinder(ModelBinderProviderContext context)
         {
             if (context == null)
-            {
                 throw new ArgumentNullException(nameof(context));
-            }
 
             if (CanConvert(context.Metadata.ModelType))
-            {
                 return new BinderTypeModelBinder(typeof(IdModelBinder));
-            }
 
             return null;
         }

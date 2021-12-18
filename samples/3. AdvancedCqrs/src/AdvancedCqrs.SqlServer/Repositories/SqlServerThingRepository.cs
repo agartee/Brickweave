@@ -1,4 +1,7 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using AdvancedCqrs.Domain.Common.Exceptions;
 using AdvancedCqrs.Domain.Things.Models;
 using AdvancedCqrs.Domain.Things.Services;
 using AdvancedCqrs.SqlServer.Entities;
@@ -34,6 +37,31 @@ namespace AdvancedCqrs.SqlServer.Repositories
             }
 
             await _dbContext.SaveChangesAsync();
+        }
+
+        public async Task<Thing> DemandThingAsync(ThingId id)
+        {
+            var data = await _dbContext.Things
+                .SingleOrDefaultAsync(t => t.Id == id.Value);
+
+            if(data == null)
+                throw new EntityNotFoundException(id, nameof(Thing));
+
+            return new Thing(
+                new ThingId(data.Id),
+                data.Name);
+        }
+
+        public async Task<IEnumerable<Thing>> ListThingsAsync()
+        {
+            var data = await _dbContext.Things
+                .ToListAsync();
+
+            return data.Select(t =>
+                new Thing(
+                    new ThingId(t.Id),
+                    t.Name))
+                .ToList();
         }
     }
 }

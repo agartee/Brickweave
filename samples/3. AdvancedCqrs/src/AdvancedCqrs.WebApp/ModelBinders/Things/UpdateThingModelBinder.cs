@@ -4,7 +4,7 @@ using AdvancedCqrs.Domain.Things.Commands;
 using AdvancedCqrs.Domain.Things.Models;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
-namespace AdvancedCqrs.WebApp.ModelBinders
+namespace AdvancedCqrs.WebApp.ModelBinders.Things
 {
     public class UpdateThingModelBinder : IModelBinder
     {

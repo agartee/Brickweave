@@ -6,7 +6,8 @@ namespace BasicCqrs.WebApp.Extensions
     public static class PersonExtensions
     {
         /// <summary>
-        /// Helper method to convert the domain model into a view model for the ASP.NET Razor pages.
+        /// Helper method to convert the domain model into a view model for 
+        /// the ASP.NET Razor pages.
         /// </summary>
         /// <param name="person"></param>
         /// <returns></returns>

@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using AdvancedCqrs.Domain.Things.Commands;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
-namespace AdvancedCqrs.WebApp.ModelBinders
+namespace AdvancedCqrs.WebApp.ModelBinders.Things
 {
     public class CreateThingModelBinder : IModelBinder
     {

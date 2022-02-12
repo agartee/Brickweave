@@ -77,10 +77,10 @@ namespace Brickweave.Cqrs.Cli.Factories
             {
                 var value = GetParameterValue(property, parameters);
 
-                if (!property.PropertyType.IsDefaultable() && value == null && Attribute.IsDefined(property, typeof(RequiredAttribute)))
+                if (value == null && Attribute.IsDefined(property, typeof(RequiredAttribute)))
                     throw new ArgumentNullException(property.Name);
-
-                property.SetValue(executable, value);
+                else
+                    property.SetValue(executable, value);
             }
 
             return (IExecutable) executable;
@@ -118,6 +118,9 @@ namespace Brickweave.Cqrs.Cli.Factories
         {
             var propertyParam = parameters
                 .SingleOrDefault(p => property.Name.Equals(p.Name, StringComparison.OrdinalIgnoreCase));
+
+            if (propertyParam == null)
+                return null;
 
             var paramFactory = _parameterValueFactories.ToList()
                 .FirstOrDefault(f => f.Qualifies(property.PropertyType));

@@ -5,7 +5,9 @@ using Brickweave.Cqrs;
 namespace BasicCqrs.Domain.People.Commands
 {
     /// <summary>
-    /// Updates an existing Person.
+    /// Updates an existing Person. Note that this class has no constructor 
+    /// defined. This makes ASP.NET model binding simpler, but does not easily 
+    /// allow for more advanced validation that might be required.
     /// </summary>
     public class UpdatePerson : ICommand<Person>
     {
@@ -18,7 +20,7 @@ namespace BasicCqrs.Domain.People.Commands
         /// <summary>
         /// Existing person's new first name.
         /// </summary>
-        [Required] 
+        [Required]
         public string FirstName { get; init; }
 
         /// <summary>

@@ -11,14 +11,14 @@ namespace Brickweave.Domain.AspNetCore.ModelBinders
         public Task BindModelAsync(ModelBindingContext bindingContext)
         {
             var fieldName = bindingContext.FieldName;
-            var valueProviderResult = bindingContext.ValueProvider.GetValue(fieldName);
+            var fieldValue = bindingContext.ValueProvider.GetValue(fieldName);
 
-            if (valueProviderResult == ValueProviderResult.None)
+            if (fieldValue == ValueProviderResult.None)
                 return Task.CompletedTask;
             else
-                bindingContext.ModelState.SetModelValue(fieldName, valueProviderResult);
+                bindingContext.ModelState.SetModelValue(fieldName, fieldValue);
 
-            string value = valueProviderResult.FirstValue;
+            string value = fieldValue.FirstValue;
             if (string.IsNullOrEmpty(value))
                 return Task.CompletedTask;
 
@@ -26,14 +26,14 @@ namespace Brickweave.Domain.AspNetCore.ModelBinders
             {
                 var constructor = GetConstructor(bindingContext.ModelType);
 
-                var currentType = value.GetType();
-                var targetType = constructor.GetParameters().First().ParameterType;
+                var currentIdValueType = value.GetType();
+                var targetIdValueType = constructor.GetParameters().First().ParameterType;
 
                 object result = null;
-                if (currentType == targetType)
+                if (currentIdValueType == targetIdValueType)
                     result = constructor.Invoke(new[] { value });
 
-                if (targetType == typeof(Guid))
+                if (targetIdValueType == typeof(Guid))
                     result = constructor.Invoke(new object[] { new Guid(value) });
 
                 bindingContext.Result = ModelBindingResult.Success(result);

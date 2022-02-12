@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using BasicCqrs.Domain.People.Commands;
 using BasicCqrs.Domain.People.Models;
@@ -40,6 +39,14 @@ namespace BasicCqrs.WebApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreateAsync(PersonViewModel viewModel)
         {
+            // note: This endpoint follows a more traditional view-model
+            // pattern of page binding. In this case, the view-model also
+            // contains an Id property, because it is reused in the
+            // Person-List view, that is ignored in this context which is kind
+            // of gross. Another path with this strategy might be to create a
+            // view-model object that is specific to this view and therefore
+            // does not carry the Id property.
+
             await _dispatcher.DispatchCommandAsync(new CreatePerson(
                 viewModel.FirstName,
                 viewModel.LastName));
@@ -48,10 +55,12 @@ namespace BasicCqrs.WebApp.Controllers
         }
 
         [HttpGet, Route("/person/{id}/edit")]
-        public async Task<IActionResult> EditAsync([FromRoute] Guid id)
+        public async Task<IActionResult> EditAsync(PersonId id)
         {
-            var result = await _dispatcher.DispatchQueryAsync(new GetPerson(
-                new PersonId(id)));
+            // note: Because this endpoint is configured to use the
+            // IdModelBinder, the [FromQuery] attribute is no longer required.
+
+            var result = await _dispatcher.DispatchQueryAsync(new GetPerson(id));
 
             return View(result.ToViewModel());
         }
@@ -60,6 +69,20 @@ namespace BasicCqrs.WebApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditAsync(UpdatePerson command)
         {
+            // note: The source of the Id property for the command is the query
+            // string, but it does not need to be referenced in the endpoint
+            // parameters because we're using a custom model-binder (see
+            // Startup.cs).
+
+            // note: The UpdatePerson command class does not have a constructor
+            // and is therefore able to be used directly from the built-in
+            // model binders without needing a custom one. The drawback here
+            // is that no validation can be enforced at the class level (e.g.
+            // null checks on the properties) in a constructor. Property
+            // validation attributes (e.g. [Required]) can be used, but are
+            // ignored if the class is instantiated outside of a model-binding
+            // scenario.
+
             await _dispatcher.DispatchCommandAsync(command);
 
             return Redirect("/people");
@@ -67,10 +90,12 @@ namespace BasicCqrs.WebApp.Controllers
 
         [HttpPost, Route("/person/{id}/delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteAsync([FromRoute] Guid id)
+        public async Task<IActionResult> DeleteAsync(PersonId id)
         {
-            await _dispatcher.DispatchCommandAsync(new DeletePerson(
-                new PersonId(id)));
+            // note: Because this endpoint is configured to use the
+            // IdModelBinder, the [FromQuery] attribute is no longer required.
+
+            await _dispatcher.DispatchCommandAsync(new DeletePerson(id));
 
             return Redirect("/people");
         }

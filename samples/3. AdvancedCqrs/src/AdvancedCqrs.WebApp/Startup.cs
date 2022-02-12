@@ -43,7 +43,7 @@ namespace AdvancedCqrs.WebApp
             services.AddControllersWithViews(options => 
             { 
                 options.InputFormatters.Add(new PlainTextInputFormatter());
-                options.ModelBinderProviders.Insert(0, new ThingCommandModelBinderProvider());
+                options.ModelBinderProviders.Insert(0, new ThingModelBinderProvider());
             })
             .AddNewtonsoftJson(options =>
             {

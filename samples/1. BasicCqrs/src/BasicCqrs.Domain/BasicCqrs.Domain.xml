@@ -12,7 +12,9 @@
         </member>
         <member name="M:BasicCqrs.Domain.People.Commands.CreatePerson.#ctor(System.String,System.String)">
             <summary>
-            Creates a new Person.
+            Creates a new Person. Note that this class is initialized via a 
+            constructor, allowing for more advanced validation should it be
+            required.
             </summary>
             <param name="firstName">New person's first name.</param>
             <param name="lastName">New person's last name.</param>
@@ -25,7 +27,9 @@
         </member>
         <member name="T:BasicCqrs.Domain.People.Commands.UpdatePerson">
             <summary>
-            Updates an existing Person.
+            Updates an existing Person. Note that this class has no constructor 
+            defined. This makes ASP.NET model binding simpler, but does not easily 
+            allow for more advanced validation that might be required.
             </summary>
         </member>
         <member name="P:BasicCqrs.Domain.People.Commands.UpdatePerson.Id">

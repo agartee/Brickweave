@@ -23,17 +23,6 @@ namespace Brickweave.Messaging.ServiceBus.Tests
         }
 
         [Fact]
-        public void GetUserProperties_WhenDomainEventContainsRegisteredPropertyNameAndDomainEventPropertyIsComplex_ReturnsDictionaryWithoutPropertyValue()
-        {
-            var strategy = new GlobalUserPropertyStrategy("Id");
-            var domainEvent = new TestDomainEventWithComplexProperty(new ComplexId("123"));
-
-            var results = strategy.GetUserProperties(domainEvent).ToArray();
-
-            results.Should().HaveCount(0);
-        }
-
-        [Fact]
         public void GetUserProperties_WhenDomainEventContainsNonRegisteredPropertyName_ReturnsDictionaryWithoutPropertyValue()
         {
             var strategy = new GlobalUserPropertyStrategy();

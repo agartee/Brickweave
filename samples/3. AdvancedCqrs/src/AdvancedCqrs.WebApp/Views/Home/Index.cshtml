@@ -31,7 +31,7 @@
 
 <p>Create a new <strong>Thing</strong>:</p>
 
-<code>./scripts/cli-client-nosecurity thing create --name "The Thing" -v</code>
+<code>$thing = (./scripts/cli-client-nosecurity thing create --name "The Thing" -v | ConvertFrom-Json)</code>
 <blockquote>
     Note that the <strong>CreateThing</strong> command is artifically 
     long-running and will take several seconds to complete. The "-v" switch 

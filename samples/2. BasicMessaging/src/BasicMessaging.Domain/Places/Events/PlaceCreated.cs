@@ -1,5 +1,4 @@
-﻿using System;
-using BasicMessaging.Domain.Places.Models;
+﻿using BasicMessaging.Domain.Places.Models;
 using Brickweave.Domain;
 
 namespace BasicMessaging.Domain.Places.Events

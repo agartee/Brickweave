@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using BasicMessaging.Domain.Places.Events;
 using BasicMessaging.Domain.Places.Services;
 using BasicMessaging.SqlServer;
 using BasicMessaging.SqlServer.Repositories;
@@ -9,7 +11,6 @@ using Brickweave.Cqrs.DependencyInjection;
 using Brickweave.Domain;
 using Brickweave.Domain.Serialization;
 using Brickweave.Messaging.ServiceBus.DependencyInjection;
-using Brickweave.Messaging.SqlServer;
 using Brickweave.Messaging.SqlServer.Entities;
 using Brickweave.Messaging.SqlServer.Services;
 using Brickweave.Serialization;
@@ -51,9 +52,16 @@ namespace BasicMessaging.WebApp
 
             services.AddBrickweaveMessaging()
                 .AddMessageSenderRegistration(
-                    Configuration.GetConnectionString("serviceBus"),
-                    Configuration["messaging:queue"], isDefault: true)
-                .AddUtf8Encoding();
+                    connectionString: Configuration.GetConnectionString("serviceBus"),
+                    topicOrQueue: Configuration["messaging:queue"], 
+                    isDefault: true)
+                .AddUtf8Encoding()
+                .AddGlobalUserPropertyStrategy("Id")
+                .AddUserPropertyStrategy<PlaceCreated>(e => 
+                    new Dictionary<string, object>
+                    {
+                        ["Name"] = e.Name
+                    });
 
             services.AddDbContext<BasicMessagingDbContext>(options =>
             {

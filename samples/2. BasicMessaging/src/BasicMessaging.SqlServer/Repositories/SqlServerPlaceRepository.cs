@@ -1,9 +1,12 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using BasicMessaging.Domain.Places.Models;
 using BasicMessaging.Domain.Places.Services;
 using BasicMessaging.SqlServer.Entities;
 using Brickweave.Messaging.SqlServer.Extensions;
 using Brickweave.Serialization;
+using Microsoft.EntityFrameworkCore;
 
 namespace BasicMessaging.SqlServer.Repositories
 {
@@ -34,6 +37,18 @@ namespace BasicMessaging.SqlServer.Repositories
             await _dbContext.SaveChangesAsync();
 
             place.ClearDomainEvents();
+        }
+
+        public async Task<IEnumerable<Place>> ListPlacesAsync()
+        {
+            var data = await _dbContext.Places
+                .ToListAsync();
+
+            return data.Select(t =>
+                new Place(
+                    new PlaceId(t.Id),
+                    t.Name))
+                .ToList();
         }
     }
 }

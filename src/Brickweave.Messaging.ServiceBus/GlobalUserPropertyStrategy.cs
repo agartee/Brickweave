@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Brickweave.Domain;
-using Brickweave.Messaging.ServiceBus.Extensions;
 
 namespace Brickweave.Messaging.ServiceBus
 {
@@ -23,8 +22,8 @@ namespace Brickweave.Messaging.ServiceBus
             domainEvent.GetType()
                 .GetProperties(BindingFlags.Instance | BindingFlags.Public)
                 .Where(p => _userPropertyNames.Contains(p.Name, StringComparer.InvariantCultureIgnoreCase))
-                .Where(p => p.PropertyType.IsBasicType()).ToList()
-                .ForEach(p => properties.Add(p.Name, p.GetValue(domainEvent)));
+                .ToList()
+                .ForEach(p => properties.Add(p.Name, p.GetValue(domainEvent).ToString()));
 
             return properties;
         }

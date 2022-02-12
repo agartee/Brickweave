@@ -29,18 +29,18 @@ namespace BasicCqrs.WebApp
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllersWithViews(config =>
+            services.AddControllersWithViews(options =>
             {
                 // Add the PlainTextInputFormatter to use with the CLI-enabled
                 // endpoint, as the example PowerShell client
                 // (/scripts/cli-client-nosecurity.ps1) sends web requests as
                 // "text/plain".
-                config.InputFormatters.Add(new PlainTextInputFormatter());
+                options.InputFormatters.Add(new PlainTextInputFormatter());
 
                 // Add custom model binding so that ID value objects can be
                 // deserialized by the framework for use directly in the
                 // controllers.
-                config.ModelBinderProviders.Insert(0, new IdModelBinderProvider());
+                options.ModelBinderProviders.Insert(0, new IdModelBinderProvider());
             })
             .AddNewtonsoftJson(options =>
             {
@@ -80,12 +80,15 @@ namespace BasicCqrs.WebApp
             // also override CLI command text for specific commands and/or
             // queries.
             services.AddBrickweaveCli(domainAssemblies)
-                // the file containing help documentation for domain model
+                // Add the file containing help documentation for domain model
                 // "categories" (domain model type, not a specific action)
                 .AddCategoryHelpFile("cli-categories.json")
                 .SetDateParsingCulture(new CultureInfo("en-US"))
                 // Override the auto-discovered CLI command, changing the CLI
-                // command from "people list" to "person list"
+                // command from "people list" to "person list". For larger 
+                // projects, creating new extensions methods for the
+                // CliOptionsBuilder local to your project will likely improve
+                // readability.
                 .OverrideQueryName<ListPeople>("list", "person");
 
             // Register your application's domain services as per usual

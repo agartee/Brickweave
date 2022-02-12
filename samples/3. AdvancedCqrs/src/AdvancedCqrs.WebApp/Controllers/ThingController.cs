@@ -43,10 +43,9 @@ namespace AdvancedCqrs.WebApp.Controllers
         }
 
         [HttpGet, Route("/thing/{id}/edit")]
-        public async Task<IActionResult> EditAsync([FromRoute] Guid id)
+        public async Task<IActionResult> EditAsync(ThingId id)
         {
-            var result = await _dispatcher.DispatchQueryAsync(new GetThing(
-                new ThingId(id)));
+            var result = await _dispatcher.DispatchQueryAsync(new GetThing(id));
 
             return View(result);
         }

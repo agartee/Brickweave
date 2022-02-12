@@ -11,7 +11,7 @@ namespace AdvancedCqrs.WebApp.ModelBinders
     {
         private readonly IDictionary<Type, Func<IModelBinder>> _binders = new Dictionary<Type, Func<IModelBinder>>
         {
-            // note: BinderTypeModelBinder allows for DI into the ModelBinder
+            // tip: BinderTypeModelBinder allows for DI into the ModelBinder
             [typeof(CreateThing)] = () => new BinderTypeModelBinder(typeof(CreateThingModelBinder)),
             [typeof(UpdateThing)] = () => new UpdateThingModelBinder()
         };

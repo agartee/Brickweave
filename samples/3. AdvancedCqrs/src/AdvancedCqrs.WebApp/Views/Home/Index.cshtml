@@ -1,2 +1,40 @@
-﻿<h1>Home</h1>
+﻿<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <p>
+        Learn about building application with Brickweave 
+        <a href="https://github.com/agartee/Brickweave">here</a>.
+    </p>
+</div>
 
+<p>
+    This application demonstrates some of the more advanced features of 
+    <b>Brickweave.Cqrs</b> and <b>Brickweave.Cqrs.Cli</b>. Comments throughout 
+    the class files combined with the documentation on the GitHub project page 
+    should give you a pretty good idea of what is going on.
+</p>
+
+<p>
+    There is also a demo CLI client (PowerShell script) included 
+    (<b>./scripts/cli-client-nosecurity.ps1</b>). Running the client for the 
+    first time will prompt for an API endpoint. For this demo, use 
+    <b>https://localhost:5001/cli/run</b>. The script will save a configuration 
+    so that you don't need to enter this every time.
+</p>
+
+<p>
+    Please ignore the fact that no authentication/authorization takes place in 
+    this demo for either the web application or the CLI. Future demos will 
+    include Auth0 OAuth2.
+</p>
+
+<h2>Sample CLI Commands</h2>
+
+<p>Create a new <strong>Thing</strong>:</p>
+
+<code>./scripts/cli-client-nosecurity thing create --name "The Thing" -v</code>
+<blockquote>
+    Note that the <strong>CreateThing</strong> command is artifically 
+    long-running and will take several seconds to complete. The "-v" switch 
+    on this command enables verbose logging so you can watch the 
+    status-checking loop while the command executes.
+</blockquote>

@@ -38,11 +38,11 @@ namespace Brickweave.Messaging.ServiceBus.Services.Tests
                     new GlobalUserPropertyStrategy("Id")
                 },
                 new[] {
-                    new MessageSenderRegistration(_fixture.Queue, _fixture.CreateQueueSender())
+                    new MessageSenderRegistration("test", _fixture.CreateQueueSender())
                 },
                 new IMessageTypeRegistration[] { },
                 Enumerable.Empty<IMessageFailureHandler>(),
-                new DefaultTopicOrQueueRegistration(_fixture.Queue));
+                new DefaultMessageSenderRegistration("test"));
 
             var client = _fixture.CreateQueueClient();
 
@@ -77,13 +77,13 @@ namespace Brickweave.Messaging.ServiceBus.Services.Tests
                     new GlobalUserPropertyStrategy("Id")
                 },
                 new[] {
-                    new MessageSenderRegistration(_fixture.Queue, _fixture.CreateQueueSender())
+                    new MessageSenderRegistration("test", _fixture.CreateQueueSender())
                 },
                 new IMessageTypeRegistration[] {
-                    new MessageTypeRegistration<TestDomainEvent>(_fixture.Queue)
+                    new MessageTypeRegistration<TestDomainEvent>("test")
                 },
                 Enumerable.Empty<IMessageFailureHandler>(),
-                new DefaultTopicOrQueueRegistration("notused"));
+                new DefaultMessageSenderRegistration("test-ignored"));
 
             var client = _fixture.CreateQueueClient();
 

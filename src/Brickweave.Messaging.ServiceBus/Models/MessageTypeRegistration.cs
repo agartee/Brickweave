@@ -5,13 +5,13 @@ namespace Brickweave.Messaging.ServiceBus.Models
 {
     public class MessageTypeRegistration<TType> : IMessageTypeRegistration where TType : IDomainEvent
     {
-        public MessageTypeRegistration(string topicOrQueue)
+        public MessageTypeRegistration(string messageSenderName)
         {
             MessageType = typeof(TType);
-            TopicOrQueue = topicOrQueue;
+            MessageSenderName = messageSenderName;
         }
 
         public Type MessageType { get; }
-        public string TopicOrQueue { get; }
+        public string MessageSenderName { get; }
     }
 }

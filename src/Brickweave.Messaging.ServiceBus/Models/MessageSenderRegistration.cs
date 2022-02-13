@@ -4,13 +4,13 @@ namespace Brickweave.Messaging.ServiceBus.Models
 {
     public class MessageSenderRegistration
     {
-        public MessageSenderRegistration(string topicOrQueue, IMessageSender messageSender)
+        public MessageSenderRegistration(string name, IMessageSender messageSender)
         {
-            TopicOrQueue = topicOrQueue;
+            Name = name;
             MessageSender = messageSender;
         }
 
-        public string TopicOrQueue { get; }
+        public string Name { get; }
         public IMessageSender MessageSender { get; }
     }
 }

@@ -60,6 +60,7 @@ namespace BasicMessaging.WebApp
                 // configured as the default unless ALL message types have
                 // their own explicit registrations.
                 .AddMessageSenderRegistration(
+                    "default",
                     connectionString: Configuration.GetConnectionString("serviceBus"),
                     topicOrQueue: Configuration["messaging:queue"], 
                     isDefault: true)
@@ -75,7 +76,8 @@ namespace BasicMessaging.WebApp
                 // multiple topics/queues are utilized. This is not technically
                 // required for this demo, since a default message sender has
                 // been defined above, but is included for reference.
-                .AddMessageTypeRegistration<PlaceCreated>(Configuration["messaging:queue"])
+                .AddMessageTypeRegistration<PlaceCreated>(
+                    messageSenderName: "default")
                 // Provide additional user property (custom property) mappings
                 // at a per-message-type basis.
                 .AddUserPropertyStrategy<PlaceCreated>(e => 

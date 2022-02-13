@@ -23,20 +23,20 @@ namespace Brickweave.Messaging.ServiceBus.DependencyInjection
         }
 
         public ServiceBusOptionsBuilder AddMessageSenderRegistration(
-            string connectionString, string topicOrQueue, RetryPolicy retryPolicy = null, bool isDefault = false)
+            string name, string connectionString, string topicOrQueue, RetryPolicy retryPolicy = null, bool isDefault = false)
         {
-            _services.AddSingleton(s => new MessageSenderRegistration(topicOrQueue, 
+            _services.AddSingleton(s => new MessageSenderRegistration(name, 
                 new MessageSender(connectionString, topicOrQueue, retryPolicy ?? RetryPolicy.Default)));
 
             if(isDefault)
-                _services.AddSingleton(new DefaultTopicOrQueueRegistration(topicOrQueue));
+                _services.AddSingleton(new DefaultMessageSenderRegistration(topicOrQueue));
 
             return this;
         }
 
-        public ServiceBusOptionsBuilder AddMessageTypeRegistration<TType>(string topicOrQueue) where TType : IDomainEvent
+        public ServiceBusOptionsBuilder AddMessageTypeRegistration<TType>(string messageSenderName) where TType : IDomainEvent
         {
-            _services.AddSingleton<IMessageTypeRegistration>(s => new MessageTypeRegistration<TType>(topicOrQueue));
+            _services.AddSingleton<IMessageTypeRegistration>(s => new MessageTypeRegistration<TType>(messageSenderName));
 
             return this;
         }

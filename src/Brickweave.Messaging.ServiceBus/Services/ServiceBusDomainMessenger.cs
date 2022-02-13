@@ -23,14 +23,14 @@ namespace Brickweave.Messaging.ServiceBus.Services
         private readonly IEnumerable<IMessageTypeRegistration> _messageTypeRegistrations;
         private readonly IEnumerable<IMessageFailureHandler> _messageFailureHandlers;
 
-        private readonly DefaultTopicOrQueueRegistration _defaultTopicOrQueueRegistration;
+        private readonly DefaultMessageSenderRegistration _defaultMessageSenderRegistration;
 
         public ServiceBusDomainMessenger(IDocumentSerializer serializer, IMessageEncoder encoder,
             IEnumerable<IUserPropertyStrategy> userPropertyStrategies,
             IEnumerable<MessageSenderRegistration> messageSenderRegistrations,
             IEnumerable<IMessageTypeRegistration> messageTypeRegistrations,
             IEnumerable<IMessageFailureHandler> messageFailureHandlers,
-            DefaultTopicOrQueueRegistration defaultTopicOrQueueRegistration)
+            DefaultMessageSenderRegistration defaultTopicOrQueueRegistration)
         {
             _serializer = serializer;
             _encoder = encoder;
@@ -38,7 +38,7 @@ namespace Brickweave.Messaging.ServiceBus.Services
             _messageSenderRegistrations = messageSenderRegistrations;
             _messageTypeRegistrations = messageTypeRegistrations;
             _messageFailureHandlers = messageFailureHandlers;
-            _defaultTopicOrQueueRegistration = defaultTopicOrQueueRegistration;
+            _defaultMessageSenderRegistration = defaultTopicOrQueueRegistration;
         }
 
         public async Task SendAsync(IDomainEvent @event)
@@ -80,17 +80,17 @@ namespace Brickweave.Messaging.ServiceBus.Services
 
         private IMessageSender GetSender(Type messageType)
         {
-            var messageTopicOrQueue = _messageTypeRegistrations
-                .FirstOrDefault(r => r.MessageType == messageType)?.TopicOrQueue;
+            var messageSenderName = _messageTypeRegistrations
+                .FirstOrDefault(r => r.MessageType == messageType)?.MessageSenderName;
 
-            if (messageTopicOrQueue == null)
+            if (messageSenderName == null)
                 return GetDefaultSender();
 
             var sender = _messageSenderRegistrations
-                .FirstOrDefault(r => r.TopicOrQueue == messageTopicOrQueue)?.MessageSender;
+                .FirstOrDefault(r => r.Name == messageSenderName)?.MessageSender;
 
             if (sender == null)
-                throw new MessageSenderNotRegisteredException(messageTopicOrQueue);
+                throw new MessageSenderNotRegisteredException(messageSenderName);
 
             return sender;
         }
@@ -98,10 +98,10 @@ namespace Brickweave.Messaging.ServiceBus.Services
         private IMessageSender GetDefaultSender()
         {
             var sender = _messageSenderRegistrations
-                .FirstOrDefault(r => r.TopicOrQueue == _defaultTopicOrQueueRegistration.TopicOrQueue)?.MessageSender;
+                .FirstOrDefault(r => r.Name == _defaultMessageSenderRegistration.Name)?.MessageSender;
 
             if(sender == null)
-                throw new DefaultTopicOrQueueNotRegisteredException();
+                throw new MessageSenderNotFoundException();
 
             return sender;
         }

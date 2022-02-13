@@ -3,13 +3,13 @@ using Brickweave.Cqrs;
 
 namespace BasicMessaging.Domain.Places.Commands
 {
-    public class CreatePlace : ICommand<Place>
+    public class DeletePlace : ICommand
     {
-        public CreatePlace(string name)
+        public DeletePlace(PlaceId id)
         {
-            Name = name;
+            Id = id;
         }
 
-        public string Name { get; }
+        public PlaceId Id { get; }
     }
 }

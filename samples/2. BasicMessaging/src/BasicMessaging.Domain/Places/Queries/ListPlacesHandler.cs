@@ -9,16 +9,16 @@ namespace BasicMessaging.Domain.Places.Queries
 {
     public class ListPlacesHandler : IQueryHandler<ListPlaces, IEnumerable<Place>>
     {
-        private readonly IPlaceRepository PlaceRepository;
+        private readonly IPlaceRepository _placeRepository;
 
         public ListPlacesHandler(IPlaceRepository PlaceRepository)
         {
-            this.PlaceRepository = PlaceRepository;
+            this._placeRepository = PlaceRepository;
         }
 
         public async Task<IEnumerable<Place>> HandleAsync(ListPlaces query)
         {
-            var Places = await PlaceRepository.ListPlacesAsync();
+            var Places = await _placeRepository.ListPlacesAsync();
 
             return Places
                 .OrderBy(p => p.Name)

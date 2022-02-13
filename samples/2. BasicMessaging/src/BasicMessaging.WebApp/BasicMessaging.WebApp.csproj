@@ -6,13 +6,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Extensions\**" />
-    <Content Remove="Extensions\**" />
-    <EmbeddedResource Remove="Extensions\**" />
-    <None Remove="Extensions\**" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\..\..\..\src\Brickweave.Messaging.ServiceBus\Brickweave.Messaging.ServiceBus.csproj" />
     <ProjectReference Include="..\BasicMessaging.Domain\BasicMessaging.Domain.csproj" />
     <ProjectReference Include="..\BasicMessaging.SqlServer\BasicMessaging.SqlServer.csproj" />

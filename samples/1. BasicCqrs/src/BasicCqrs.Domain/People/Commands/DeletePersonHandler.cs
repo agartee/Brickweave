@@ -6,16 +6,16 @@ namespace BasicCqrs.Domain.People.Commands
 {
     public class DeletePersonHandler : ICommandHandler<DeletePerson>
     {
-        private readonly IPersonRepository personRepository;
+        private readonly IPersonRepository _personRepository;
 
         public DeletePersonHandler(IPersonRepository personRepository)
         {
-            this.personRepository = personRepository;
+            _personRepository = personRepository;
         }
 
         public async Task HandleAsync(DeletePerson command)
         {
-            await personRepository.DeletePerson(command.Id);
+            await _personRepository.DeletePerson(command.Id);
         }
     }
 }

@@ -5,21 +5,20 @@ using Brickweave.Cqrs;
 
 namespace BasicMessaging.Domain.Places.Commands
 {
-    public class CreatePlaceHandler : ICommandHandler<CreatePlace, Place>
+    public class UpdatePlaceHandler : ICommandHandler<UpdatePlace, Place>
     {
         private readonly IPlaceRepository _placeRepository;
 
-        public CreatePlaceHandler(IPlaceRepository placeRepository)
+        public UpdatePlaceHandler(IPlaceRepository placeRepository)
         {
             _placeRepository = placeRepository;
         }
 
-        public async Task<Place> HandleAsync(CreatePlace command)
+        public async Task<Place> HandleAsync(UpdatePlace command)
         {
-            var place = new Place(
-                PlaceId.NewId(), 
-                command.Name, 
-                isNew: true);
+            var place = await _placeRepository.DemandPlaceAsync(command.Id);
+
+            place.Name = command.Name;
 
             await _placeRepository.SavePlaceAsync(place);
 

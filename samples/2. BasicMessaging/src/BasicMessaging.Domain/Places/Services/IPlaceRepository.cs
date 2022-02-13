@@ -7,6 +7,8 @@ namespace BasicMessaging.Domain.Places.Services
     public interface IPlaceRepository
     {
         Task SavePlaceAsync(Place place);
+        Task<Place> DemandPlaceAsync(PlaceId id);
         Task<IEnumerable<Place>> ListPlacesAsync();
+        Task DeletePlace(PlaceId id);
     }
 }

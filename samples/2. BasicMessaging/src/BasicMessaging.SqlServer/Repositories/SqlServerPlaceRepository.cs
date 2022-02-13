@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AdvancedCqrs.Domain.Common.Exceptions;
 using BasicMessaging.Domain.Places.Models;
 using BasicMessaging.Domain.Places.Services;
 using BasicMessaging.SqlServer.Entities;
@@ -23,13 +24,21 @@ namespace BasicMessaging.SqlServer.Repositories
 
         public async Task SavePlaceAsync(Place place)
         {
-            var data = new PlaceData
-            {
-                Id = place.Id.Value,
-                Name = place.Name
-            };
+            var data = await _dbContext.Places
+                .SingleOrDefaultAsync(t => t.Id == place.Id.Value);
 
-            _dbContext.Places.Add(data);
+            if (data == null)
+            {
+                _dbContext.Places.Add(new PlaceData
+                {
+                    Id = place.Id.Value,
+                    Name = place.Name
+                });
+            }
+            else
+            {
+                data.Name = place.Name;
+            }
 
             place.GetDomainEvents()
                 .Enqueue(_dbContext.MessageOutbox, _serializer);
@@ -37,6 +46,19 @@ namespace BasicMessaging.SqlServer.Repositories
             await _dbContext.SaveChangesAsync();
 
             place.ClearDomainEvents();
+        }
+
+        public async Task<Place> DemandPlaceAsync(PlaceId id)
+        {
+            var data = await _dbContext.Places
+                .SingleOrDefaultAsync(t => t.Id == id.Value);
+
+            if (data == null)
+                throw new EntityNotFoundException(id, nameof(Place));
+
+            return new Place(
+                new PlaceId(data.Id),
+                data.Name);
         }
 
         public async Task<IEnumerable<Place>> ListPlacesAsync()
@@ -49,6 +71,18 @@ namespace BasicMessaging.SqlServer.Repositories
                     new PlaceId(t.Id),
                     t.Name))
                 .ToList();
+        }
+
+        public async Task DeletePlace(PlaceId id)
+        {
+            var data = await _dbContext.Places
+                .SingleOrDefaultAsync(t => t.Id == id.Value);
+
+            if (data == null)
+                return;
+
+            _dbContext.Places.Remove(data);
+            await _dbContext.SaveChangesAsync();
         }
     }
 }

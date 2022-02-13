@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using BasicMessaging.Domain.Places.Events;
+using BasicMessaging.Domain.Places.Models;
 using BasicMessaging.Domain.Places.Services;
 using BasicMessaging.SqlServer;
 using BasicMessaging.SqlServer.Repositories;
@@ -20,7 +21,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 
 namespace BasicMessaging.WebApp
 {
@@ -37,26 +37,47 @@ namespace BasicMessaging.WebApp
         {
             services.AddControllersWithViews();
 
-            var domainAssemblies = AppDomain.CurrentDomain.GetAssemblies()
-                .Where(a => a.FullName.Contains("BasicMessaging.Domain"))
-                .ToArray();
+            var domainAssembly = typeof(Place).Assembly;
 
-            services.AddBrickweaveCqrs(domainAssemblies);
+            services.AddBrickweaveCqrs(domainAssembly);
 
-            var shortHandTypes = domainAssemblies.SelectMany(a => a.ExportedTypes)
+            // Get the types that when serialized or deserialized can drop
+            // their fully qualified namespace names when written to the
+            // message-outbox table's TypeName column or message-bus's
+            // Content-Type property.
+            var shortHandTypes = domainAssembly.ExportedTypes
                 .Where(t => typeof(IDomainEvent).IsAssignableFrom(t))
                 .ToArray();
 
             services.AddBrickweaveSerialization(shortHandTypes)
+                // Include the Brickweave converter that will flatten Id<T>
+                // types to their Value property when serialized or
+                // deserialized.
                 .AddJsonConverter(new IdConverter());
 
             services.AddBrickweaveMessaging()
+                // Multiple message senders can be configured. One should be
+                // configured as the default unless ALL message types have
+                // their own explicit registrations.
                 .AddMessageSenderRegistration(
                     connectionString: Configuration.GetConnectionString("serviceBus"),
                     topicOrQueue: Configuration["messaging:queue"], 
                     isDefault: true)
+                // Azure Message Bus requires encoding of some type.
+                // Currently only a UTF-8 encode is available with this
+                // Brickweave library.
                 .AddUtf8Encoding()
+                // Tell the Brickweave services that any message that contains
+                // an Id property should also add that property/value to the 
+                // user properties (custom properties) of the outbound message.
                 .AddGlobalUserPropertyStrategy("Id")
+                // Message-type to topic/queue mapping in the cases where
+                // multiple topics/queues are utilized. This is not technically
+                // required for this demo, since a default message sender has
+                // been defined above, but is included for reference.
+                .AddMessageTypeRegistration<PlaceCreated>(Configuration["messaging:queue"])
+                // Provide additional user property (custom property) mappings
+                // at a per-message-type basis.
                 .AddUserPropertyStrategy<PlaceCreated>(e => 
                     new Dictionary<string, object>
                     {
@@ -85,15 +106,7 @@ namespace BasicMessaging.WebApp
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
-            else
-            {
-                app.UseExceptionHandler("/Home/Error");
-                app.UseHsts();
-            }
+            app.UseDeveloperExceptionPage();
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 

@@ -1,0 +1,19 @@
+﻿@model PlaceViewModel
+
+@{
+    ViewData["Title"] = "Edit Place";
+}
+
+<h2>Edit Place</h2>
+
+<form asp-action="Edit">
+    <div>
+        <label asp-for="Name"></label>
+        <input asp-for="Name" required />
+    </div>
+
+    <button type="submit">Done</button>
+    <button type="submit" formaction="delete" onclick="return confirm('Are you sure you want to delete this?')">Delete</button>
+</form>
+
+<a asp-controller="Place" asp-action="List">Back To List</a>

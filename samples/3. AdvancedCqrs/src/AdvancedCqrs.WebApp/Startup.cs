@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Globalization;
-using System.Linq;
-using AdvancedCqrs.Domain.Things.Commands;
 using AdvancedCqrs.Domain.Things.Models;
 using AdvancedCqrs.Domain.Things.Services;
 using AdvancedCqrs.SqlServer;
 using AdvancedCqrs.SqlServer.Repositories;
 using AdvancedCqrs.WebApp.ModelBinders;
-using Brickweave.Cqrs;
 using Brickweave.Cqrs.AspNetCore.DependencyInjection;
 using Brickweave.Cqrs.AspNetCore.Formatters;
 using Brickweave.Cqrs.Cli.DependencyInjection;
@@ -21,7 +18,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
@@ -134,15 +130,7 @@ namespace AdvancedCqrs.WebApp
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
-            else
-            {
-                app.UseExceptionHandler("/Home/Error");
-                app.UseHsts();
-            }
+            app.UseDeveloperExceptionPage();
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 

@@ -31,7 +31,7 @@ You will need the following user secrets to run locally.
 
 ## Generating additional Entity Framework Database Migrations
 
-From this samples (`\samples\3. BasicMessaging`) folder, run this command, replacing the `$migrationName` with a real value:
+From this samples (`\samples\2. BasicMessaging`) folder, run this command, replacing the `$migrationName` with a real value:
 
 ```powershell
 dotnet ef migrations add $migrationName --startup-project ./src/BasicMessaging.WebApp/ --project ./src/BasicMessaging.SqlServer/

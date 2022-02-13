@@ -3,7 +3,7 @@
 
 ## What is Brickweave?
 
-Brickweave is a suite of .NET Standard 2.0 framework libraries to support developers on their Domain Driven Design journeys and provide clear, simple patterns to achieve DDD, CQRS, ES and domain messaging without getting bogged down with an overwhelming number of implementation decisions.
+Brickweave is a suite of .NET Standard 2.1 framework libraries to support developers on their Domain Driven Design journeys and provide clear, simple patterns to achieve DDD, CQRS, ES and domain messaging without getting bogged down with an overwhelming number of implementation decisions.
 
 For full usage examples, see the included ***samples*** application.
 
@@ -25,19 +25,6 @@ public class PersonId : Id<Guid> // implement Id value object with simple backin
     {
         return new PersonId(Guid.NewGuid());
     }
-}
-```
-
-### Wiring-up the services (ASP.NET Core)
-
-```csharp
-public void ConfigureServices(IServiceCollection services)
-{
-    services.AddMvc()
-        .AddJsonOptions(options =>
-            options.SerializerSettings.Converters.Add(new IdConverter())) // effects Id<T> implementations only
-
-    ...
 }
 ```
 
@@ -133,7 +120,6 @@ public class PersonController : Controller
     [HttpPost, Route("/person/new")]
     public async Task<IActionResult> Create([FromBody] CreatePerson command)
     {
-        // let ASP.NET deserialize the command object
         var result = await _dispatcher.DispatchCommandAsync(command);
 
         return Ok(result);
@@ -141,29 +127,9 @@ public class PersonController : Controller
 }
 ```
 
-### Wiring-up the services (ASP.NET Core)
-
-The `IServiceCollection` extension method will perform assembly scans of the provided assemblies and register all implementations of command and query handlers as well as the other required services for handler routing to function.
-
-```csharp
-public void ConfigureServices(IServiceCollection services)
-{
-    // find the assemblies containing command/query handlers
-    var domainAssemblies = AppDomain.CurrentDomain.GetAssemblies()
-        .Where(a => a.FullName.StartsWith("MyApp"))
-        .Where(a => a.FullName.Contains("Domain"))
-        .ToArray();
-
-    // utilize the extension method (from Brickweave.Cqrs.DependencyInjection)
-    services.AddCqrs(domainAssemblies);
-
-    ...
-}
-```
-
 ## Brickweave.EventStore
 
-Contains base components to implement event-sourced aggregates and repositories. Snap-shotting/memento is not required and is not baked into these services and interfaces. Brickweave's event store was heavily influenced by the [NEventStore](https://github.com/NEventStore/NEventStore) project.
+Contains base components to implement event-sourced aggregates and repositories. Snap-shotting/memento is not required and is not baked into these services and interfaces.
 
 ## Brickweave.EventStore.SqlServer
 
@@ -212,91 +178,16 @@ public class SqlServerPersonRepository : SqlServerAggregateRepository<Person>, I
 
 *Note: If a snapshot/read-model is required for the application and needs to be immediately available for query, it is recommended to add the supporting tables to the same DbContext as the Event Store and perform those writes within the same transaction.*
 
-### Wiring-up the services (ASP.NET Core)
-
-The `IServiceCollection` extension method will perform assembly scans of the provided assemblies and register all implementations of the `IAggregateEvent` to simplify the JSON document being written to the database by removing assembly and namespace declarations in the document. This can significantly reduce the size of the database rows and simplify consumption of the stream by other application if accessed directly. 
-
-The sample below (and in the sample project) also demonstrates how to configure Entity Framework to look for migration in another library, since migrations are not included in the `Brickweave.EventStore` library.
-
-```csharp
-public void ConfigureServices(IServiceCollection services)
-{
-    // find the assemblies containing event classes
-    var domainAssemblies = AppDomain.CurrentDomain.GetAssemblies()
-        .Where(a => a.FullName.StartsWith("Brickweave"))
-        .Where(a => a.FullName.Contains("Domain"))
-        .ToArray();
-
-    // standard EF wire-up
-    var migrationsAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
-
-    services.AddDbContext<SamplesDbContext>(options =>
-        options.UseSqlServer(Configuration.GetConnectionString("brickweave_samples"),
-            sql => sql.MigrationsAssembly(GetMigrationAssemblyName())));
-    
-    // register the repository service
-    services.AddScoped<IPersonRepository, SqlServerPersonRepository>();
-
-    ...
-}
-
-private static string GetMigrationAssemblyName()
-{
-    return typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
-}
-```
-
 ## Brickweave.Cqrs.Cli
 
-Contains services to support a command line application to easily execute commands and queries through a single API endpoint. As secured sample PowerShell CLI client is included at `/scripts/samples.ps1`. Users will be prompted for endpoint/authentication (I use Auth0) information the first time it is run and a `/scripts/samples.ps1.config` file will be generated (OAuth client secret us stored securely). In addition to configuring this client, a new API endpoint also needs to be created.
-
-The CLI dispatcher works differently than the typical Brickweave CQRS dispatcher in that it must interpret the command text before dispatching the command or query. This is because it does not receive JSON data as it would from a typical web client. This also means ASP.NET must be configured to receive non-JSON data so it does not try to deserialize it into objects. An example plain-text-formatter can be found [here](samples/Brickweave.Samples.WebApp/Formatters/PlainTextInputFormatter.cs).
-
-Help category definitions are defined in a separate JSON file and references in the `AddCli` services extension method.
-
-### Sample Categories Help File
-
-Create this file and reference its location when wiring-up the services.
-
-```json
-{
-  "person": "Manage person data",
-  "person phones": "Manage person phones",
-  "person attributes": "Manage person attributes",
-  "place": "Manage place data",
-  "place things": "Manage place things"
-}
-```
-Commands and Queries will by default be auto-discovered via text-case matching and by assuming the last "word" in your class definition is the "action" name. For example, the `CreatePerson` command translates to `person create` from the command line. This command/query text can be overridden via the `AddCli` services extension (see below). These overrides are handy when multiple commands should be organized into a single subject or category (e.g. `person`).
-
-Command and Query parameters are passed with double-dashes (e.g. `--firstname "Adam"`) and the parameter names are not case-sensitive.
-
-### Wiring-up the services (ASP.NET Core)
-
-```csharp
-private void ConfigureServices(IServiceCollection services)
-{
-    services.AddMvcCore(options =>
-        {
-            // see above for sample implementation of PlainTextInputFormatter
-            options.InputFormatters.Add(new PlainTextInputFormatter());
-        });
-
-    services.AddCli(domainAssemblies)
-        .AddDateParsingCulture(new CultureInfo("en-US"))
-        .AddCategoryHelpFile("cli-categories.json") // contains "category" labels and description
-        // optional overrides:
-        .OverrideQueryName<ListPersons>("list", "person")
-        .OverrideCommandName<AddMultiplePersonAttributes>("add-multiple", "person", "attributes")
-}
-```
+Contains services to support a command line application to easily execute commands and queries through a single API endpoint. The sample applications included in the repository can be used to provide guidance for implementing CLI client apps (the ones included are written in PowerShell).
 
 ### Sample CLI Controller
 
 ```csharp
 public class CliController : Controller
 {
-    private readonly ICliDispatcher _cliDispatcher; // inject the CLI dispatcher
+    private readonly ICliDispatcher _cliDispatcher;
 
     public CliController(ICliDispatcher cliDispatcher)
     {
@@ -304,12 +195,10 @@ public class CliController : Controller
     }
 
     [HttpPost, Route("/cli/run")]
-    public async Task<IActionResult> Run([FromBody]string commandText) // plain text request body
+    public async Task<IActionResult> RunAsync([FromBody] string commandText)
     {
-        // dispatch the command (as text)
         var result = await _cliDispatcher.DispatchAsync(commandText);
 
-        // use the default formatter or create a custom one
         var value = result is HelpInfo info
             ? SimpleHelpFormatter.Format(info) : result;
 
@@ -317,6 +206,56 @@ public class CliController : Controller
     }
 }
 ```
+
+Through the additional services provided in Brickweave.Cqrs.SqlServer and Brickweave.Cqrs.AspNetCore, long-running commands can also be easily implemented using a command-queue store and background services. See the sample applications for working examples.
+
+## Sample CLI Controller Supporting Long-Running Commands
+
+```csharp
+public class CliController : Controller
+{
+    private readonly ICliDispatcher _cliDispatcher;
+    private readonly ICommandStatusProvider _commandStatusProvider;
+
+    public CliController(ICliDispatcher cliDispatcher, ICommandStatusProvider commandStatusProvider)
+    {
+        _cliDispatcher = cliDispatcher;
+        _commandStatusProvider = commandStatusProvider;
+    }
+
+    [HttpPost, Route("/cli/run")]
+    public async Task<IActionResult> RunAsync([FromBody] string commandText)
+    {
+        Guid? commandId = null;
+        var result = await _cliDispatcher.DispatchAsync(commandText, id => commandId = id);
+
+        if(commandId != null)
+            return Accepted($"https://{HttpContext.Request.Host}/cli/status/{commandId}");
+
+        return Ok(result);
+    }
+
+    [HttpGet, Route("/cli/status/{commandId}")]
+    public async Task<IActionResult> GetStatus(Guid commandId)
+    {
+        var status = await _commandStatusProvider.GetStatusAsync(commandId);
+
+        if (status is CommandCompletedExecutionStatus completedStatus)
+            return Ok(completedStatus.Result);
+
+        if (status is CommandErrorExecutionStatus errorStatus)
+            throw new InvalidOperationException(errorStatus.Exception.ToString());
+
+        return Accepted($"https://{HttpContext.Request.Host}/cli/status/{commandId}");
+    }
+}
+```
+
+### Command-line Command Transiation
+
+Commands and Queries will by default be auto-discovered via text-case matching and by assuming the last "word" in your class definition is the "action" name. For example, the `CreatePerson` command translates to `person create` from the command line. This command/query text can be overridden via the `AddCli` services extension (see below). These overrides are handy when multiple commands should be organized into a single subject or category (e.g. `person`).
+
+Command and Query parameters are passed with double-dashes (e.g. `--firstname "Adam"`) and the parameter names are not case-sensitive.
 
 ### Add Command/Query Help Text
 
@@ -408,7 +347,7 @@ public class GetPerson : IQuery<PersonInfo>
 }
 ```
 
-## Running the Project from Source
+## Running the Tests from Source
 
 This project is configured to use user secrets for integration tests. Below are the settings needed to run the tests. The sample application is configured to use a simple Identity Server 4 server (included in samples).
 
@@ -416,19 +355,15 @@ This project is configured to use user secrets for integration tests. Below are 
 {
   "connectionStrings": {
     "brickweave_tests": "server=[server name];database=[database name];integrated security=true;",
-    "brickweave_samples": "server=[server name];database=[database name];integrated security=true;",
     "serviceBus": "Endpoint=sb://[service bus namespace].servicebus.windows.net/;SharedAccessKeyName=[key name];SharedAccessKey=[secret]"
   },
 
-  "serviceBusTopic": "[service bus topic name]",
-  "serviceBusSubscription": "[service bus subscription name]",
-
-  "authentication": {
-    "authority": "https://[your namespace].auth0.com/",
-    "audience": "[your Auth0 API name]",
-    "client_id": "[your Auth0 client id]",
-    "client_secret": "[your Auth0 client secret]",
-    "grant_type": "client_credentials"
-  } 
+  "messaging": {
+    "queue_tests": "tests"
+  }
 }
 ```
+
+## Sample Applications
+
+Each sample application contains it's own `readme.md` which should be consulted before trying to run them.

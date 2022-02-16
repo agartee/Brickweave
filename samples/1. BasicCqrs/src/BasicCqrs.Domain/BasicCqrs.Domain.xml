@@ -4,12 +4,6 @@
         <name>BasicCqrs.Domain</name>
     </assembly>
     <members>
-        <member name="T:System.Runtime.CompilerServices.IsExternalInit">
-            <summary>
-            Reserved to be used by the compiler for tracking metadata.
-            This class should not be used by developers in source code.
-            </summary>
-        </member>
         <member name="M:BasicCqrs.Domain.People.Commands.CreatePerson.#ctor(System.String,System.String)">
             <summary>
             Creates a new Person. Note that this class is initialized via a 

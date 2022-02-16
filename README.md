@@ -354,7 +354,7 @@ This project is configured to use user secrets for integration tests. Below are 
 ```json
 {
   "connectionStrings": {
-    "brickweave_tests": "server=[server name];database=[database name];integrated security=true;",
+    "brickweave-tests": "server=[server name];database=[database name];integrated security=true;",
     "serviceBus": "Endpoint=sb://[service bus namespace].servicebus.windows.net/;SharedAccessKeyName=[key name];SharedAccessKey=[secret]"
   },
 

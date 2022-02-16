@@ -2,13 +2,21 @@
 
 ## Running the App
 
-You will need the following user secrets to run locally.
+### Entity Framework Core Tools
+
+If not already installed, install the EF Core CLI tools.
+
+```powershell
+$ dotnet tool install --global dotnet-ef
+```
 
 ### User Secrets
 
+Add the following user secrets to the `BasicMessaging.WebApp` project:
+
 ```json
 "connectionStrings": {
-    "demo": "server=[your server];database=[your database];user id=[your user];password=[your password];MultipleActiveResultSets=True;",
+    "demo": "server=[your server];database=[your database];user id=[your user];integrated security=true;MultipleActiveResultSets=True;",
     "servicebus": "Endpoint=sb://[your service bus].servicebus.windows.net/;SharedAccessKeyName=[your key name];SharedAccessKey=[your access key]"
   },
   
@@ -27,6 +35,14 @@ You will need the following user secrets to run locally.
     },
     "enableSensitiveDataLogging":  "true"
   }
+```
+
+### Create the Database
+
+Run the EF migration manually or by running the following script (relative to the sample project):
+
+```powershell
+$ .\scripts\migrate.ps1
 ```
 
 ## Generating additional Entity Framework Database Migrations

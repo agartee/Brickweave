@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.1</TargetFramework>
-    <VersionPrefix>0.2.0</VersionPrefix>
+    <TargetFramework>net6.0</TargetFramework>
+    <VersionPrefix>0.3.0</VersionPrefix>
     <Authors>Adam Gartee</Authors>
     <Company>Adam Gartee</Company>
     <Description>Lightweight package to support common Brickweave CLI patterns using ASP.NET Core</Description>

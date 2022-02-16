@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using AdvancedCqrs.Domain.Common.Exceptions;
+using BasicMessaging.Domain.Common.Exceptions;
 using BasicMessaging.Domain.Places.Models;
 using BasicMessaging.Domain.Places.Services;
 using BasicMessaging.SqlServer.Entities;

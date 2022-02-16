@@ -56,6 +56,14 @@ To run the app directly from the console, run the following command from this sa
 $ dotnet run --project ./src/AdvancedCqrs.WebApp/AdvancedCqrs.WebApp.csproj --urls="https://localhost:5001;http://localhost:5000"
 ```
 
+### CLI Client Configuration
+
+The first time the included CLI client is run (`./scripts/cli-client-nosecurity.ps1`), it will prompt for an endpoint. Here, one of the URL address configurations for the `BasicCqrs.WebApp` web application must be used, followed by `/cli/run` (the route configured in the `CliController`).
+
+```powershell
+apiEndpoint: https://localhost:5001/cli/run
+```
+
 ## Maintenance
 
 ### Generating additional Entity Framework Database Migrations

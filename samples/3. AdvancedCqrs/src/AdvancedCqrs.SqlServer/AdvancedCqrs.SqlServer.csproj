@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
@@ -9,9 +9,7 @@
   </ItemGroup>
   
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\src\Brickweave.Cqrs.Cli\Brickweave.Cqrs.Cli.csproj" />
     <ProjectReference Include="..\..\..\..\src\Brickweave.Cqrs.SqlServer\Brickweave.Cqrs.SqlServer.csproj" />
-    <ProjectReference Include="..\..\..\..\src\Brickweave.Serialization\Brickweave.Serialization.csproj" />
     <ProjectReference Include="..\AdvancedCqrs.Domain\AdvancedCqrs.Domain.csproj" />
   </ItemGroup>
 

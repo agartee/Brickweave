@@ -58,7 +58,7 @@ $ dotnet run --project ./src/AdvancedCqrs.WebApp/AdvancedCqrs.WebApp.csproj --ur
 
 ### CLI Client Configuration
 
-The first time the included CLI client is run (`./scripts/cli-client-nosecurity.ps1`), it will prompt for an endpoint. Here, one of the URL address configurations for the `BasicCqrs.WebApp` web application must be used, followed by `/cli/run` (the route configured in the `CliController`).
+The first time the included CLI client is run (`./scripts/cli-client-nosecurity.ps1`), it will prompt for an endpoint. Here, one of the URL address configurations for the `AdvancedCqrs.WebApp` web application must be used, followed by `/cli/run` (the route configured in the `CliController`).
 
 ```powershell
 apiEndpoint: https://localhost:5001/cli/run

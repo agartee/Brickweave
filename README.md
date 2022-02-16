@@ -3,7 +3,7 @@
 
 ## What is Brickweave?
 
-Brickweave is a suite of .NET Standard 2.1 framework libraries to support developers on their Domain Driven Design journeys and provide clear, simple patterns to achieve DDD, CQRS, ES and domain messaging without getting bogged down with an overwhelming number of implementation decisions.
+Brickweave is a suite of .NET libraries to support developers on their Domain Driven Design journeys and provide clear, simple patterns to achieve DDD, CQRS, ES and domain messaging without getting bogged down with an overwhelming number of implementation decisions.
 
 For full usage examples, see the included ***samples*** application.
 

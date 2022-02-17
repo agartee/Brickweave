@@ -1,4 +1,5 @@
-﻿using Brickweave.EventStore;
+﻿using System.Collections.Immutable;
+using Brickweave.EventStore;
 using EventSourcing.Domain.Accounts.Events;
 using EventSourcing.Domain.Common.Models;
 using EventSourcing.Domain.Companies.Models;
@@ -8,35 +9,26 @@ namespace EventSourcing.Domain.Accounts.Models
 {
     public class Account : EventSourcedAggregateRoot
     {
+        private readonly List<Transaction> _transactionHistory = new List<Transaction>();
+
         protected Account()
         {
-            Register<AccountCreated>(Apply);
-            Register<AccountHoldershipAssignedToCompany>(Apply);
-            Register<AccountHoldershipAssignedToPerson>(Apply);
+            Register<PersonalAccountCreated>(Apply);
+            Register<BusinessAccountCreated>(Apply);
             Register<MoneyDeposited>(Apply);
             Register<MoneyWithdrawn>(Apply);
             Register<TransactionNoteCreated>(Apply);
-            Register<TransactionNoteEdited>(Apply);
+            Register<TransactionNoteDeleted>(Apply);
         }
 
         public Account(AccountId id, Name name, CompanyId accountHolderId) : this()
         {
-            RaiseEvent(new AccountCreated(
-                id ?? throw new ArgumentNullException(nameof(id)),
-                name ?? throw new ArgumentNullException(nameof(name))));
-
-            RaiseEvent(new AccountHoldershipAssignedToCompany(
-                accountHolderId ?? throw new ArgumentNullException(nameof(accountHolderId))));
+            RaiseEvent(new BusinessAccountCreated(id, name, accountHolderId));
         }
 
         public Account(AccountId id, Name name, PersonId accountHolderId) : this()
         {
-            RaiseEvent(new AccountCreated(
-                id ?? throw new ArgumentNullException(nameof(id)),
-                name ?? throw new ArgumentNullException(nameof(name))));
-
-            RaiseEvent(new AccountHoldershipAssignedToPerson(
-                accountHolderId ?? throw new ArgumentNullException(nameof(accountHolderId))));
+            RaiseEvent(new PersonalAccountCreated(id, name, accountHolderId));
         }
 
         public Account(IEnumerable<IEvent> events) : this()
@@ -48,6 +40,7 @@ namespace EventSourcing.Domain.Accounts.Models
         public LegalEntityId AccountHolderId { get; private set; }
         public Name Name { get; private set; }
         public decimal Balance { get; private set; }
+        public IEnumerable<Transaction> TransactionHistory => _transactionHistory.ToImmutableList();
 
         public TransactionId MakeDeposit(decimal amount)
         {
@@ -55,7 +48,10 @@ namespace EventSourcing.Domain.Accounts.Models
                 throw new ArgumentOutOfRangeException(nameof(amount));
 
             var transactionId = TransactionId.NewId();
+            var previousBalance = Balance;
+            
             RaiseEvent(new MoneyDeposited(transactionId, amount, DateTime.UtcNow));
+            RaiseEvent(new AccountBalanceChanged(Id, previousBalance, Balance));
 
             return transactionId;
         }
@@ -66,45 +62,66 @@ namespace EventSourcing.Domain.Accounts.Models
                 throw new ArgumentOutOfRangeException(nameof(amount));
 
             var transactionId = TransactionId.NewId();
+            var previousBalance = Balance;
+
             RaiseEvent(new MoneyWithdrawn(transactionId, amount, DateTime.UtcNow));
+            RaiseEvent(new AccountBalanceChanged(Id, previousBalance, Balance));
 
             return transactionId;
         }
 
-        private void Apply(AccountCreated @event)
+        public NoteId AddTransactionNote(TransactionId transactionId, string text)
+        {
+            var noteId = NoteId.NewId();
+            RaiseEvent(new TransactionNoteCreated(transactionId, noteId, text, DateTime.UtcNow));
+
+            return noteId;
+        }
+
+        private void Apply(PersonalAccountCreated @event)
         {
             Id = @event.AccountId;
-            Name = @event.Name;
+            Name = @event.AccountName;
+            AccountHolderId = @event.AccountHolderId;
         }
 
-        private void Apply(AccountHoldershipAssignedToCompany @event)
+        private void Apply(BusinessAccountCreated @event)
         {
-            AccountHolderId = @event.CompanyId;
-        }
-
-        private void Apply(AccountHoldershipAssignedToPerson @event)
-        {
-            AccountHolderId = @event.PersonId;
+            Id = @event.AccountId;
+            Name = @event.AccountName;
+            AccountHolderId = @event.AccountHolderId;
         }
 
         private void Apply(MoneyDeposited @event)
         {
+            _transactionHistory.Add(new Transaction(@event.TransactionId, @event.Amount, @event.Timestamp));
+
             Balance += @event.Amount;
         }
 
         private void Apply(MoneyWithdrawn @event)
         {
+            _transactionHistory.Add(new Transaction(@event.TransactionId, -@event.Amount, @event.Timestamp));
+
             Balance -= @event.Amount;
         }
 
         private void Apply(TransactionNoteCreated @event)
         {
-            throw new NotImplementedException();
+            var transaction = _transactionHistory
+                .First(t => t.Id.Equals(@event.TransactionId));
+
+            transaction.AddNote(new Note(@event.NoteId, @event.Text, @event.Created,
+                EventQueue, DomainEventQueue, EventRouter));
         }
 
-        private void Apply(TransactionNoteEdited @event)
+        private void Apply(TransactionNoteDeleted @event)
         {
-            throw new NotImplementedException();
+            var result = _transactionHistory
+                .SelectMany(t => t.Notes, (t, n) => new { Transaction = t, NoteId = n.Id })
+                .First(o => o.NoteId.Equals(@event.NoteId));
+
+            result.Transaction.RemoveNote(result.NoteId);
         }
     }
 }

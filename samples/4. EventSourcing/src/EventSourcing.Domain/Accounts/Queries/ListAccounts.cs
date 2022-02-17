@@ -5,5 +5,6 @@ namespace EventSourcing.Domain.Accounts.Queries
 {
     public class ListAccounts : IQuery<IEnumerable<AccountInfo>>
     {
+        
     }
 }

@@ -90,18 +90,20 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Brickweave.Cqrs.AspNetCore"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Brickweave.Domain.AspNetCore", "src\Brickweave.Domain.AspNetCore\Brickweave.Domain.AspNetCore.csproj", "{D9BAF61C-7FDB-4E69-85CF-10EE870B2A36}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "4. EventSourcing", "4. EventSourcing", "{F2E27F95-4366-4CF8-816F-586093B389AF}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "4. EventSourcingDemo", "4. EventSourcingDemo", "{F2E27F95-4366-4CF8-816F-586093B389AF}"
 	ProjectSection(SolutionItems) = preProject
-		samples\4. EventSourcing\readme.md = samples\4. EventSourcing\readme.md
+		samples\4. EventSourcingDemo\readme.md = samples\4. EventSourcingDemo\readme.md
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EventSourcing.WebApp", "samples\4. EventSourcing\src\EventSourcing.WebApp\EventSourcing.WebApp.csproj", "{9780D4C9-4E74-4F05-A70D-939DECE951BC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EventSourcingDemo.WebApp", "samples\4. EventSourcingDemo\src\EventSourcingDemo.WebApp\EventSourcingDemo.WebApp.csproj", "{9780D4C9-4E74-4F05-A70D-939DECE951BC}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EventSourcing.Domain", "samples\4. EventSourcing\src\EventSourcing.Domain\EventSourcing.Domain.csproj", "{21B7A495-27D9-4A2A-B5CE-01D29DDFDE19}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EventSourcingDemo.Domain", "samples\4. EventSourcingDemo\src\EventSourcingDemo.Domain\EventSourcingDemo.Domain.csproj", "{21B7A495-27D9-4A2A-B5CE-01D29DDFDE19}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EventSourcing.SqlServer", "samples\4. EventSourcing\src\EventSourcing.SqlServer\EventSourcing.SqlServer.csproj", "{24313B3A-BF50-4D77-94AD-9244BB41899C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EventSourcingDemo.SqlServer", "samples\4. EventSourcingDemo\src\EventSourcingDemo.SqlServer\EventSourcingDemo.SqlServer.csproj", "{24313B3A-BF50-4D77-94AD-9244BB41899C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventSourcing.Domain.Tests", "samples\4. EventSourcing\tests\EventSourcing.Domain.Tests\EventSourcing.Domain.Tests.csproj", "{2EC4CC12-4AEF-4E7C-A17A-05F1C37D27AF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EventSourcingDemo.Domain.Tests", "samples\4. EventSourcingDemo\tests\EventSourcingDemo.Domain.Tests\EventSourcingDemo.Domain.Tests.csproj", "{2EC4CC12-4AEF-4E7C-A17A-05F1C37D27AF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventSourcingDemo.SqlServer.Tests", "samples\4. EventSourcingDemo\tests\EventSourcingDemo.SqlServer.Tests\EventSourcingDemo.SqlServer.Tests.csproj", "{D8A70FDB-3BD7-44D4-B8F7-6F5F096EAE49}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -245,6 +247,10 @@ Global
 		{2EC4CC12-4AEF-4E7C-A17A-05F1C37D27AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2EC4CC12-4AEF-4E7C-A17A-05F1C37D27AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2EC4CC12-4AEF-4E7C-A17A-05F1C37D27AF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D8A70FDB-3BD7-44D4-B8F7-6F5F096EAE49}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D8A70FDB-3BD7-44D4-B8F7-6F5F096EAE49}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D8A70FDB-3BD7-44D4-B8F7-6F5F096EAE49}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D8A70FDB-3BD7-44D4-B8F7-6F5F096EAE49}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -288,6 +294,7 @@ Global
 		{21B7A495-27D9-4A2A-B5CE-01D29DDFDE19} = {F2E27F95-4366-4CF8-816F-586093B389AF}
 		{24313B3A-BF50-4D77-94AD-9244BB41899C} = {F2E27F95-4366-4CF8-816F-586093B389AF}
 		{2EC4CC12-4AEF-4E7C-A17A-05F1C37D27AF} = {F2E27F95-4366-4CF8-816F-586093B389AF}
+		{D8A70FDB-3BD7-44D4-B8F7-6F5F096EAE49} = {F2E27F95-4366-4CF8-816F-586093B389AF}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4E8CFE0E-1064-4953-B2D7-545AE105B2D9}

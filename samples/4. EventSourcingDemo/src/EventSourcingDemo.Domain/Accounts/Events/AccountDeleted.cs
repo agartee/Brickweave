@@ -1,16 +1,8 @@
-﻿using Brickweave.Domain;
-using Brickweave.EventStore;
-using EventSourcingDemo.Domain.Accounts.Models;
+﻿using Brickweave.EventStore;
 
 namespace EventSourcingDemo.Domain.Accounts.Events
 {
-    public class AccountDeleted : IEvent, IDomainEvent
+    public class AccountDeleted : IEvent
     {
-        public AccountDeleted(AccountId accountId)
-        {
-            AccountId = accountId ?? throw new ArgumentNullException(nameof(accountId));
-        }
-
-        public AccountId AccountId { get; }
     }
 }

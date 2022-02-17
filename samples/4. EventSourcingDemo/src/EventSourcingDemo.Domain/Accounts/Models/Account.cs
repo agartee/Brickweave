@@ -80,6 +80,11 @@ namespace EventSourcingDemo.Domain.Accounts.Models
             return noteId;
         }
 
+        public void Delete()
+        {
+            RaiseEvent(new AccountDeleted());
+        }
+
         private void Apply(PersonalAccountCreated @event)
         {
             Id = @event.AccountId;

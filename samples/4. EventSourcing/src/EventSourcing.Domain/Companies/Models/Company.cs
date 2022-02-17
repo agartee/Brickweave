@@ -2,7 +2,7 @@
 
 namespace EventSourcing.Domain.Companies.Models
 {
-    public class Company : LegalEntity<CompanyId>
+    public class Company : LegalEntity
     {
         public Company(CompanyId id, Name name) : base(id, name)
         {

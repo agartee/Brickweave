@@ -1,4 +1,5 @@
 ﻿using Brickweave.Cqrs.Services;
+using EventSourcing.Domain.Accounts.Queries;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EventSourcing.WebApp.Controllers
@@ -12,14 +13,14 @@ namespace EventSourcing.WebApp.Controllers
             _dispatcher = dispatcher;
         }
 
-        [HttpGet, Route("/accounts/")]
-        public async Task<IActionResult> ListAsync()
-        {
-            var results = await _dispatcher.DispatchQueryAsync(new ListAccounts());
+        //[HttpGet, Route("/accounts/")]
+        //public async Task<IActionResult> ListAsync()
+        //{
+        //    var results = await _dispatcher.DispatchQueryAsync(new ListAccounts());
 
-            return View(results
-                .Select(p => p.ToViewModel())
-                .ToList());
-        }
+        //    return View(results
+        //        .Select(p => p.ToViewModel())
+        //        .ToList());
+        //}
     }
 }

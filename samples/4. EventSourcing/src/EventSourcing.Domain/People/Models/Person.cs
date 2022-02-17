@@ -2,7 +2,7 @@
 
 namespace EventSourcing.Domain.People.Models
 {
-    public class Person : LegalEntity<PersonId>
+    public class Person : LegalEntity
     {
         public Person(PersonId id, Name name) : base(id, name)
         {

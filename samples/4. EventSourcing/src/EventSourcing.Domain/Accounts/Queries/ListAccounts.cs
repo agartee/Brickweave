@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Brickweave.Cqrs;
+using EventSourcing.Domain.Accounts.Models;
 
 namespace EventSourcing.Domain.Accounts.Queries
 {
-    public class ListAccounts : IQuery<AccountInfo>
+    public class ListAccounts : IQuery<IEnumerable<AccountInfo>>
     {
     }
 }

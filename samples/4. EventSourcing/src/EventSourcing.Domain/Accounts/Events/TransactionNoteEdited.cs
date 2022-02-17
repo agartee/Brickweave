@@ -3,7 +3,7 @@ using EventSourcing.Domain.Accounts.Models;
 
 namespace EventSourcing.Domain.Accounts.Events
 {
-    public class TransactionNoteEdited : IEvent
+    public class TransactionNoteEdited : IChildEvent
     {
         public TransactionNoteEdited(NoteId noteId, string text, DateTime edited)
         {
@@ -15,5 +15,10 @@ namespace EventSourcing.Domain.Accounts.Events
         public NoteId NoteId { get; set; }
         public string Text { get; }
         public DateTime Edited { get; }
+
+        public object GetEntityId()
+        {
+            return NoteId;
+        }
     }
 }

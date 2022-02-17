@@ -70,9 +70,9 @@ namespace EventSourcing.Domain.Accounts.Models
             return transactionId;
         }
 
-        public NoteId AddTransactionNote(TransactionId transactionId, string text)
+        public TransactionNoteId AddTransactionNote(TransactionId transactionId, string text)
         {
-            var noteId = NoteId.NewId();
+            var noteId = TransactionNoteId.NewId();
             RaiseEvent(new TransactionNoteCreated(transactionId, noteId, text, DateTime.UtcNow));
 
             return noteId;
@@ -111,7 +111,7 @@ namespace EventSourcing.Domain.Accounts.Models
             var transaction = _transactionHistory
                 .First(t => t.Id.Equals(@event.TransactionId));
 
-            transaction.AddNote(new Note(@event.NoteId, @event.Text, @event.Created,
+            transaction.AddNote(new TransactionNote(@event.NoteId, @event.Text, @event.Created,
                 EventQueue, DomainEventQueue, EventRouter));
         }
 

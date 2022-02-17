@@ -5,7 +5,7 @@ namespace EventSourcing.Domain.Accounts.Events
 {
     public class TransactionNoteCreated : IEvent
     {
-        public TransactionNoteCreated(TransactionId transactionId, NoteId noteId, string text, DateTime created)
+        public TransactionNoteCreated(TransactionId transactionId, TransactionNoteId noteId, string text, DateTime created)
         {
             TransactionId = transactionId ?? throw new ArgumentNullException(nameof(transactionId));
             NoteId = noteId ?? throw new ArgumentNullException(nameof(noteId));
@@ -14,7 +14,7 @@ namespace EventSourcing.Domain.Accounts.Events
         }
 
         public TransactionId TransactionId { get; }
-        public NoteId NoteId { get; set; }
+        public TransactionNoteId NoteId { get; set; }
         public string Text { get; }
         public DateTime Created { get; }
     }

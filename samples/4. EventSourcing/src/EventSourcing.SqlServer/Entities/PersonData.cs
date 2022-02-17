@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace EventSourcing.SqlServer.Entities
 {
     [Table(TABLE_NAME)]
-    public class PersonEntity
+    public class PersonData
     {
         public const string TABLE_NAME = "Place";
 

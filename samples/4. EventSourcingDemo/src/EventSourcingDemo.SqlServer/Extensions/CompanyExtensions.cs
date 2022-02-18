@@ -12,5 +12,12 @@ namespace EventSourcingDemo.SqlServer.Extensions
                 new CompanyId(data.Id),
                 new Name(data.Name));
         }
+
+        public static CompanyInfo ToCompanyInfo(this CompanyData data)
+        {
+            return new CompanyInfo(
+                new CompanyId(data.Id),
+                new Name(data.Name));
+        }
     }
 }

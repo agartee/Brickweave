@@ -42,6 +42,7 @@ namespace EventSourcingDemo.WebApp
             {
                 options.InputFormatters.Add(new PlainTextInputFormatter());
                 options.ModelBinderProviders.Insert(0, new PersonModelBinderProvider());
+                options.ModelBinderProviders.Insert(0, new CompanyModelBinderProvider());
                 options.ModelBinderProviders.Insert(0, new IdModelBinderProvider());
             })
             .AddNewtonsoftJson(options =>

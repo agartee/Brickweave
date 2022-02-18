@@ -33,12 +33,18 @@ namespace EventSourcingDemo.SqlServer
                 .WithMany(p => p.Accounts)
                 .HasForeignKey(a => a.AccountHolderId)
                 .OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<PersonalAccountData>()
+                .Property(a => a.Balance)
+                .HasColumnType("decimal(12, 2)");
 
             modelBuilder.Entity<BusinessAccountData>()
                 .HasOne(a => a.AcountHolder)
                 .WithMany(c => c.Accounts)
                 .HasForeignKey(a => a.AccountHolderId)
                 .OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<BusinessAccountData>()
+                .Property(a => a.Balance)
+                .HasColumnType("decimal(12, 2)");
         }
     }
 }

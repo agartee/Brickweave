@@ -68,5 +68,5 @@ $ dotnet run --project ./src/EventSourcingDemo.WebApp/EventSourcingDemo.WebApp.c
 From this samples (`\samples\4. EventSourcing`) folder, run this command, replacing the `$migrationName` with a real value:
 
 ```powershell
-dotnet ef migrations add $migrationName --startup-project ./src/EventSourcingDemo.WebApp/ --project ./src/EventSourcingDemo.SqlServer/ --context EventSourcingDbContext
+dotnet ef migrations add $migrationName --startup-project ./src/EventSourcingDemo.WebApp/ --project ./src/EventSourcingDemo.SqlServer/ --context EventSourcingDemoDbContext
 ```

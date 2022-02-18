@@ -57,7 +57,7 @@ namespace EventSourcingDemo.Domain.Tests.Accounts.Models
         }
 
         [Fact]
-        public void MakeDeposit_UpdatesBalanceAndAddsTransactionHistoryAndRaisesEvents()
+        public void MakeDeposit_UpdatesBalanceAndAddsTransactionHistoryAndRaisesEventsAndDomainEvents()
         {
             var account = new AccountBuilder()
                 .Build();
@@ -82,7 +82,7 @@ namespace EventSourcingDemo.Domain.Tests.Accounts.Models
         }
 
         [Fact]
-        public void MakeWithdrawal_UpdatesBalanceAndAddsTransactionHistoryAndRaisesEvents()
+        public void MakeWithdrawal_UpdatesBalanceAndAddsTransactionHistoryAndRaisesEventsAndDomainEvents()
         {
             var account = new AccountBuilder()
                 .WithDeposit(10)
@@ -169,6 +169,19 @@ namespace EventSourcingDemo.Domain.Tests.Accounts.Models
             var firstEvent = account.GetUncommittedEvents()
                 .First().As<TransactionNoteDeleted>();
             firstEvent.NoteId.Should().Be(note.Id);
+        }
+
+        [Fact]
+        public void Delete_FlagsInactiveAndRaisesEvents()
+        {
+            var account = new AccountBuilder()
+                .WithDeposit(10)
+                .Build();
+
+            account.Delete();
+
+            account.IsActive.Should().BeFalse();
+            account.GetUncommittedEvents().First().Should().BeOfType<AccountDeleted>();
         }
     }
 }

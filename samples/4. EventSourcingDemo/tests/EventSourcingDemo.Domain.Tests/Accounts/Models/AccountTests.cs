@@ -172,16 +172,16 @@ namespace EventSourcingDemo.Domain.Tests.Accounts.Models
         }
 
         [Fact]
-        public void Delete_FlagsInactiveAndRaisesEvents()
+        public void Close_FlagsInactiveAndRaisesEvents()
         {
             var account = new AccountBuilder()
                 .WithDeposit(10)
                 .Build();
 
-            account.Delete();
+            account.Close();
 
             account.IsActive.Should().BeFalse();
-            account.GetUncommittedEvents().First().Should().BeOfType<AccountDeleted>();
+            account.GetUncommittedEvents().First().Should().BeOfType<AccountClosed>();
         }
     }
 }

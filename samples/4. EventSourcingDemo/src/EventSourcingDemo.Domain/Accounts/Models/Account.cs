@@ -19,7 +19,7 @@ namespace EventSourcingDemo.Domain.Accounts.Models
             Register<MoneyWithdrawn>(Apply);
             Register<TransactionNoteCreated>(Apply);
             Register<TransactionNoteDeleted>(Apply);
-            Register<AccountDeleted>(Apply);
+            Register<AccountClosed>(Apply);
         }
 
         public Account(AccountId id, Name name, CompanyId accountHolderId) : this()
@@ -80,9 +80,9 @@ namespace EventSourcingDemo.Domain.Accounts.Models
             return noteId;
         }
 
-        public void Delete()
+        public void Close()
         {
-            RaiseEvent(new AccountDeleted());
+            RaiseEvent(new AccountClosed());
         }
 
         private void Apply(PersonalAccountCreated @event)
@@ -131,7 +131,7 @@ namespace EventSourcingDemo.Domain.Accounts.Models
             result.Transaction.RemoveNote(result.NoteId);
         }
 
-        private void Apply(AccountDeleted @event)
+        private void Apply(AccountClosed @event)
         {
             IsActive = false;
         }

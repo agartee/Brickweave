@@ -2,7 +2,7 @@
 
 namespace EventSourcingDemo.Domain.Accounts.Events
 {
-    public class AccountDeleted : IEvent
+    public class AccountClosed : IEvent
     {
     }
 }

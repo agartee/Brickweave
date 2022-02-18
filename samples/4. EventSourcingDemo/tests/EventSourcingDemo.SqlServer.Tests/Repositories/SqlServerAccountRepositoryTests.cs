@@ -96,6 +96,34 @@ namespace EventSourcingDemo.SqlServer.Tests.Repositories
         }
 
         [Fact]
+        public async Task SaveAccountAsync_WhenExistingAccountIsClosed_SavesEventsDeletesProjections()
+        {
+            await _fixture.ClearDataAsync();
+
+            var accountId = AccountId.NewId();
+            var accountName = new Name("Account 1");
+            var accountHolderId = PersonId.NewId();
+
+            await new PersonSeeder(_fixture.CreateDbContext())
+                .SeedAsync(new PersonBuilder()
+                    .WithId(accountHolderId)
+                    .Build());
+
+            await new AccountSeeder(_fixture.CreateDbContext())
+                .SeedAsync(new Account(accountId, accountName, accountHolderId));
+
+            var account = await _repository.DemandAccountAsync(accountId);
+            account.Close();
+
+            await _repository.SaveAccountAsync(account);
+
+            var data = await _fixture.CreateDbContext().PersonalAccounts
+                .SingleOrDefaultAsync(r => r.Id == accountId.Value);
+
+            data.Should().BeNull();
+        }
+
+        [Fact]
         public async Task DemandAccountAsync_WhenAccountExists_ReturnsAccount()
         {
             await _fixture.ClearDataAsync();

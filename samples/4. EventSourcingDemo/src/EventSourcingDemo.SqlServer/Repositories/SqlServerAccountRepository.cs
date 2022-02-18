@@ -5,7 +5,6 @@ using Brickweave.Serialization;
 using EventSourcingDemo.Domain.Accounts.Models;
 using EventSourcingDemo.Domain.Accounts.Services;
 using EventSourcingDemo.Domain.Common.Exceptions;
-using EventSourcingDemo.Domain.People.Models;
 using EventSourcingDemo.SqlServer.Entities;
 using EventSourcingDemo.SqlServer.Extensions;
 using Microsoft.EntityFrameworkCore;

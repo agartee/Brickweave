@@ -8,6 +8,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="6.0.2" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.2">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+    
+  <ItemGroup>
     <Compile Remove="Models\**" />
     <Content Remove="Models\**" />
     <EmbeddedResource Remove="Models\**" />
@@ -16,8 +24,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\src\Brickweave.Cqrs.AspNetCore\Brickweave.Cqrs.AspNetCore.csproj" />
-    <ProjectReference Include="..\..\..\..\src\Brickweave.Cqrs.Cli\Brickweave.Cqrs.Cli.csproj" />
     <ProjectReference Include="..\..\..\..\src\Brickweave.Domain.AspNetCore\Brickweave.Domain.AspNetCore.csproj" />
+    <ProjectReference Include="..\..\..\..\src\Brickweave.Messaging.ServiceBus\Brickweave.Messaging.ServiceBus.csproj" />
     <ProjectReference Include="..\EventSourcingDemo.SqlServer\EventSourcingDemo.SqlServer.csproj" />
   </ItemGroup>
 

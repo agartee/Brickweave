@@ -12,13 +12,18 @@ $ dotnet tool install --global dotnet-ef
 
 ### User Secrets
 
-Add the following user secrets to the `EventSourcing.WebApp` project:
+Add the following user secrets to the `EventSourcingDemo.WebApp` project:
 
 ```json
 "connectionStrings": {
     "demo": "server=[your server];database=[your database];user id=[your user];password=[your password];MultipleActiveResultSets=True;",
+    "servicebus": "Endpoint=sb://[your service bus].servicebus.windows.net/;SharedAccessKeyName=[your key name];SharedAccessKey=[your access key]"
   },
     
+  "messaging": {
+    "queue": "[your message bus queue]"
+  },
+
   "logging": {
     "logLevel": {
       "default": "debug",
@@ -42,7 +47,7 @@ $ .\scripts\migrate.ps1
 
 ### Visual Studio 2022 Debug Launch Profile
 
-If intending to run the app from within Visual Studio, for the `EventSourcing.WebApp` project, navigate to: **Properties** -> **Debug** -> **General** and click **Open debug launch profiles UI**. Within that dialog, ensure the **App URL** setting is set to the following:
+If intending to run the app from within Visual Studio, for the `EventSourcingDemo.WebApp` project, navigate to: **Properties** -> **Debug** -> **General** and click **Open debug launch profiles UI**. Within that dialog, ensure the **App URL** setting is set to the following:
 
 ```
 https://localhost:5001;http://localhost:5000
@@ -53,15 +58,7 @@ https://localhost:5001;http://localhost:5000
 To run the app directly from the console, run the following command from this sample app's folder:
 
 ```powershell
-$ dotnet run --project ./src/EventSourcing.WebApp/EventSourcing.WebApp.csproj --urls="https://localhost:5001;http://localhost:5000"
-```
-
-### CLI Client Configuration
-
-The first time the included CLI client is run (`./scripts/cli-client-nosecurity.ps1`), it will prompt for an endpoint. Here, one of the URL address configurations for the `EventSourcing.WebApp` web application must be used, followed by `/cli/run` (the route configured in the `CliController`).
-
-```powershell
-apiEndpoint: https://localhost:5001/cli/run
+$ dotnet run --project ./src/EventSourcingDemo.WebApp/EventSourcingDemo.WebApp.csproj --urls="https://localhost:5001;http://localhost:5000"
 ```
 
 ## Maintenance
@@ -71,13 +68,5 @@ apiEndpoint: https://localhost:5001/cli/run
 From this samples (`\samples\4. EventSourcing`) folder, run this command, replacing the `$migrationName` with a real value:
 
 ```powershell
-dotnet ef migrations add $migrationName --startup-project ./src/EventSourcing.WebApp/ --project ./src/EventSourcing.SqlServer/ --context EventSourcingDbContext
-```
-
-### Executing Entity Framework Database Migrations
-
-To make executing migrations easier, a helper PowerShell script can be found in the `./script` folder. Migrations may also be run using the following commands.
-
-```powershell
-dotnet ef database update --startup-project ./src/EventSourcing.WebApp/ --project ./src/EventSourcing.SqlServer/ --context EventSourcingDbContext
+dotnet ef migrations add $migrationName --startup-project ./src/EventSourcingDemo.WebApp/ --project ./src/EventSourcingDemo.SqlServer/ --context EventSourcingDbContext
 ```

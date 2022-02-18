@@ -70,11 +70,3 @@ From this samples (`\samples\2. BasicMessaging`) folder, run this command, repla
 ```powershell
 dotnet ef migrations add $migrationName --startup-project ./src/BasicMessaging.WebApp/ --project ./src/BasicMessaging.SqlServer/
 ```
-
-### Executing Entity Framework Database Migrations
-
-To make executing migrations easier, a helper PowerShell script can be found in the `./script` folder. Migrations may also be run using the following command.
-
-```powershell
-dotnet ef database update --startup-project ./src/BasicMessaging.WebApp/ --project ./src/BasicMessaging.SqlServer/
-```

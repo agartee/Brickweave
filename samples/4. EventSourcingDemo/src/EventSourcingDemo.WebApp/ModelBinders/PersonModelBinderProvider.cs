@@ -8,7 +8,8 @@ namespace EventSourcingDemo.WebApp.ModelBinders
     {
         private readonly IDictionary<Type, Func<IModelBinder>> _binders = new Dictionary<Type, Func<IModelBinder>>
         {
-            [typeof(CreatePerson)] = () => new CreatePersonModelBinder()
+            [typeof(CreatePerson)] = () => new CreatePersonModelBinder(),
+            [typeof(UpdatePerson)] = () => new UpdatePersonModelBinder()
         };
 
         public IModelBinder GetBinder(ModelBinderProviderContext context)

@@ -1,6 +1,6 @@
-﻿using BasicCqrs.Domain.People.Models;
+﻿using System;
+using BasicCqrs.Domain.People.Models;
 using Brickweave.Cqrs;
-using LiteGuard;
 
 namespace BasicCqrs.Domain.People.Commands
 {
@@ -12,9 +12,7 @@ namespace BasicCqrs.Domain.People.Commands
         /// <param name="id">Existing person's unique identifier.</param>
         public DeletePerson(PersonId id)
         {
-            Guard.AgainstNullArgument(nameof(id), id);
-
-            Id = id;
+            Id = id ?? throw new ArgumentNullException(nameof(id));
         }
 
         public PersonId Id { get; }

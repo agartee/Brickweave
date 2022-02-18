@@ -7,11 +7,11 @@ namespace BasicCqrs.Domain.People.Commands
 {
     public class CreatePersonHandler : ICommandHandler<CreatePerson, Person>
     {
-        private readonly IPersonRepository personRepository;
+        private readonly IPersonRepository _personRepository;
 
         public CreatePersonHandler(IPersonRepository personRepository)
         {
-            this.personRepository = personRepository;
+            _personRepository = personRepository;
         }
 
         public async Task<Person> HandleAsync(CreatePerson command)
@@ -21,7 +21,7 @@ namespace BasicCqrs.Domain.People.Commands
             person.FirstName = command.FirstName;
             person.LastName = command.LastName;
 
-            await personRepository.SavePersonAsync(person);
+            await _personRepository.SavePersonAsync(person);
 
             return person;
         }

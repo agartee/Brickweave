@@ -12,5 +12,12 @@ namespace EventSourcingDemo.SqlServer.Extensions
                 new PersonId(data.Id),
                 new Name(data.Name));
         }
+
+        public static PersonInfo ToPersonInfo(this PersonData data)
+        {
+            return new PersonInfo(
+                new PersonId(data.Id),
+                new Name(data.Name));
+        }
     }
 }

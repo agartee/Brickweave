@@ -6,8 +6,6 @@ using Brickweave.Domain.Serialization;
 using Brickweave.EventStore;
 using Brickweave.EventStore.SqlServer.DependencyInjection;
 using Brickweave.Messaging.ServiceBus.DependencyInjection;
-using Brickweave.Messaging.SqlServer.Entities;
-using Brickweave.Messaging.SqlServer.Services;
 using Brickweave.Serialization.DependencyInjection;
 using EventSourcingDemo.Domain.Accounts.Models;
 using EventSourcingDemo.Domain.Accounts.Services;
@@ -16,6 +14,7 @@ using EventSourcingDemo.Domain.Companies.Services;
 using EventSourcingDemo.Domain.People.Services;
 using EventSourcingDemo.SqlServer;
 using EventSourcingDemo.SqlServer.Repositories;
+using EventSourcingDemo.WebApp.ModelBinders;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
@@ -41,15 +40,8 @@ namespace EventSourcingDemo.WebApp
         {
             services.AddControllersWithViews(options =>
             {
-                // Add the PlainTextInputFormatter to use with the CLI-enabled
-                // endpoint, as the example PowerShell client
-                // (/scripts/cli-client-nosecurity.ps1) sends web requests as
-                // "text/plain".
                 options.InputFormatters.Add(new PlainTextInputFormatter());
-
-                // Add custom model binding so that command/query objects can
-                // be deserialized by the framework for use directly in the
-                // controllers.
+                options.ModelBinderProviders.Insert(0, new PersonModelBinderProvider());
                 options.ModelBinderProviders.Insert(0, new IdModelBinderProvider());
             })
             .AddNewtonsoftJson(options =>
@@ -65,8 +57,6 @@ namespace EventSourcingDemo.WebApp
                     }
                 };
                 settings.Formatting = Formatting.Indented;
-
-                // the following converters are used to flatten data in CLI output
                 settings.Converters.Add(new IdConverter());
             });
         }

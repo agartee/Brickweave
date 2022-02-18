@@ -36,13 +36,13 @@ namespace EventSourcingDemo.SqlServer.Repositories
             await _dbContext.SaveChangesAsync();
         }
 
-        public async Task<IEnumerable<Person>> ListPeopleAsync()
+        public async Task<IEnumerable<PersonInfo>> ListPeopleAsync()
         {
             var data = await _dbContext.People
                 .ToListAsync();
 
             return data
-                .Select(p => p.ToPerson())
+                .Select(p => p.ToPersonInfo())
                 .ToList();
         }
 

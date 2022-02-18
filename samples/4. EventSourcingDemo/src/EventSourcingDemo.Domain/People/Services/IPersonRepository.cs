@@ -6,7 +6,7 @@ namespace EventSourcingDemo.Domain.People.Services
     {
         Task SavePersonAsync(Person person);
         Task<Person> DemandPersonAsync(PersonId id);
-        Task<IEnumerable<Person>> ListPeopleAsync();
+        Task<IEnumerable<PersonInfo>> ListPeopleAsync();
         Task DeletePersonAsync(PersonId id);
     }
 }

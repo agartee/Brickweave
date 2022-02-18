@@ -1,4 +1,5 @@
-﻿using AdvancedCqrs.Domain.Things.Models;
+﻿using System;
+using AdvancedCqrs.Domain.Things.Models;
 using Brickweave.Cqrs;
 
 namespace AdvancedCqrs.Domain.Things.Commands
@@ -7,8 +8,8 @@ namespace AdvancedCqrs.Domain.Things.Commands
     {
         public UpdateThing(ThingId id, string name)
         {
-            Id = id;
-            Name = name;
+            Id = id ?? throw new ArgumentNullException(nameof(id));
+            Name = name ?? throw new ArgumentNullException(nameof(name));
         }
 
         public ThingId Id { get; }

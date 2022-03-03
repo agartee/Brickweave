@@ -23,6 +23,14 @@ namespace EventSourcingDemo.SqlServer.Repositories
             return data.ToPerson();
         }
 
+        public async Task<PersonInfo> DemandPersonInfoAsync(PersonId id)
+        {
+            var data = await _dbContext.People
+                .SingleAsync(p => p.Id == id.Value);
+
+            return data.ToPersonInfo();
+        }
+
         public async Task SavePersonAsync(Person person)
         {
             var data = await _dbContext.People

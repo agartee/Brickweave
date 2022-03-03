@@ -27,7 +27,7 @@ namespace EventSourcingDemo.Domain.Accounts.Models
             RaiseEvent(new BusinessAccountCreated(id, name, accountHolderId));
         }
 
-        public Account(AccountId id, Name name, PersonId accountHolderId) : this()
+        public Account(AccountId id, Name name, People.Models.PersonId accountHolderId) : this()
         {
             RaiseEvent(new PersonalAccountCreated(id, name, accountHolderId));
         }
@@ -38,7 +38,7 @@ namespace EventSourcingDemo.Domain.Accounts.Models
         }
 
         public AccountId Id { get; private set; }
-        public LegalEntityId AccountHolderId { get; private set; }
+        public Common.Models.LegalEntityId AccountHolderId { get; private set; }
         public Name Name { get; private set; }
         public decimal Balance { get; private set; }
         public IEnumerable<Transaction> TransactionHistory => _transactionHistory.ToImmutableList();

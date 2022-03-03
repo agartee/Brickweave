@@ -9,7 +9,7 @@ namespace EventSourcingDemo.Domain.Tests.TestHelpers.Builders
     {
         private AccountId _id = AccountId.NewId();
         private Name _name;
-        private LegalEntityId _accountHolderId;
+        private Common.Models.LegalEntityId _accountHolderId;
         private readonly List<decimal> _transactionAmounts = new List<decimal>();
 
         public AccountBuilder WithId(AccountId id)
@@ -24,7 +24,7 @@ namespace EventSourcingDemo.Domain.Tests.TestHelpers.Builders
             return this;
         }
 
-        public AccountBuilder WithAccountHolderId(LegalEntityId accountHolderId)
+        public AccountBuilder WithAccountHolderId(Common.Models.LegalEntityId accountHolderId)
         {
             _accountHolderId = accountHolderId;
             return this;
@@ -51,9 +51,9 @@ namespace EventSourcingDemo.Domain.Tests.TestHelpers.Builders
         public Account Build()
         {
             var account = new Account(
-                _id, 
+                _id,
                 _name ?? new Name(_id.ToString()), 
-                (dynamic) _accountHolderId ?? PersonId.NewId());
+                (dynamic)_accountHolderId ?? People.Models.PersonId.NewId());
             
             foreach(var amount in _transactionAmounts)
             {

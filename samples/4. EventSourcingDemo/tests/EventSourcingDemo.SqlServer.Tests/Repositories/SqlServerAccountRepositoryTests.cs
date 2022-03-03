@@ -50,7 +50,7 @@ namespace EventSourcingDemo.SqlServer.Tests.Repositories
 
             var accountId = AccountId.NewId();
             var accountName = new Name("Account 1");
-            var accountHolderId = PersonId.NewId();
+            var accountHolderId = Domain.People.Models.PersonId.NewId();
 
             await new PersonSeeder(_fixture.CreateDbContext())
                 .SeedAsync(new PersonBuilder()
@@ -102,7 +102,7 @@ namespace EventSourcingDemo.SqlServer.Tests.Repositories
 
             var accountId = AccountId.NewId();
             var accountName = new Name("Account 1");
-            var accountHolderId = PersonId.NewId();
+            var accountHolderId = Domain.People.Models.PersonId.NewId();
 
             await new PersonSeeder(_fixture.CreateDbContext())
                 .SeedAsync(new PersonBuilder()
@@ -130,7 +130,7 @@ namespace EventSourcingDemo.SqlServer.Tests.Repositories
 
             var accountId = AccountId.NewId();
             var accountName = new Name("Account 1");
-            var accountHolderId = PersonId.NewId();
+            var accountHolderId = Domain.People.Models.PersonId.NewId();
 
             await new PersonSeeder(_fixture.CreateDbContext())
                 .SeedAsync(new PersonBuilder()

@@ -23,6 +23,14 @@ namespace EventSourcingDemo.SqlServer.Repositories
             return data.ToCompany();
         }
 
+        public async Task<CompanyInfo> DemandCompanyInfoAsync(CompanyId id)
+        {
+            var data = await _dbContext.Companies
+                .SingleAsync(p => p.Id == id.Value);
+
+            return data.ToCompanyInfo();
+        }
+
         public async Task SaveCompanyAsync(Company company)
         {
             var data = await _dbContext.Companies

@@ -6,6 +6,7 @@ namespace EventSourcingDemo.Domain.Companies.Services
     {
         Task SaveCompanyAsync(Company company);
         Task<Company> DemandCompanyAsync(CompanyId id);
+        Task<CompanyInfo> DemandCompanyInfoAsync(CompanyId id);
         Task<IEnumerable<CompanyInfo>> ListCompaniesAsync();
         Task DeleteCompanyAsync(CompanyId id);
     }

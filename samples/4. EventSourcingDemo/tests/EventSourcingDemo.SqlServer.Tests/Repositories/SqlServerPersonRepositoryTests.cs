@@ -70,7 +70,7 @@ namespace EventSourcingDemo.SqlServer.Tests.Repositories
         {
             await _fixture.ClearDataAsync();
 
-            var func = () => _repository.DemandPersonAsync(PersonId.NewId());
+            var func = () => _repository.DemandPersonAsync(Domain.People.Models.PersonId.NewId());
 
             await func.Should().ThrowAsync<InvalidOperationException>();
         }
@@ -101,7 +101,7 @@ namespace EventSourcingDemo.SqlServer.Tests.Repositories
         {
             await _fixture.ClearDataAsync();
 
-            var func = () => _repository.DeletePersonAsync(PersonId.NewId());
+            var func = () => _repository.DeletePersonAsync(Domain.People.Models.PersonId.NewId());
 
             await func.Should().NotThrowAsync();
         }

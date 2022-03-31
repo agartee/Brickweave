@@ -1,0 +1,18 @@
+﻿@model EventSourcingDemo.Domain.Companies.Models.CompanyInfo
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h2>Create Company</h2>
+
+<form asp-action="Create">
+    <div>
+        <label asp-for="Name"></label>
+        <input asp-for="Name" required />
+    </div>
+    
+    <button type="submit">Done</button>
+</form>
+
+<a asp-controller="Company" asp-action="List">Back To List</a>

@@ -1,0 +1,36 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+      <UserSecretsId>Brickweave-EventSourcingDemo</UserSecretsId>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <NoWarn>1701;1702;8603;8604</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="6.0.2" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.2">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+    
+  <ItemGroup>
+    <Compile Remove="Models\**" />
+    <Content Remove="Models\**" />
+    <EmbeddedResource Remove="Models\**" />
+    <None Remove="Models\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\src\Brickweave.Cqrs.AspNetCore\Brickweave.Cqrs.AspNetCore.csproj" />
+    <ProjectReference Include="..\..\..\..\src\Brickweave.Domain.AspNetCore\Brickweave.Domain.AspNetCore.csproj" />
+    <ProjectReference Include="..\..\..\..\src\Brickweave.Messaging.ServiceBus\Brickweave.Messaging.ServiceBus.csproj" />
+    <ProjectReference Include="..\EventSourcingDemo.SqlServer\EventSourcingDemo.SqlServer.csproj" />
+  </ItemGroup>
+
+</Project>

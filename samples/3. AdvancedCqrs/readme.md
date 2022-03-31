@@ -58,7 +58,7 @@ $ dotnet run --project ./src/AdvancedCqrs.WebApp/AdvancedCqrs.WebApp.csproj --ur
 
 ### CLI Client Configuration
 
-The first time the included CLI client is run (`./scripts/cli-client-nosecurity.ps1`), it will prompt for an endpoint. Here, one of the URL address configurations for the `BasicCqrs.WebApp` web application must be used, followed by `/cli/run` (the route configured in the `CliController`).
+The first time the included CLI client is run (`./scripts/cli-client-nosecurity.ps1`), it will prompt for an endpoint. Here, one of the URL address configurations for the `AdvancedCqrs.WebApp` web application must be used, followed by `/cli/run` (the route configured in the `CliController`).
 
 ```powershell
 apiEndpoint: https://localhost:5001/cli/run
@@ -72,12 +72,4 @@ From this samples (`\samples\3. AdvancedCqrs`) folder, run this command, replaci
 
 ```powershell
 dotnet ef migrations add $migrationName --startup-project ./src/AdvancedCqrs.WebApp/ --project ./src/AdvancedCqrs.SqlServer/ --context AdvancedCqrsDbContext
-```
-
-### Executing Entity Framework Database Migrations
-
-To make executing migrations easier, a helper PowerShell script can be found in the `./script` folder. Migrations may also be run using the following commands.
-
-```powershell
-dotnet ef database update --startup-project ./src/AdvancedCqrs.WebApp/ --project ./src/AdvancedCqrs.SqlServer/ --context AdvancedCqrsDbContext
 ```

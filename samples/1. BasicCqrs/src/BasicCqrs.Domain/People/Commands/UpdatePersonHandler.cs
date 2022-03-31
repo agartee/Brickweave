@@ -7,21 +7,21 @@ namespace BasicCqrs.Domain.People.Commands
 {
     public class UpdatePersonHandler : ICommandHandler<UpdatePerson, Person>
     {
-        private readonly IPersonRepository personRepository;
+        private readonly IPersonRepository _personRepository;
 
         public UpdatePersonHandler(IPersonRepository personRepository)
         {
-            this.personRepository = personRepository;
+            _personRepository = personRepository;
         }
 
         public async Task<Person> HandleAsync(UpdatePerson command)
         {
-            var person = await personRepository.GetPersonAsync(command.Id);
+            var person = await _personRepository.GetPersonAsync(command.Id);
 
             person.FirstName = command.FirstName;
             person.LastName = command.LastName;
 
-            await personRepository.SavePersonAsync(person);
+            await _personRepository.SavePersonAsync(person);
 
             return person;
         }

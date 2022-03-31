@@ -1,4 +1,5 @@
-﻿using AdvancedCqrs.Domain.Things.Models;
+﻿using System;
+using AdvancedCqrs.Domain.Things.Models;
 using Brickweave.Cqrs;
 using Brickweave.Cqrs.Attributes;
 
@@ -9,7 +10,7 @@ namespace AdvancedCqrs.Domain.Things.Commands
     {
         public CreateThing(string name)
         {
-            Name = name;
+            Name = name ?? throw new ArgumentNullException(nameof(name));
         }
 
         public string Name { get; }

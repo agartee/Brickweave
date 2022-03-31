@@ -17,6 +17,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\src\Brickweave.Cqrs.AspNetCore\Brickweave.Cqrs.AspNetCore.csproj" />
+    <ProjectReference Include="..\..\..\..\src\Brickweave.Cqrs.Cli\Brickweave.Cqrs.Cli.csproj" />
     <ProjectReference Include="..\..\..\..\src\Brickweave.Domain.AspNetCore\Brickweave.Domain.AspNetCore.csproj" />
     <ProjectReference Include="..\BasicCqrs.Domain\BasicCqrs.Domain.csproj" />
   </ItemGroup>

@@ -25,10 +25,10 @@
         @foreach (var item in Model) {
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.FirstName)
+                    @item.FirstName
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.LastName)
+                    @item.LastName
                 </td>
                 <td>
                     @Html.ActionLink("Edit", "Edit", new { id=item.Id })

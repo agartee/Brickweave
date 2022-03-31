@@ -50,9 +50,18 @@ namespace EventSourcingDemo.SqlServer.Repositories
             account.ClearDomainEvents();
         }
 
-        public async Task<IEnumerable<AccountInfo>> ListAccountsAsync()
+        public async Task<IEnumerable<AccountInfo>> ListPersonalAccountsAsync()
         {
             var data = await _dbContext.PersonalAccounts
+                .Include(a => a.AccountHolder)
+                .ToListAsync();
+
+            return data.Select(a => a.ToAccountInfo());
+        }
+
+        public async Task<IEnumerable<AccountInfo>> ListBusinessAccountsAsync()
+        {
+            var data = await _dbContext.BusinessAccounts
                 .Include(a => a.AccountHolder)
                 .ToListAsync();
 

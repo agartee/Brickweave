@@ -10,7 +10,7 @@ namespace EventSourcingDemo.SqlServer.Extensions
     {
         public static bool IsPersonalAccount(this Account account)
         {
-            return account.AccountHolderId is Domain.People.Models.PersonId;
+            return account.AccountHolderId is PersonId;
         }
 
         public static bool IsBusinessAccount(this Account account)
@@ -36,7 +36,7 @@ namespace EventSourcingDemo.SqlServer.Extensions
                 new Name(data.Name), 
                 new CompanyInfo(
                     new CompanyId(data.AccountHolderId),
-                    new Name(data.AcountHolder.Name)),
+                    new Name(data.AccountHolder.Name)),
                 data.Balance);
         }
     }

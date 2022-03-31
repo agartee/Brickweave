@@ -15,7 +15,7 @@ namespace EventSourcingDemo.Domain.Accounts.Queries
 
         public async Task<IEnumerable<AccountInfo>> HandleAsync(ListAccounts query)
         {
-            var results = await _accountRepository.ListAccountsAsync();
+            var results = await _accountRepository.ListPersonalAccountsAsync();
 
             return results
                 .OrderBy(p => p.Name)

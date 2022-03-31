@@ -14,6 +14,6 @@ namespace EventSourcingDemo.SqlServer.Entities
         public Guid AccountHolderId { get; set; }
         public decimal Balance { get; set; }
 
-        public CompanyData AcountHolder { get; set; }
+        public CompanyData AccountHolder { get; set; }
     }
 }

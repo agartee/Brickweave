@@ -38,7 +38,7 @@ namespace EventSourcingDemo.SqlServer
                 .HasColumnType("decimal(12, 2)");
 
             modelBuilder.Entity<BusinessAccountData>()
-                .HasOne(a => a.AcountHolder)
+                .HasOne(a => a.AccountHolder)
                 .WithMany(c => c.Accounts)
                 .HasForeignKey(a => a.AccountHolderId)
                 .OnDelete(DeleteBehavior.Restrict);

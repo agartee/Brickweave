@@ -6,6 +6,6 @@ namespace EventSourcingDemo.Domain.Accounts.Services
     {
         Task SaveAccountAsync(Account account);
         Task<Account> DemandAccountAsync(AccountId id);
-        Task<IEnumerable<AccountInfo>> ListAccountsAsync();
+        Task<IEnumerable<AccountInfo>> ListPersonalAccountsAsync();
     }
 }

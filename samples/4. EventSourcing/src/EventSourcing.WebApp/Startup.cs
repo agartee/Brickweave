@@ -1,14 +1,22 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Brickweave.Cqrs.AspNetCore.Formatters;
+using Brickweave.Cqrs.DependencyInjection;
 using Brickweave.Domain;
 using Brickweave.Domain.AspNetCore.ModelBinders;
 using Brickweave.Domain.Serialization;
 using Brickweave.EventStore;
+using Brickweave.EventStore.SqlServer.DependencyInjection;
+using Brickweave.Messaging.ServiceBus.DependencyInjection;
 using Brickweave.Serialization.DependencyInjection;
 using EventSourcing.Domain.Common.Serialization;
 using EventSourcing.Domain.Ideas.Models;
+using EventSourcing.Domain.Ideas.Services;
+using EventSourcing.SqlServer;
+using EventSourcing.SqlServer.Repositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
@@ -74,6 +82,30 @@ namespace AdvancedCqrs.WebApp
                 // "Name" value object can be flattened when serialized and 
                 // deserialized just like Brickweave.Domain.Id value objects.
                 .AddJsonConverter(new NameConverter());
+
+            services.AddBrickweaveMessaging()
+                .AddMessageSenderRegistration(
+                    "default",
+                    connectionString: Configuration.GetConnectionString("serviceBus"),
+                    topicOrQueue: Configuration["messaging:queue"],
+                    isDefault: true)
+                .AddUtf8Encoding();
+
+            services.AddBrickweaveCqrs(domainAssembly);
+            services.AddBrickweaveEventStore();
+
+            services.AddDbContextFactory<EventSourcingDbContext>(options =>
+            {
+                options.UseSqlServer(
+                    Configuration.GetConnectionString("demo"),
+                    sql => sql.CommandTimeout(120));
+
+                if (Convert.ToBoolean(Configuration["logging:enableSensitiveDataLogging"]))
+                    options.EnableSensitiveDataLogging();
+            });
+            services.AddDbContext<EventSourcingDbContext>();
+
+            services.AddScoped<IIdeaRepository, SqlServerIdeaRepository>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

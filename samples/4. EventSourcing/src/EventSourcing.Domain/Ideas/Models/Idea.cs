@@ -23,6 +23,7 @@ namespace EventSourcing.Domain.Ideas.Models
 
         public IdeaId Id { get; private set; }
         public Name Name { get; private set; }
+        public bool IsActive { get; private set; }
 
         public void Rename(Name newName)
         {

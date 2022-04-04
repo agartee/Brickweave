@@ -13,8 +13,11 @@
     <ProjectReference Include="..\..\..\..\src\Brickweave.Cqrs.AspNetCore\Brickweave.Cqrs.AspNetCore.csproj" />
     <ProjectReference Include="..\..\..\..\src\Brickweave.Domain.AspNetCore\Brickweave.Domain.AspNetCore.csproj" />
     <ProjectReference Include="..\..\..\..\src\Brickweave.Domain\Brickweave.Domain.csproj" />
+    <ProjectReference Include="..\..\..\..\src\Brickweave.EventStore.SqlServer\Brickweave.EventStore.SqlServer.csproj" />
+    <ProjectReference Include="..\..\..\..\src\Brickweave.Messaging.ServiceBus\Brickweave.Messaging.ServiceBus.csproj" />
     <ProjectReference Include="..\..\..\..\src\Brickweave.Serialization\Brickweave.Serialization.csproj" />
     <ProjectReference Include="..\EventSourcing.Domain\EventSourcing.Domain.csproj" />
+    <ProjectReference Include="..\EventSourcing.SqlServer\EventSourcing.SqlServer.csproj" />
   </ItemGroup>
 
 </Project>

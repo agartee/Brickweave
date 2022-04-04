@@ -21,7 +21,7 @@ namespace EventSourcing.Domain.Ideas.Commands
 
             await _ideaRepository.SaveIdeaAsync(idea);
 
-            return idea.ToInfo();
+            return idea.ToIdeaInfo();
         }
     }
 }

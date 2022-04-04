@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <UserSecretsId>Brickweave-EventSourcing</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="6.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\src\Brickweave.Cqrs.AspNetCore\Brickweave.Cqrs.AspNetCore.csproj" />
+    <ProjectReference Include="..\..\..\..\src\Brickweave.Domain.AspNetCore\Brickweave.Domain.AspNetCore.csproj" />
+    <ProjectReference Include="..\..\..\..\src\Brickweave.Domain\Brickweave.Domain.csproj" />
+    <ProjectReference Include="..\..\..\..\src\Brickweave.Serialization\Brickweave.Serialization.csproj" />
+    <ProjectReference Include="..\EventSourcing.Domain\EventSourcing.Domain.csproj" />
+  </ItemGroup>
+
+</Project>
